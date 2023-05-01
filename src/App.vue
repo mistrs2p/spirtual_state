@@ -1,30 +1,37 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
   <router-view />
 </template>
 
+<script setup>
+// import projectService from "./services/project.service.js";
+// alert(true);
+// console.log(projectService.GetAllMasters());
+</script>
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@font-face {
+  font-family: Vazir;
+  src: url("@/assets/fonts/Vazir.ttf");
+  font-weight: normal;
 }
 
-nav {
-  padding: 30px;
+@font-face {
+  font-family: Vazir;
+  src: url("@/assets/fonts/Vazir-Bold.ttf");
+  font-weight: bold;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+* {
+  font-family: Vazir;
+}
+a {
+  text-decoration: none;
+  color: black;
+}
+.router-link-active,
+.router-link-exact-active {
+  color: #3110c4;
+  & .q-item {
+    background-color: rgb(147, 210, 247);
   }
 }
 </style>

@@ -1,20 +1,103 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+// import projectService from "../services/project.service.js";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    name: "home",
-    component: HomeView,
+    name: "index",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../layouts/IndexLayout.vue"),
+    children: [
+      {
+        path: "",
+        component: () => import("@/views/HomeView.vue"),
+        name: "home",
+      },
+      {
+        path: "change-password",
+        component: () => import("@/components/ChangePassword.vue"),
+        name: "changePassword",
+      },
+      {
+        path: "consult-request",
+        component: () => import("@/components/ConsultRequest.vue"),
+        name: "consultRequest",
+      },
+      {
+        path: "user-info",
+        component: () => import("@/components/AdditionalInfo.vue"),
+        name: "userInfo",
+      },
+      {
+        path: "my-exams",
+        component: () => import("@/components/MyExams.vue"),
+        name: "myExams",
+      },
+      {
+        path: "master-exams",
+        component: () => import("@/components/Master/ExamsList.vue"),
+        name: "masterExams",
+      },
+      {
+        path: "my-counseling",
+        component: () => import("@/components/MyCounseling.vue"),
+        name: "myCounseling",
+      },
+      {
+        path: "master/add-meeting",
+        component: () => import("@/components/Master/AddMeeting.vue"),
+        name: "addMeeting",
+      },
+      {
+        path: "master/consultations-list",
+        component: () => import("@/components/Master/ConsultationsList.vue"),
+        name: "consultationsList",
+      },
+      {
+        path: "master/show-meetings",
+        component: () => import("@/components/Master/ShowMeetings.vue"),
+        name: "showMeetings",
+      },
+      {
+        path: "admin/discount-list",
+        component: () => import("@/components/Admin/DiscountList.vue"),
+        name: "discountList",
+      },
+      {
+        path: "admin/masters-list",
+        component: () => import("@/components/Admin/MastersList.vue"),
+        name: "mastersList",
+      },
+      {
+        path: "admin/meetings-list",
+        component: () => import("@/components/Admin/MeetingsList.vue"),
+        name: "meetingsList",
+      },
+      {
+        path: "admin/consultations-list",
+        component: () => import("@/components/Admin/ConsultationsList.vue"),
+        name: "consultationsListAdmin",
+      },
+      {
+        path: "admin/questions-List",
+        component: () => import("@/components/Admin/QuestionsList.vue"),
+        name: "questionsList",
+      },
+      {
+        path: "admin/question-items-list",
+        component: () => import("@/components/Admin/QuestionItemsList.vue"),
+        name: "questionItemsList",
+      },
+    ],
   },
   {
-    path: "/about",
-    name: "about",
+    path: "/login",
+    name: "login",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+      import(/* webpackChunkName: "about" */ "../layouts/LoginLayout.vue"),
   },
 ];
 
@@ -22,5 +105,12 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+router.beforeEach((to, from, next) => {
+  const user = JSON.parse(localStorage.getItem("UserStore") || "{}")?.user;
 
+  if (to.name !== "login" && !user) next({ name: "login" });
+  else if (to.name == "login" && user) next({ path: from.path });
+  // if the user is not authenticated, `next` is called twice
+  next();
+});
 export default router;
