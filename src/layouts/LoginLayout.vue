@@ -154,7 +154,7 @@ const onSubmit = () => {
         Notify.create({
           message: "ورود موفقیت آمیز",
         });
-        router.push({ name: "index" });
+        router.push({ name: "home" });
       })
       .catch((err) => {
         console.log(err);

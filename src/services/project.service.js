@@ -6,6 +6,7 @@ import {
   Meetings,
   Master,
   Questions,
+  Admin,
 } from "../helpers/api-constant";
 import httpConfig from "../helpers/http.config.js";
 
@@ -106,6 +107,9 @@ class projectService {
   }
   async GetQuestionItemsList() {
     return await httpConfig.post(Questions.GetQuestionItemsList);
+  }
+  async GetMastersInfo(masterInfoModel) {
+    return await httpConfig.post(Admin.GetMastersInfo, { ...masterInfoModel });
   }
 }
 export default new projectService();

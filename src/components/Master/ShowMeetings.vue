@@ -1,84 +1,78 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <div class="col-10">
-      <q-table
-        flat
-        bordered
-        title="نمایش جلسات"
-        :rows="rows"
-        :columns="columns"
-        row-key="name"
-        dark
-        color="amber"
-        :separator="'cell'"
-        :loading="loading"
-      >
-        <template v-slot:loading>
-          <q-inner-loading showing color="primary" />
-        </template>
+  <div class="col-10">
+    <q-table
+      dense
+      flat
+      bordered
+      title="نمایش جلسات"
+      :rows="rows"
+      :columns="columns"
+      row-key="name"
+      color="deep-purple-14"
+      :separator="'cell'"
+      :loading="loading"
+    >
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
+      </template>
 
-        <template v-slot:header="props">
-          <q-tr :props="props">
-            <q-th
-              v-for="item in columns"
-              :key="item.name"
-              :props="props"
-              style="text-align: right !important"
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th
+            v-for="item in columns"
+            :key="item.name"
+            :props="props"
+            style="text-align: right !important"
+          >
+            {{ item.label }}
+          </q-th>
+        </q-tr>
+      </template>
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td
+            v-for="item in columns"
+            :key="item.name"
+            :props="props"
+            style="text-align: right !important"
+          >
+            <span
+              v-if="
+                item.name == 'DateCreate' ||
+                item.name == 'StartTime' ||
+                item.name == 'LastRequestDate'
+              "
             >
-              {{ item.label }}
-            </q-th>
-          </q-tr>
-        </template>
-        <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td
-              v-for="item in columns"
-              :key="item.name"
-              :props="props"
-              style="text-align: right !important"
+              {{
+                props.row[item.field] != null
+                  ? new Date(props.row[item.field]).toLocaleTimeString("fa-IR")
+                  : ""
+              }}
+              -
+              {{
+                props.row[item.field] != null
+                  ? new Date(props.row[item.field]).toLocaleDateString("fa-IR")
+                  : ""
+              }}
+            </span>
+            <span
+              v-else-if="
+                item.name == 'IsReservable' ||
+                item.name == 'IsReasign' ||
+                item.name == 'isVisible'
+              "
             >
-              <span
-                v-if="
-                  item.name == 'DateCreate' ||
-                  item.name == 'StartTime' ||
-                  item.name == 'LastRequestDate'
-                "
-              >
-                {{
-                  props.row[item.field] != null
-                    ? new Date(props.row[item.field]).toLocaleTimeString(
-                        "fa-IR"
-                      )
-                    : ""
-                }}
-                -
-                {{
-                  props.row[item.field] != null
-                    ? new Date(props.row[item.field]).toLocaleDateString(
-                        "fa-IR"
-                      )
-                    : ""
-                }}
-              </span>
-              <span
-                v-else-if="
-                  item.name == 'IsReservable' ||
-                  item.name == 'IsReasign' ||
-                  item.name == 'isVisible'
-                "
-              >
-                <q-checkbox size="xs" v-model="props.row[item.field]" disable />
-              </span>
+              <q-checkbox size="xs" v-model="props.row[item.field]" disable />
+            </span>
 
-              <span v-else>
-                {{ props.row[item.field] }}
-              </span>
-            </q-td>
-          </q-tr>
-        </template>
-      </q-table>
-    </div>
-  </q-page>
+            <span v-else>
+              {{ props.row[item.field] }}
+            </span>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+  </div>
 </template>
 
 <script setup lang="ts">

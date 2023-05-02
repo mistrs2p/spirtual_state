@@ -40,3 +40,6 @@ export const Questions = Object.freeze({
   GetQuestionsList: "Questions/GetQuestionsList",
   GetQuestionItemsList: "Questions/GetQuestionItemsList",
 });
+export const Admin = Object.freeze({
+  GetMastersInfo: "Admin/GetMastersInfo",
+});

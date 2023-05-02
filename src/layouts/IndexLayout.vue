@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated class="glossy">
+    <q-header elevated>
       <q-toolbar>
         <q-btn
           flat
@@ -25,8 +25,25 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-grey-2">
       <q-list padding bordered class="rounded-borders" style="max-width: 328px">
-        <!-- v-if="userStore.user.Type == 2" -->
-        <q-expansion-item icon="school" label="پنل استاد">
+        <q-banner inline-actions>
+          <!-- class="text-white bg-red-13" -->
+          <q-chip>{{
+            userStore.user.DisplayName != null
+              ? userStore.user.DisplayName
+              : userStore.user.Type == 1
+              ? "کاربر"
+              : userStore.user.Type == 2
+              ? "استاد"
+              : userStore.user.Type == 3
+              ? "ادمین"
+              : ""
+          }}</q-chip>
+        </q-banner>
+        <q-expansion-item
+          v-if="userStore.user.Type == 2"
+          icon="school"
+          label="پنل استاد"
+        >
           <q-card>
             <q-card-section>
               <q-list bordered separator>
@@ -60,8 +77,11 @@
           </q-card>
         </q-expansion-item>
 
-        <!-- v-if="userStore.user.Type == 1 || userStore.user.Type == null" -->
-        <q-expansion-item icon="person" label="پنل کاربر">
+        <q-expansion-item
+          icon="person"
+          label="پنل کاربر"
+          v-if="userStore.user.Type == 1 || userStore.user.Type == 2"
+        >
           <q-card>
             <q-card-section>
               <q-list bordered separator>
@@ -107,8 +127,8 @@
           </q-card>
         </q-expansion-item>
 
-        <!-- v-if="userStore.user.Type == 3" -->
         <q-expansion-item
+          v-if="userStore.user.Type == 3"
           icon="admin_panel_settings"
           label="پنل ادمین"
           header-class="text-orange"
@@ -160,6 +180,13 @@
                     </q-item-section>
                   </q-item>
                 </router-link>
+                <router-link :to="{ name: 'mastersInfo' }">
+                  <q-item clickable v-ripple>
+                    <q-item-section>
+                      <q-item-label>اطلاعات اساتید</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </router-link>
               </q-list>
             </q-card-section>
           </q-card>
@@ -168,13 +195,12 @@
     </q-drawer>
 
     <q-page-container>
-      <q-banner inline-actions class="text-white bg-red-13">
-        <q-chip>{{ userStore.user.DisplayName }}</q-chip>
-      </q-banner>
-      <router-view></router-view>
+      <q-page class="row items-start justify-evenly q-pt-md bg-blue-2">
+        <router-view></router-view>
+      </q-page>
     </q-page-container>
   </q-layout>
-  <q-dialog v-model="confirm" persistent>
+  <!-- <q-dialog v-model="confirm" persistent>
     <q-card>
       <q-card-section class="row items-center">
         <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
@@ -188,7 +214,7 @@
         <q-btn flat label="Turn on Wifi" color="primary" v-close-popup />
       </q-card-actions>
     </q-card>
-  </q-dialog>
+  </q-dialog> -->
 </template>
 
 <script setup>
@@ -203,3 +229,8 @@ const logout = () => {
   router.push({ name: "login" });
 };
 </script>
+<style lang="scss">
+:deep .q-page {
+  min-height: unset;
+}
+</style>

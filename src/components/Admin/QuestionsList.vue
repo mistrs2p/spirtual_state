@@ -1,70 +1,68 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <div class="col-10">
-      <q-table
-        flat
-        bordered
-        title="آزمون ها"
-        :rows="rows"
-        :columns="columns"
-        row-key="name"
-        dark
-        color="amber"
-        :separator="'cell'"
-        :wrap-cells="true"
-        :loading="loading"
-      >
-        <template v-slot:loading>
-          <q-inner-loading showing color="primary" />
-        </template>
+  <div class="col-10">
+    <q-table
+      dense
+      flat
+      bordered
+      title="آزمون ها"
+      :rows="rows"
+      :columns="columns"
+      row-key="name"
+      color="deep-purple-14"
+      :separator="'cell'"
+      :wrap-cells="true"
+      :loading="loading"
+    >
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
+      </template>
 
-        <template v-slot:header="props">
-          <q-tr :props="props">
-            <q-th
-              v-for="item in columns"
-              :key="item.name"
-              :props="props"
-              style="text-align: right !important"
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th
+            v-for="item in columns"
+            :key="item.name"
+            :props="props"
+            style="text-align: right !important"
+          >
+            {{ item.label }}
+          </q-th>
+        </q-tr>
+      </template>
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td
+            v-for="item in columns"
+            :key="item.name"
+            :props="props"
+            style="text-align: right !important"
+          >
+            <span
+              v-if="item.name == 'IsRealAzmoon' || item.name == 'IsVisible'"
             >
-              {{ item.label }}
-            </q-th>
-          </q-tr>
-        </template>
-        <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td
-              v-for="item in columns"
-              :key="item.name"
-              :props="props"
-              style="text-align: right !important"
-            >
-              <span
-                v-if="item.name == 'IsRealAzmoon' || item.name == 'IsVisible'"
-              >
-                <q-checkbox size="xs" v-model="props.row[item.field]" disable />
-              </span>
-              <span v-else-if="item.name == 'QType'">
-                <span v-for="(key, index) of QType" :key="index">
-                  <span v-if="props.row[item.field] == key">
-                    {{ index }}
-                  </span>
+              <q-checkbox size="xs" v-model="props.row[item.field]" disable />
+            </span>
+            <span v-else-if="item.name == 'QType'">
+              <span v-for="(key, index) of QType" :key="index">
+                <span v-if="props.row[item.field] == key">
+                  {{ index }}
                 </span>
               </span>
-              <span v-else-if="item.name == 'Help'" class="ellipsis-3-lines">
-                {{ props.row[item.field] }}
-                <q-tooltip max-width="500px">{{
-                  props.row[item.field]
-                }}</q-tooltip>
-              </span>
-              <span v-else>
-                {{ props.row[item.field] }}
-              </span>
-            </q-td>
-          </q-tr>
-        </template>
-      </q-table>
-    </div>
-  </q-page>
+            </span>
+            <span v-else-if="item.name == 'Help'" class="ellipsis-3-lines">
+              {{ props.row[item.field] }}
+              <q-tooltip max-width="500px">{{
+                props.row[item.field]
+              }}</q-tooltip>
+            </span>
+            <span v-else>
+              {{ props.row[item.field] }}
+            </span>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+  </div>
 </template>
 
 <script setup lang="ts">

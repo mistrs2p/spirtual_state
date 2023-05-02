@@ -88,6 +88,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/components/Admin/QuestionItemsList.vue"),
         name: "questionItemsList",
       },
+      {
+        path: "admin/masters-info",
+        component: () => import("@/components/Admin/MastersInfo.vue"),
+        name: "mastersInfo",
+      },
     ],
   },
   {

@@ -1,66 +1,64 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <div class="col-10">
-      <q-table
-        flat
-        bordered
-        title="آزمون"
-        :rows="rows"
-        :columns="columns"
-        row-key="name"
-        dark
-        color="amber"
-        :separator="'cell'"
-        :loading="loading"
-      >
-        <template v-slot:loading>
-          <q-inner-loading showing color="primary" />
-        </template>
+  <div class="col-10">
+    <q-table
+      dense
+      flat
+      bordered
+      title="آزمون"
+      :rows="rows"
+      :columns="columns"
+      row-key="name"
+      color="deep-purple-14"
+      :separator="'cell'"
+      :loading="loading"
+    >
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
+      </template>
 
-        <template v-slot:header="props">
-          <q-tr :props="props">
-            <q-th
-              v-for="item in columns"
-              :key="item.name"
-              :props="props"
-              style="text-align: right !important"
-            >
-              {{ item.label }}
-            </q-th>
-          </q-tr>
-        </template>
-        <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td
-              v-for="item in columns"
-              :key="item.name"
-              :props="props"
-              style="text-align: right !important"
-            >
-              <span v-if="item.name == 'AnswerType'">
-                <span v-for="(key, index) of AnswerType" :key="index">
-                  <span v-if="props.row[item.field] == key">
-                    {{ index }}
-                  </span>
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th
+            v-for="item in columns"
+            :key="item.name"
+            :props="props"
+            style="text-align: right !important"
+          >
+            {{ item.label }}
+          </q-th>
+        </q-tr>
+      </template>
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td
+            v-for="item in columns"
+            :key="item.name"
+            :props="props"
+            style="text-align: right !important"
+          >
+            <span v-if="item.name == 'AnswerType'">
+              <span v-for="(key, index) of AnswerType" :key="index">
+                <span v-if="props.row[item.field] == key">
+                  {{ index }}
                 </span>
               </span>
-              <span v-if="item.name == 'QIType'">
-                <span v-for="(key, index) of QItemType" :key="index">
-                  <span v-if="props.row[item.field] == key">
-                    {{ index }}
-                  </span>
+            </span>
+            <span v-if="item.name == 'QIType'">
+              <span v-for="(key, index) of QItemType" :key="index">
+                <span v-if="props.row[item.field] == key">
+                  {{ index }}
                 </span>
               </span>
+            </span>
 
-              <span v-else>
-                {{ props.row[item.field] }}
-              </span>
-            </q-td>
-          </q-tr>
-        </template>
-      </q-table>
-    </div>
-  </q-page>
+            <span v-else>
+              {{ props.row[item.field] }}
+            </span>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+  </div>
 </template>
 
 <script setup lang="ts">
