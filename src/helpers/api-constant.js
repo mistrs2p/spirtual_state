@@ -11,6 +11,8 @@ export const ApiConst = Object.freeze({
 export const Discount = Object.freeze({
   GetUserDiscounts: "Discounts/GetUserDiscounts",
   GetDiscountsList: "Discounts/GetDiscountsList",
+  DeleteDiscountAdmin: "Discount/DeleteDiscountAdmin",
+  AddDiscountAdmin: "Discounts/AddDiscountAdmin",
 });
 export const Requests = Object.freeze({
   ConsultanceRequest: "Requests/ConsultanceRequest",
@@ -34,6 +36,7 @@ export const Meetings = Object.freeze({
 });
 export const Master = Object.freeze({
   GetAllMasters: "GetAllMasters",
+  DeleteMasterAdmin: "Masters/DeleteMasterAdmin",
 });
 
 export const Questions = Object.freeze({
@@ -42,4 +45,7 @@ export const Questions = Object.freeze({
 });
 export const Admin = Object.freeze({
   GetMastersInfo: "Admin/GetMastersInfo",
+});
+export const User = Object.freeze({
+  GetUsersListAdmin: "Users/GetUsersListAdmin",
 });

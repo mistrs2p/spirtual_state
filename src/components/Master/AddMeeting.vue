@@ -1,6 +1,10 @@
 <template>
   <div class="col-10">
-    <q-form @submit="onSubmit" class="q-gutter-md">
+    <q-form
+      @submit="handleAddMeeting"
+      @reset="handleResetForm"
+      class="q-gutter-md"
+    >
       <div class="row q-col-gutter-sm">
         <div class="col-12">
           <q-input
@@ -12,23 +16,8 @@
             :rules="[(val) => (val && val.length > 0) || 'عنوان باید ذکر شود']"
           />
         </div>
-        <div class="col-12">
-          <q-input
-            filled
-            type="number"
-            v-model="addMeetingModel.Order"
-            label="ردیف"
-            lazy-rules
-            :rules="[(val) => (val && val > 0) || 'ردیف باید ذکر شود']"
-          />
-        </div>
-        <div class="col-12">
-          <q-input
-            filled
-            v-model="addMeetingModel.StartTime"
-            mask="date"
-            :rules="['date']"
-          >
+        <div class="col-6">
+          <q-input filled v-model="dateTime.date">
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
@@ -36,10 +25,7 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-date
-                    v-model="addMeetingModel.StartTime"
-                    calendar="persian"
-                  >
+                  <q-date v-model="dateTime.date" calendar="persian">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -49,7 +35,36 @@
             </template>
           </q-input>
         </div>
-        <div class="col-12">
+        <div class="col-6">
+          <q-input filled v-model="dateTime.time">
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-time v-model="dateTime.time" mask="HH:mm" format24h>
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+        <div class="col-12 col-md-4">
+          <q-input
+            filled
+            type="number"
+            v-model="addMeetingModel.Order"
+            label="ردیف"
+            lazy-rules
+            :rules="[(val) => (val && val > 0) || 'ردیف باید ذکر شود']"
+          />
+        </div>
+        <div class="col-12 col-md-4">
           <q-input
             filled
             type="number"
@@ -59,7 +74,7 @@
             :rules="[(val) => (val && val > 0) || 'مبلغ جلسه باید ذکر شود']"
           />
         </div>
-        <div class="col-12">
+        <div class="col-12 col-md-4">
           <q-input
             filled
             type="number"
@@ -82,8 +97,14 @@
           />
         </div>
       </div>
-      <div>
+      <div class="q-gutter-x-sm">
         <q-btn label="ثبت" type="submit" color="primary" />
+        <q-btn
+          label="پاک کردن فرم"
+          id="resetBtn"
+          type="reset"
+          color="warning"
+        />
         <!-- <q-btn
             label="خالی کردن"
             type="reset"
@@ -97,6 +118,14 @@
 </template>
 <script setup>
 import { ref } from "vue";
+import projectService from "../../services/project.service.js";
+import moment from "jalali-moment";
+import { Notify } from "quasar";
+
+const dateTime = ref({
+  date: null,
+  time: null,
+});
 const addMeetingModel = ref({
   Title: null,
   Order: null,
@@ -106,4 +135,57 @@ const addMeetingModel = ref({
   isVisible: true,
   IsReservable: false,
 });
+const handleAddMeeting = () => {
+  const model = { ...addMeetingModel.value };
+  console.log(model);
+  model.Order = parseFloat(addMeetingModel.value.Order);
+  model.Duration = parseFloat(addMeetingModel.value.Duration);
+  model.Cost = parseFloat(addMeetingModel.value.Cost);
+  model.StartTime = moment
+    .from(
+      `${dateTime.value.date} ${dateTime.value.time}`,
+      "fa",
+      "YYYY/M/D HH:mm:ss"
+    )
+    .format("YYYY-M-D HH:mm:ss");
+  console.log(model);
+  projectService
+    .AddMeeting(model)
+    .then((res) => {
+      document.getElementById("resetBtn").click();
+      console.log(res);
+      Notify.create({
+        message: "با موفقیت اضافه شد!",
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "positive",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      Notify.create({
+        message: "خطا",
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "negative",
+      });
+    });
+};
+const handleResetForm = () => {
+  addMeetingModel.value = {
+    Title: null,
+    Order: null,
+    Cost: null,
+    Duration: null,
+    isVisible: true,
+    IsReservable: false,
+    StartTime: null,
+  };
+  dateTime.value = {
+    date: null,
+    time: null,
+  };
+};
 </script>

@@ -1,6 +1,7 @@
 <template>
   <div class="col-10">
     <q-table
+      :pagination="{ rowsPerPage: 10 }"
       dense
       flat
       bordered
@@ -40,6 +41,22 @@
               <q-checkbox size="xs" v-model="props.row[item.field]" disable />
             </span>
 
+            <span v-else-if="item.name == 'operation'" class="q-gutter-x-sm">
+              <!-- <q-btn color="primary" @click="handleEdit = true" dense flat
+                >ویرایش</q-btn
+              > -->
+              <q-btn
+                color="negative"
+                @click="(operationData = props.row), (operationDialog = true)"
+                dense
+                flat
+                >حذف</q-btn
+              >
+              <!-- <q-btn color="secondary" @click="handleDetel = true" dense flat
+                >پیامک</q-btn
+              > -->
+              <!-- <q-checkbox size="xs" v-model="props.row[item.field]" disable /> -->
+            </span>
             <span v-else>
               {{ props.row[item.field] }}
             </span>
@@ -48,14 +65,33 @@
       </template>
     </q-table>
   </div>
+  <q-dialog v-model="operationDialog" persistent>
+    <q-card>
+      <q-card-section class="row items-center">
+        <span class="q-ml-sm">استاد حذف شود؟</span>
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn
+          flat
+          label="تایید"
+          color="primary"
+          @click="handleDelete"
+          v-close-popup
+        />
+        <q-btn flat label="لغو" color="warning" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
 import projectService from "@/services/project.service";
-
+import { Notify } from "quasar";
 import { ref } from "vue";
 // import { Notify } from 'quasar';
-
+const operationDialog = ref(false);
+const operationData = ref(null);
 const rows = ref([]);
 const loading = ref(false);
 const loadDataTable = () => {
@@ -112,6 +148,38 @@ const columns = [
     field: "IsVisible",
     // align: 'center',
   },
+  {
+    name: "operation",
+    label: "عملیات",
+    field: "operation",
+    // align: 'center',
+  },
 ];
+
+const handleDelete = (evt) => {
+  projectService
+    .DeleteMasterAdmin(operationData.value.ID)
+    .then((res) => {
+      console.log(res);
+      Notify.create({
+        message: "با موفقیت حذف شد!",
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "positive",
+      });
+      loadDataTable();
+    })
+    .catch((err) => {
+      console.log(err);
+      Notify.create({
+        message: "حذف استاد با خطا مواجه شد!",
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "positive",
+      });
+    });
+};
 </script>
 <style lang="scss"></style>

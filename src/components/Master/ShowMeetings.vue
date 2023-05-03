@@ -1,6 +1,7 @@
 <template>
   <div class="col-10">
     <q-table
+      :pagination="{ rowsPerPage: 10 }"
       dense
       flat
       bordered
@@ -161,12 +162,11 @@ const columns = [
     field: "LastRequestDate",
     // align: 'center',
   },
-  {
-    name: "operation",
-    label: "عملیات",
-    field: "operation",
-    // align: 'center',
-  },
+  // {
+  //   name: "operation",
+  //   label: "عملیات",
+  //   field: "operation",
+  // },
 ];
 </script>
 <style lang="scss"></style>

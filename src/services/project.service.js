@@ -7,6 +7,7 @@ import {
   Master,
   Questions,
   Admin,
+  User,
 } from "../helpers/api-constant";
 import httpConfig from "../helpers/http.config.js";
 
@@ -110,6 +111,20 @@ class projectService {
   }
   async GetMastersInfo(masterInfoModel) {
     return await httpConfig.post(Admin.GetMastersInfo, { ...masterInfoModel });
+  }
+  async DeleteMasterAdmin(MasterID) {
+    return await httpConfig.post(Master.DeleteMasterAdmin, { MasterID });
+  }
+  async GetUsersListAdmin() {
+    return await httpConfig.post(User.GetUsersListAdmin);
+  }
+  async DeleteDiscountAdmin(ID) {
+    return await httpConfig.post(Discount.DeleteDiscountAdmin, { ID });
+  }
+  async AddDiscountAdmin(addDiscountModel) {
+    return await httpConfig.post(Discount.AddDiscountAdmin, {
+      ...addDiscountModel,
+    });
   }
 }
 export default new projectService();

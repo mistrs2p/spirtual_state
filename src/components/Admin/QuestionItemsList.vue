@@ -1,6 +1,7 @@
 <template>
   <div class="col-10">
     <q-table
+      :pagination="{ rowsPerPage: 10 }"
       dense
       flat
       bordered

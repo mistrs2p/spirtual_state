@@ -16,7 +16,7 @@
                 <h4 class="text-h5 text-white q-my-md">{{ title }}</h4>
               </q-card-section>
               <q-card-section>
-                <q-fab
+                <!-- <q-fab
                   color="primary"
                   @click="switchTypeForm"
                   icon="add"
@@ -24,7 +24,7 @@
                   style="top: 0; right: 12px; transform: translateY(-50%)"
                 >
                   <q-tooltip> Регистрация нового пользователя </q-tooltip>
-                </q-fab>
+                </q-fab> -->
                 <q-form class="q-px-sm q-pt-xl">
                   <q-input
                     square
@@ -153,6 +153,10 @@ const onSubmit = () => {
         console.log(userStore.user);
         Notify.create({
           message: "ورود موفقیت آمیز",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          color: "positive",
         });
         router.push({ name: "home" });
       })
@@ -160,6 +164,10 @@ const onSubmit = () => {
         console.log(err);
         Notify.create({
           message: err.response.data.Message,
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
         });
         // isLoading.value = false;
       });
@@ -168,9 +176,9 @@ const onSubmit = () => {
   }
 };
 const switchTypeForm = () => {
-  register.value = !register.value;
-  title.value = register.value ? "ثبت نام" : "ورود";
-  btnLabel.value = register.value ? "ثبت نام" : "ورود";
+  // register.value = !register.value;
+  // title.value = register.value ? "ثبت نام" : "ورود";
+  // btnLabel.value = register.value ? "ثبت نام" : "ورود";
 };
 const switchVisibility = () => {
   visibility.value = !visibility.value;

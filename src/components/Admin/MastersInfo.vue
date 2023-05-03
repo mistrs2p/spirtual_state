@@ -20,6 +20,7 @@
     <hr />
     <div class="col-12">
       <q-table
+        :pagination="{ rowsPerPage: 10 }"
         dense
         flat
         bordered
