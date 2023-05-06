@@ -46,12 +46,24 @@
                 >ویرایش</q-btn
               > -->
               <q-btn
+                color="primary"
+                @click="
+                  (operationData = { ...props.row }), (isEditDialog = true)
+                "
+                dense
+                flat
+                >ویرایش</q-btn
+              >
+              <q-btn
                 color="negative"
-                @click="(operationData = props.row), (operationDialog = true)"
+                @click="
+                  (operationData = { ...props.row }), (isOperationDialog = true)
+                "
                 dense
                 flat
                 >حذف</q-btn
               >
+
               <!-- <q-btn color="secondary" @click="handleDetel = true" dense flat
                 >پیامک</q-btn
               > -->
@@ -65,7 +77,7 @@
       </template>
     </q-table>
   </div>
-  <q-dialog v-model="operationDialog" persistent>
+  <q-dialog v-model="isOperationDialog" persistent>
     <q-card>
       <q-card-section class="row items-center">
         <span class="q-ml-sm">استاد حذف شود؟</span>
@@ -83,15 +95,128 @@
       </q-card-actions>
     </q-card>
   </q-dialog>
+  <q-dialog v-model="isEditDialog" persistent>
+    <q-card>
+      <q-card-section class="row items-center">
+        <span class="q-ml-sm">ویرایش جلسه</span>
+      </q-card-section>
+      <q-card-section>
+        <q-form
+          @submit="handleEdit"
+          @reset="handleResetForm"
+          class="q-gutter-md"
+        >
+          <div class="row q-col-gutter-sm">
+            <div class="col-12">
+              <q-input
+                filled
+                type="text"
+                v-model="operationData.DisplayName"
+                label="نام نمایشی"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || 'نام نمایشی باید ذکر شود',
+                ]"
+              />
+            </div>
+            <div class="col-12">
+              <q-input
+                filled
+                type="text"
+                v-model="operationData.Name"
+                label="نام"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || 'نام باید ذکر شود',
+                ]"
+              />
+            </div>
+            <div class="col-12">
+              <q-input
+                filled
+                type="text"
+                v-model="operationData.Family"
+                label="نام خانوادگی"
+                lazy-rules
+                :rules="[
+                  (val) =>
+                    (val && val.length > 0) || 'نام خانوادگی باید ذکر شود',
+                ]"
+              />
+            </div>
+            <div class="col-12">
+              <q-input
+                filled
+                type="text"
+                v-model="operationData.Tel"
+                label="شماره تماس"
+                lazy-rules
+                :rules="[(val) => val.length > 0 || 'شماره تماس باید ذکر شود']"
+              />
+            </div>
+            <div class="col-12">
+              <q-select
+                name="users"
+                v-model="cUserID"
+                :options="usersList"
+                option-label="DisplayName"
+                :option-value="'ID'"
+                color="primary"
+                filled
+                clearable
+                label="انتخاب مراجعه کننده"
+                :rules="[(val) => val || 'مراجعه کننده باید ذکر شود']"
+              />
+            </div>
+
+            <div class="col-12">
+              <q-checkbox
+                size="xs"
+                v-model="operationData.IsVisible"
+                label="قابلیت نمایش"
+              />
+            </div>
+          </div>
+          <div class="q-gutter-x-sm">
+            <q-btn label="ثبت" type="submit" color="primary" />
+            <q-btn
+              label="پاک کردن فرم"
+              id="resetBtn"
+              type="reset"
+              color="warning"
+            />
+            <!-- <q-btn
+            label="خالی کردن"
+            type="reset"
+            color="primary"
+            flat
+            class="q-ml-sm"
+          /> -->
+          </div>
+        </q-form>
+      </q-card-section>
+      <q-card-actions align="right">
+        <q-btn
+          flat
+          label="تایید"
+          color="primary"
+          @click="handleEdit"
+          v-close-popup
+        />
+        <q-btn flat label="لغو" color="warning" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
 import projectService from "@/services/project.service";
 import { Notify } from "quasar";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 // import { Notify } from 'quasar';
-const operationDialog = ref(false);
-const operationData = ref(null);
+const isOperationDialog = ref(false);
+const isEditDialog = ref(false);
+// const operationData = ref(null);
 const rows = ref([]);
 const loading = ref(false);
 const loadDataTable = () => {
@@ -181,5 +306,91 @@ const handleDelete = (evt) => {
       });
     });
 };
+const operationData = ref({
+  DisplayName: null,
+  Family: null,
+  IsSendSMS: false,
+  IsVisible: false,
+  Name: null,
+  Tel: null,
+  UserName: null,
+  cUserID: null,
+});
+const handleResetForm = () => {
+  operationData.value = {
+    DisplayName: null,
+    Family: null,
+    IsSendSMS: false,
+    IsVisible: false,
+    Name: null,
+    Tel: null,
+    UserName: null,
+    cUserID: null,
+  };
+  cUserID.value = null;
+};
+const usersList = ref([]);
+const handleGetUsers = () => {
+  loading.value = true;
+  projectService
+    .GetUsersListAdmin()
+    .then((res) => {
+      console.log(res);
+      usersList.value = res.data;
+      // options.value.pageCount = Math.ceil(res.data.length / itemsPerPage.value);
+      loading.value = false;
+    })
+    .catch((err) => {
+      // isLoading.value = false;
+      console.log(err);
+      loading.value = false;
+    });
+};
+handleGetUsers();
+const handleEdit = () => {
+  console.log(true);
+  const model = { ...operationData.value };
+
+  console.log(model);
+  projectService
+    .EditMaster(model)
+    .then((res) => {
+      console.log(res);
+      Notify.create({
+        message: "با موفقیت ویرایش شد!",
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "positive",
+      });
+      document.getElementById("resetBtn").click();
+      isEditDialog.value = false;
+      loadDataTable();
+    })
+    .catch((err) => {
+      console.log(err);
+      Notify.create({
+        message: err.response.data.Message,
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "negative",
+      });
+    });
+};
+const cUserID = ref(null);
+watch(isEditDialog, (nVal, oVal) => {
+  if (nVal) {
+    const myFind = usersList.value.find(
+      (el) => el.UserName == operationData.value.UserName
+    );
+    if (myFind) {
+      cUserID.value = myFind;
+      operationData.value.cUserID = myFind.ID;
+    }
+
+    console.log(myFind);
+  }
+});
 </script>
 <style lang="scss"></style>

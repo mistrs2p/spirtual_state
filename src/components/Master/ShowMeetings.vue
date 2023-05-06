@@ -65,6 +65,15 @@
             >
               <q-checkbox size="xs" v-model="props.row[item.field]" disable />
             </span>
+            <span v-else-if="item.name == 'operation'">
+              <q-btn
+                dense
+                color="primary"
+                flat
+                @click="(isEditDialog = true), (editData = { ...props.row })"
+                >ویرایش</q-btn
+              >
+            </span>
 
             <span v-else>
               {{ props.row[item.field] }}
@@ -74,13 +83,159 @@
       </template>
     </q-table>
   </div>
+  <q-dialog v-model="isEditDialog" persistent>
+    <q-card>
+      <q-card-section class="row items-center">
+        <span class="q-ml-sm">ویرایش جلسه</span>
+      </q-card-section>
+      <q-card-section>
+        <q-form
+          @submit="handleEdit"
+          @reset="handleResetForm"
+          class="q-gutter-md"
+        >
+          <div class="row q-col-gutter-sm">
+            <div class="col-12">
+              <q-input
+                filled
+                type="text"
+                v-model="editData.Title"
+                label="عنوان"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || 'عنوان باید ذکر شود',
+                ]"
+              />
+            </div>
+            <div class="col-6">
+              <q-input filled v-model="dateTime.date">
+                <template v-slot:prepend>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="dateTime.date" calendar="persian">
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Close"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+            <div class="col-6">
+              <q-input filled v-model="dateTime.time">
+                <template v-slot:append>
+                  <q-icon name="access_time" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-time v-model="dateTime.time" mask="HH:mm" format24h>
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Close"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-time>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+            <div class="col-12 col-md-4">
+              <q-input
+                filled
+                type="number"
+                v-model="editData.Order"
+                label="ردیف"
+                lazy-rules
+                :rules="[(val) => (val && val > 0) || 'ردیف باید ذکر شود']"
+              />
+            </div>
+            <div class="col-12 col-md-4">
+              <q-input
+                filled
+                type="number"
+                v-model="editData.Cost"
+                label="مبلغ جلسه"
+                lazy-rules
+                :rules="[(val) => (val && val > 0) || 'مبلغ جلسه باید ذکر شود']"
+              />
+            </div>
+            <div class="col-12 col-md-4">
+              <q-input
+                filled
+                type="number"
+                v-model="editData.Duration"
+                label="مدت جلسه"
+                lazy-rules
+                :rules="[(val) => (val && val > 0) || 'مدت جلسه باید ذکر شود']"
+              />
+            </div>
+            <div class="col-12">
+              <q-checkbox
+                size="xs"
+                v-model="editData.isVisible"
+                label="قابلیت نمایش"
+              />
+              <q-checkbox
+                size="xs"
+                v-model="editData.IsReservable"
+                label="قابلیت رزرو"
+              />
+            </div>
+          </div>
+          <div class="q-gutter-x-sm">
+            <q-btn label="ثبت" type="submit" color="primary" />
+            <q-btn
+              label="پاک کردن فرم"
+              id="resetBtn"
+              type="reset"
+              color="warning"
+            />
+            <!-- <q-btn
+            label="خالی کردن"
+            type="reset"
+            color="primary"
+            flat
+            class="q-ml-sm"
+          /> -->
+          </div>
+        </q-form>
+      </q-card-section>
+      <q-card-actions align="right">
+        <q-btn
+          flat
+          label="تایید"
+          color="primary"
+          @click="handleEdit"
+          v-close-popup
+        />
+        <q-btn flat label="لغو" color="warning" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
 import projectService from "@/services/project.service";
 
-import { ref } from "vue";
-// import { Notify } from 'quasar';
+import { ref, computed, watch } from "vue";
+import { Notify } from "quasar";
+import moment from "jalali-moment";
 
 const rows = ref([]);
 const loading = ref(false);
@@ -162,11 +317,99 @@ const columns = [
     field: "LastRequestDate",
     // align: 'center',
   },
-  // {
-  //   name: "operation",
-  //   label: "عملیات",
-  //   field: "operation",
-  // },
+  {
+    name: "operation",
+    label: "عملیات",
+    field: "operation",
+  },
 ];
+
+const editData = ref({
+  Title: null,
+  Order: null,
+  StartTime: null,
+  Cost: null,
+  Duration: null,
+  isVisible: true,
+  IsReservable: false,
+});
+const dateTime = ref({
+  date: null,
+  time: null,
+});
+const isEditDialog = ref(false);
+const handleEdit = () => {
+  console.log(true);
+  const model = { ...editData.value };
+  model.Order = parseFloat(editData.value.Order);
+  model.Duration = parseFloat(editData.value.Duration);
+  model.Cost = parseFloat(editData.value.Cost);
+  model.StartTime = moment
+    .from(
+      `${dateTime.value.date} ${dateTime.value.time}`,
+      "fa",
+      "YYYY/M/D HH:mm:ss"
+    )
+    .format("YYYY-M-D HH:mm:ss");
+
+  console.log(model);
+  projectService
+    .EditMasterMeeting(model)
+    .then((res) => {
+      document.getElementById("resetBtn").click();
+      console.log(res);
+      Notify.create({
+        message: "با موفقیت ویرایش شد!",
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "positive",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      Notify.create({
+        message: "خطا",
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "negative",
+      });
+    });
+};
+watch(dateTime, (nVal, oVal) => {
+  console.log(nVal, oVal);
+});
+watch(isEditDialog, (nVal, oVal) => {
+  if (!nVal) {
+    editData.value = {
+      Title: null,
+      Order: null,
+      StartTime: null,
+      Cost: null,
+      Duration: null,
+      isVisible: true,
+      IsReservable: false,
+    };
+  } else {
+    const dateTimeEdit = editData.value.StartTime.split("T");
+    dateTime.value.date = moment(dateTimeEdit[0], "YYYY-MM-DD")
+      .locale("fa")
+      .format("YYYY/MM/DD");
+    dateTime.value.time = dateTimeEdit[1];
+    console.log(dateTimeEdit);
+  }
+});
+const handleResetForm = () => {
+  editData.value = {
+    Title: null,
+    Order: null,
+    StartTime: null,
+    Cost: null,
+    Duration: null,
+    isVisible: true,
+    IsReservable: false,
+  };
+};
 </script>
 <style lang="scss"></style>

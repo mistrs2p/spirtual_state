@@ -5,7 +5,7 @@
       dense
       flat
       bordered
-      title="لیست مشاوران"
+      title="لیست مشاوره ها"
       :rows="rows"
       :columns="columns"
       row-key="name"
@@ -59,7 +59,10 @@
             >
               <q-checkbox size="xs" v-model="props.row[item.field]" disable />
             </span>
-
+            <span v-else-if="item.name == 'operation'">
+              <q-btn dense flat color="primary">فرم جلسه</q-btn>
+              <q-btn dense flat color="negative">پایان جلسه</q-btn>
+            </span>
             <span v-else>
               {{ props.row[item.field] }}
             </span>
@@ -136,6 +139,12 @@ const columns = [
     name: "ReservedNextMeeting",
     label: "رزرو جلسه بعد",
     field: "ReservedNextMeeting",
+    // align: 'center',
+  },
+  {
+    name: "operation",
+    label: "عملیات",
+    field: "operation",
     // align: 'center',
   },
 ];

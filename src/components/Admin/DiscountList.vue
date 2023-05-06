@@ -53,6 +53,13 @@
                 >ویرایش</q-btn
               > -->
               <q-btn
+                color="primary"
+                @click="handleEditClick(props.row)"
+                dense
+                flat
+                >ویرایش</q-btn
+              >
+              <q-btn
                 color="negative"
                 @click="(operationData = props.row), (operationDialog = true)"
                 dense
@@ -167,7 +174,7 @@
                 v-model="user"
                 :options="usersList"
                 @update:model-value="handleClickUser"
-                option-label="UserName"
+                option-label="DisplayName"
                 option-value="ID"
                 color="primary"
                 filled
@@ -409,32 +416,87 @@ const handleDeleteDiscount = () => {
 };
 
 const handleAddDiscount = () => {
-  projectService
-    .AddDiscountAdmin(addDiscountModel.value)
-    .then((res) => {
-      console.log(res);
-      loadDataTable();
-      Notify.create({
-        message: "با موفقیت اضافه شد!",
-        position: "top",
-        timeout: 500,
-        progress: true,
-        color: "positive",
+  if (!isEdit.value) {
+    const model = { ...addDiscountModel.value };
+    delete model.cUserID;
+    delete model.MasterID;
+    projectService
+      .AddDiscountAdmin(model)
+      .then((res) => {
+        console.log(res);
+        loadDataTable();
+        Notify.create({
+          message: "با موفقیت اضافه شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+        isDicountAddDialog.value = false;
+        document.getElementById("resetBtn").click();
+      })
+      .catch((err) => {
+        isDicountAddDialog.value = false;
+        console.log(err);
+        Notify.create({
+          message: "خطا!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
       });
-      isDicountAddDialog.value = false;
-      document.getElementById("resetBtn").click();
-    })
-    .catch((err) => {
-      isDicountAddDialog.value = false;
-      console.log(err);
-      Notify.create({
-        message: "خطا!",
-        position: "top",
-        timeout: 500,
-        progress: true,
-        color: "negative",
+  } else {
+    console.log(addDiscountModel.value);
+    projectService
+      .EditDiscount(addDiscountModel.value)
+      .then((res) => {
+        console.log(res);
+        loadDataTable();
+        Notify.create({
+          message: "با موفقیت ویرایش شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+        isDicountAddDialog.value = false;
+        isEdit.value = false;
+        document.getElementById("resetBtn").click();
+      })
+      .catch((err) => {
+        isDicountAddDialog.value = false;
+        isEdit.value = false;
+
+        console.log(err);
+        Notify.create({
+          message: "خطا!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
       });
-    });
+  }
+};
+
+const isEdit = ref(false);
+
+const handleEditClick = (evt) => {
+  console.log(evt);
+  addDiscountModel.value = { ...evt };
+  const userM = usersList.value.find((el) => el.DisplayName == evt.User);
+  user.value = userM;
+  addDiscountModel.value.cUserID = user.value.ID;
+
+  const masterM = mastersList.value.find(
+    (el) => el.DisplayName.trim() == evt.Master.trim()
+  );
+  console.log(masterM);
+  master.value = masterM;
+  addDiscountModel.value.MasterID = masterM.ID;
+  isDicountAddDialog.value = true;
+  isEdit.value = true;
 };
 </script>
 <style lang="scss"></style>

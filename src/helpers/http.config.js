@@ -31,7 +31,7 @@ httpConfig.interceptors.response.use(
   function (error) {
     if (error.response.status === 401) {
       console.log(error);
-      // console.log(VueRouter);
+      console.log(router);
       // router().replace({ name: 'login' });
       useUserStore().$reset();
       // localStorage.clear();

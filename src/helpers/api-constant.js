@@ -45,6 +45,11 @@ export const Questions = Object.freeze({
 });
 export const Admin = Object.freeze({
   GetMastersInfo: "Admin/GetMastersInfo",
+  EditMaster: "Admin/EditMaster",
+  EditDiscount: "Admin/EditDiscount",
+  DeleteMeeting: "Admin/DeleteMeeting",
+  GetAllMeetings: "Admin/GetAllMeetings",
+  EditMeeting: "Admin/EditMeeting",
 });
 export const User = Object.freeze({
   GetUsersListAdmin: "Users/GetUsersListAdmin",

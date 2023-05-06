@@ -78,9 +78,9 @@ class projectService {
       MeetingID,
     });
   }
-  async EditMasterMeeting(MeetingModel) {
+  async EditMasterMeeting(editMeetingModel) {
     return await httpConfig.post(Meetings.EditMasterMeeting, {
-      ...MeetingModel,
+      ...editMeetingModel,
     });
   }
   async CheckRequestPay(RequestID) {
@@ -98,7 +98,7 @@ class projectService {
     return await httpConfig.post(Master.GetAllMasters);
   }
   async GetAllMeetings() {
-    return await httpConfig.post(Meetings.GetAllMeetings);
+    return await httpConfig.post(Admin.GetAllMeetings);
   }
   async GetConsultanceRequestList() {
     return await httpConfig.post(Requests.GetConsultanceRequestList);
@@ -124,6 +124,26 @@ class projectService {
   async AddDiscountAdmin(addDiscountModel) {
     return await httpConfig.post(Discount.AddDiscountAdmin, {
       ...addDiscountModel,
+    });
+  }
+  async EditMaster(editMasterModel) {
+    return await httpConfig.post(Admin.EditMaster, {
+      ...editMasterModel,
+    });
+  }
+  async EditDiscount(editDiscountModel) {
+    return await httpConfig.post(Admin.EditDiscount, {
+      ...editDiscountModel,
+    });
+  }
+  async DeleteMeeting(MeetingID) {
+    return await httpConfig.post(Admin.DeleteMeeting, {
+      MeetingID,
+    });
+  }
+  async EditMeeting(editMeetingModel) {
+    return await httpConfig.post(Admin.EditMeeting, {
+      ...editMeetingModel,
     });
   }
 }
