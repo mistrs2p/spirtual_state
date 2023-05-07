@@ -16,7 +16,15 @@
       <template v-slot:loading>
         <q-inner-loading showing color="primary" />
       </template>
-
+      <template v-slot:top>
+        <div class="col-2 q-table__title">اساتید</div>
+        <div>
+          <q-btn dense color="primary" @click="handleAddMasterDialog" flat
+            >اضافه کردن</q-btn
+          >
+        </div>
+        <q-space />
+      </template>
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th
@@ -97,9 +105,9 @@
   </q-dialog>
   <q-dialog v-model="isEditDialog" persistent>
     <q-card>
-      <q-card-section class="row items-center">
+      <!-- <q-card-section class="row items-center">
         <span class="q-ml-sm">ویرایش جلسه</span>
-      </q-card-section>
+      </q-card-section> -->
       <q-card-section>
         <q-form
           @submit="handleEdit"
@@ -222,7 +230,7 @@ const loading = ref(false);
 const loadDataTable = () => {
   loading.value = true;
   projectService
-    .GetAllMasters()
+    .GetAllMastersList()
     .then((res) => {
       console.log(res);
       rows.value = res.data;
@@ -283,7 +291,7 @@ const columns = [
 
 const handleDelete = (evt) => {
   projectService
-    .DeleteMasterAdmin(operationData.value.ID)
+    .DeleteMaster(operationData.value.ID)
     .then((res) => {
       console.log(res);
       Notify.create({
@@ -333,7 +341,7 @@ const usersList = ref([]);
 const handleGetUsers = () => {
   loading.value = true;
   projectService
-    .GetUsersListAdmin()
+    .GetUsersList()
     .then((res) => {
       console.log(res);
       usersList.value = res.data;
@@ -350,33 +358,61 @@ handleGetUsers();
 const handleEdit = () => {
   console.log(true);
   const model = { ...operationData.value };
-
+  model.cUserID = cUserID.value.ID;
   console.log(model);
-  projectService
-    .EditMaster(model)
-    .then((res) => {
-      console.log(res);
-      Notify.create({
-        message: "با موفقیت ویرایش شد!",
-        position: "top",
-        timeout: 500,
-        progress: true,
-        color: "positive",
+  if (!isAdd.value) {
+    projectService
+      .EditMaster(model)
+      .then((res) => {
+        console.log(res);
+        Notify.create({
+          message: "با موفقیت ویرایش شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+        isEditDialog.value = false;
+        loadDataTable();
+      })
+      .catch((err) => {
+        console.log(err);
+        Notify.create({
+          message: err.response.data.Message,
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
       });
-      document.getElementById("resetBtn").click();
-      isEditDialog.value = false;
-      loadDataTable();
-    })
-    .catch((err) => {
-      console.log(err);
-      Notify.create({
-        message: err.response.data.Message,
-        position: "top",
-        timeout: 500,
-        progress: true,
-        color: "negative",
+  } else {
+    isAdd.value = false;
+    delete model.UserName;
+    projectService
+      .AddMaster(model)
+      .then((res) => {
+        console.log(res);
+        Notify.create({
+          message: "با موفقیت اضافه شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+        isEditDialog.value = false;
+        loadDataTable();
+      })
+      .catch((err) => {
+        console.log(err);
+        Notify.create({
+          message: err.response.data.Message,
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
       });
-    });
+  }
 };
 const cUserID = ref(null);
 watch(isEditDialog, (nVal, oVal) => {
@@ -392,5 +428,11 @@ watch(isEditDialog, (nVal, oVal) => {
     console.log(myFind);
   }
 });
+const isAdd = ref(false);
+const handleAddMasterDialog = () => {
+  handleResetForm();
+  isAdd.value = true;
+  isEditDialog.value = true;
+};
 </script>
 <style lang="scss"></style>

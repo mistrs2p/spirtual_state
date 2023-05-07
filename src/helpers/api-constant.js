@@ -1,18 +1,15 @@
 export const ApiConst = Object.freeze({
   Register: "Register",
   Login: "Login",
-  UserInfoCompletion: "User/InfoCompletion",
+  UserInfoCompletion: "Users/InfoCompletion",
   Masters: "Masters",
   Meetings: "Meetings",
   GetMasterMeetings: "Meetings/GetMasterMeetings",
-  UserChangePassword: "User/ChangePassword",
+  UserChangePassword: "Users/ChangePassword",
   UserTests: "Exams/GetUserExams",
 });
 export const Discount = Object.freeze({
   GetUserDiscounts: "Discounts/GetUserDiscounts",
-  GetDiscountsList: "Discounts/GetDiscountsList",
-  DeleteDiscountAdmin: "Discount/DeleteDiscountAdmin",
-  AddDiscountAdmin: "Discounts/AddDiscountAdmin",
 });
 export const Requests = Object.freeze({
   ConsultanceRequest: "Requests/ConsultanceRequest",
@@ -20,7 +17,6 @@ export const Requests = Object.freeze({
   GetUserConsultanceRequests: "Requests/GetUserConsultanceRequests",
   CheckRequestPay: "Requests/CheckRequestPay",
   GetMasterConsultances: "Requests/GetMasterConsultances",
-  GetConsultanceRequestList: "Requests/GetConsultanceRequestList",
 });
 export const Exams = Object.freeze({
   GetUserExams: "Exams/GetUserExams",
@@ -32,25 +28,33 @@ export const Meetings = Object.freeze({
   DeleteMasterMeeting: "Meetings/DeleteMasterMeeting",
   EditMasterMeeting: "Meetings/EditMasterMeeting",
   GetMasterMeetingsForMaster: "Meetings/GetMasterMeetingsForMaster",
-  GetAllMeetings: "Meetings/GetAllMeetings",
 });
-export const Master = Object.freeze({
-  GetAllMasters: "GetAllMasters",
-  DeleteMasterAdmin: "Masters/DeleteMasterAdmin",
-});
+export const Master = Object.freeze({});
 
 export const Questions = Object.freeze({
-  GetQuestionsList: "Questions/GetQuestionsList",
   GetQuestionItemsList: "Questions/GetQuestionItemsList",
 });
 export const Admin = Object.freeze({
+  AddDiscount: "Admin/AddDiscount",
   GetMastersInfo: "Admin/GetMastersInfo",
   EditMaster: "Admin/EditMaster",
   EditDiscount: "Admin/EditDiscount",
   DeleteMeeting: "Admin/DeleteMeeting",
-  GetAllMeetings: "Admin/GetAllMeetings",
+  GetAllMeetingsList: "Admin/GetAllMeetingsList",
   EditMeeting: "Admin/EditMeeting",
+  GetDiscountsList: "Admin/GetDiscountsList",
+  AddMeeting: "Admin/AddMeeting",
+  DeleteDiscount: "Admin/DeleteDiscount",
+  GetAllMastersList: "Admin/GetAllMastersList",
+  DeleteMaster: "Admin/DeleteMaster",
+  AddMaster: "Admin/AddMaster",
+  GetQuestionsList: "Admin/GetQuestionsList",
+  GetConsultanceRequestList: "Admin/GetConsultanceRequestList",
+  EditConsultanceRequest: "Admin/EditConsultanceRequest",
+  DeleteConsultanceRequest: "Admin/DeleteConsultanceRequest",
+  AddConsultanceRequest: "Admin/AddConsultanceRequest",
+  GetUsersList: "Admin/GetUsersList",
 });
 export const User = Object.freeze({
-  GetUsersListAdmin: "Users/GetUsersListAdmin",
+  // GetUsersListAdmin: "Users/GetUsersListAdmin",
 });

@@ -152,7 +152,6 @@ const handleAddMeeting = () => {
   projectService
     .AddMeeting(model)
     .then((res) => {
-      document.getElementById("resetBtn").click();
       console.log(res);
       Notify.create({
         message: "با موفقیت اضافه شد!",

@@ -16,7 +16,15 @@
       <template v-slot:loading>
         <q-inner-loading showing color="primary" />
       </template>
-
+      <template v-slot:top>
+        <div class="col-2 q-table__title">جلسات</div>
+        <div>
+          <q-btn dense color="primary" @click="handleAddMeetingDialog" flat
+            >اضافه کردن</q-btn
+          >
+        </div>
+        <q-space />
+      </template>
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th
@@ -110,7 +118,7 @@
     <q-card>
       <q-card-section class="row items-center">
         <q-form
-          @submit="handleAddMeeting"
+          @submit="handleEditMeeting"
           @reset="handleResetForm"
           class="q-gutter-md"
         >
@@ -241,7 +249,7 @@
                 type="reset"
                 color="warning"
               />
-              <q-btn label="لغو" type="submit" v-close-popup color="negative" />
+              <q-btn label="لغو" v-close-popup color="negative" />
             </q-card-actions>
           </div>
         </q-form>
@@ -262,7 +270,7 @@ const loading = ref(false);
 const loadDataTable = () => {
   loading.value = true;
   projectService
-    .GetAllMeetings()
+    .GetAllMeetingsList()
     .then((res) => {
       console.log(res);
       rows.value = res.data;
@@ -357,7 +365,7 @@ const handleDeleteMeeting = () => {
         color: "positive",
       });
       operationDialog.value = false;
-      // document.getElementById("resetBtn").click();
+      // ;
     })
     .catch((err) => {
       operationDialog.value = false;
@@ -395,7 +403,7 @@ const handleResetForm = () => {
 };
 const mastersList = ref([]);
 const master = ref(null);
-// const handleAddMeeting = () => {};
+// const handleEditMeeting = () => {};
 const handleEditClick = (evt) => {
   console.log(evt);
   operationData.value = { ...evt };
@@ -422,39 +430,73 @@ const handleGetMasters = () => {
 };
 handleGetMasters();
 
-const handleAddMeeting = () => {
+const handleEditMeeting = () => {
   const model = { ...operationData.value };
   model.MasterID = master.value.ID;
   model.Duration = parseFloat(model.Duration);
   model.Cost = parseFloat(model.Cost);
   model.Order = parseFloat(model.Order);
   console.log(model);
-  projectService
-    .EditMeeting(model)
-    .then((res) => {
-      console.log(res);
-      loadDataTable();
-      Notify.create({
-        message: "با موفقیت ویرایش شد!",
-        position: "top",
-        timeout: 500,
-        progress: true,
-        color: "positive",
+
+  if (!isAdd.value) {
+    projectService
+      .EditMeeting(model)
+      .then((res) => {
+        console.log(res);
+        loadDataTable();
+        Notify.create({
+          message: "با موفقیت ویرایش شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+        isEditMeetingDialog.value = false;
+      })
+      .catch((err) => {
+        isEditMeetingDialog.value = false;
+        console.log(err);
+        Notify.create({
+          message: "خطا!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
       });
-      isEditMeetingDialog.value = false;
-      document.getElementById("resetBtn").click();
-    })
-    .catch((err) => {
-      isEditMeetingDialog.value = false;
-      console.log(err);
-      Notify.create({
-        message: "خطا!",
-        position: "top",
-        timeout: 500,
-        progress: true,
-        color: "negative",
+  } else {
+    isAdd.value = false;
+    projectService
+      .AddMeetingAdmin(model)
+      .then((res) => {
+        console.log(res);
+        loadDataTable();
+        Notify.create({
+          message: "با موفقیت ویرایش شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+        isEditMeetingDialog.value = false;
+      })
+      .catch((err) => {
+        isEditMeetingDialog.value = false;
+        console.log(err);
+        Notify.create({
+          message: "خطا!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
       });
-    });
+  }
+};
+const isAdd = ref(false);
+const handleAddMeetingDialog = () => {
+  isAdd.value = true;
+  isEditMeetingDialog.value = true;
 };
 </script>
 <style lang="scss"></style>

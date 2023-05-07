@@ -356,7 +356,6 @@ const handleEdit = () => {
   projectService
     .EditMasterMeeting(model)
     .then((res) => {
-      document.getElementById("resetBtn").click();
       console.log(res);
       Notify.create({
         message: "با موفقیت ویرایش شد!",

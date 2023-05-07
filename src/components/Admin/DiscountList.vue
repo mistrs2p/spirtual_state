@@ -206,6 +206,7 @@
               id="resetBtn"
               type="reset"
               color="warning"
+              ref="refTest"
             />
             <!-- <q-btn
             label="خالی کردن"
@@ -275,7 +276,7 @@ const loadDataTable = () => {
     });
 };
 loadDataTable();
-
+const refTest = ref(null);
 const operationDialog = ref(false);
 const operationData = ref(null);
 
@@ -348,7 +349,7 @@ const usersList = ref([]);
 const handleGetUsers = () => {
   loading.value = true;
   projectService
-    .GetUsersListAdmin()
+    .GetUsersList()
     .then((res) => {
       console.log(res);
       usersList.value = res.data;
@@ -391,7 +392,7 @@ const handleClickUser = (evt) => {
 
 const handleDeleteDiscount = () => {
   projectService
-    .DeleteDiscountAdmin(operationData.value.ID)
+    .DeleteDiscount(operationData.value.ID)
     .then((res) => {
       console.log(res);
       loadDataTable();
@@ -421,7 +422,7 @@ const handleAddDiscount = () => {
     delete model.cUserID;
     delete model.MasterID;
     projectService
-      .AddDiscountAdmin(model)
+      .AddDiscount(model)
       .then((res) => {
         console.log(res);
         loadDataTable();
@@ -433,7 +434,7 @@ const handleAddDiscount = () => {
           color: "positive",
         });
         isDicountAddDialog.value = false;
-        document.getElementById("resetBtn").click();
+        console.log(refTest.value);
       })
       .catch((err) => {
         isDicountAddDialog.value = false;
@@ -462,7 +463,6 @@ const handleAddDiscount = () => {
         });
         isDicountAddDialog.value = false;
         isEdit.value = false;
-        document.getElementById("resetBtn").click();
       })
       .catch((err) => {
         isDicountAddDialog.value = false;
@@ -485,16 +485,14 @@ const isEdit = ref(false);
 const handleEditClick = (evt) => {
   console.log(evt);
   addDiscountModel.value = { ...evt };
-  const userM = usersList.value.find((el) => el.DisplayName == evt.User);
+  const userM = usersList.value.find((el) => el.ID == evt.UserID);
   user.value = userM;
-  addDiscountModel.value.cUserID = user.value.ID;
+  // addDiscountModel.value.cUserID = user.value.ID;
 
-  const masterM = mastersList.value.find(
-    (el) => el.DisplayName.trim() == evt.Master.trim()
-  );
+  const masterM = mastersList.value.find((el) => el.ID == evt.MasterID);
   console.log(masterM);
   master.value = masterM;
-  addDiscountModel.value.MasterID = masterM.ID;
+  // addDiscountModel.value.MasterID = masterM.ID;
   isDicountAddDialog.value = true;
   isEdit.value = true;
 };
