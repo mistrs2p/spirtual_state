@@ -55,7 +55,12 @@
             <span
               v-else-if="item.name == 'isAccept' || item.name == 'isExecuted'"
             >
-              <q-checkbox size="xs" v-model="props.row[item.field]" disable />
+              <q-checkbox
+                size="xs"
+                v-model="props.row[item.field]"
+                :false-value="props.row[item.field] == null ? null : false"
+                disable
+              />
             </span>
 
             <span v-else-if="item.name == 'ReqStatus'">

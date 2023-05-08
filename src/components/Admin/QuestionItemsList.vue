@@ -1,5 +1,29 @@
 <template>
   <div class="col-10">
+    <div class="col-12 row" style="flex-direction: column; align-items: center">
+      <div class="col-12">
+        <q-select
+          name="masters"
+          v-model="questionItem"
+          :options="questionItemsList"
+          @update:model-value="handleClickQuestionItem"
+          option-label="Name"
+          option-value="ID"
+          color="primary"
+          filled
+          label="انتخاب نوع آزمون"
+        />
+        <!-- clearable -->
+      </div>
+      <!-- <q-btn
+        @click="loadDataTable"
+        color="primary"
+        class="q-mt-lg"
+        style="font-size: 1.25rem; border-radius: 0.6rem"
+        >گزارش گیری</q-btn
+      > -->
+    </div>
+    <hr />
     <q-table
       :pagination="{ rowsPerPage: 10 }"
       dense
@@ -12,11 +36,24 @@
       color="deep-purple-14"
       :separator="'cell'"
       :loading="loading"
+      :wrap-cells="true"
     >
       <template v-slot:loading>
         <q-inner-loading showing color="primary" />
       </template>
-
+      <template v-slot:top>
+        <div class="col-2 q-table__title">آزمون</div>
+        <div>
+          <q-btn
+            dense
+            color="primary"
+            @click="handleExamDialog(), (isAdd = true)"
+            flat
+            >اضافه کردن</q-btn
+          >
+        </div>
+        <q-space />
+      </template>
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th
@@ -36,6 +73,7 @@
             :key="item.name"
             :props="props"
             style="text-align: right !important"
+            :auto-width="true"
           >
             <span v-if="item.name == 'AnswerType'">
               <span v-for="(key, index) of AnswerType" :key="index">
@@ -51,7 +89,12 @@
                 </span>
               </span>
             </span>
-
+            <span v-else-if="item.name == 'Title'" class="ellipsis-3-lines">
+              {{ props.row[item.field] }}
+              <q-tooltip max-width="500px">{{
+                props.row[item.field]
+              }}</q-tooltip>
+            </span>
             <span v-else>
               {{ props.row[item.field] }}
             </span>
@@ -60,11 +103,18 @@
       </template>
     </q-table>
   </div>
+  <q-dialog v-model="isOperationDialog" persistent>
+    <q-card>
+      <q-card-section>
+        <!-- <QuestionItemsInsert /> -->
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
 import projectService from "@/services/project.service";
-
+// import QuestionItemsInsert from "@/components/Helper/QuestionItemsInsert.vue";
 import { ref } from "vue";
 // import { Notify } from 'quasar';
 
@@ -88,10 +138,10 @@ const QItemType = {
   hr: 9,
   Legend: 10,
 };
-const loadDataTable = () => {
+const loadDataTable = (id) => {
   loading.value = true;
   projectService
-    .GetQuestionItemsList()
+    .GetQuestionItemsList(id)
     .then((res) => {
       console.log(res);
       rows.value = res.data;
@@ -104,7 +154,7 @@ const loadDataTable = () => {
       loading.value = false;
     });
 };
-loadDataTable();
+// loadDataTable();
 const columns = [
   {
     name: "name",
@@ -222,5 +272,59 @@ const columns = [
     // align: 'center',
   },
 ];
+
+const questionItem = ref([]);
+const questionItemsList = ref([]);
+const loadDataTableQI = () => {
+  projectService
+    .GetQuestionsList()
+    .then((res) => {
+      console.log(res);
+      questionItemsList.value = res.data;
+      // options.value.pageCount = Math.ceil(res.data.length / itemsPerPage.value);
+    })
+    .catch((err) => {
+      // isLoading.value = false;
+      console.log(err);
+    });
+};
+loadDataTableQI();
+
+const handleClickQuestionItem = (evt) => {
+  console.log(evt);
+  loadDataTable(evt.ID);
+};
+
+const handleExamDialog = () => {
+  console.log(true);
+
+  isOperationDialog.value = true;
+};
+const operationData = ref({
+  Title: null,
+  Description: null,
+  DiscountCode: null,
+  MeetingID: null,
+  ReservedNextMeeting: false,
+  cUserID: null,
+});
+const isOperationDialog = ref(false);
+const isAdd = ref(false);
+const isDelete = ref(false);
+const isEdit = ref(false);
+const handleResetForm = () => {
+  operationData.value = {
+    Title: null,
+    Description: null,
+    DiscountCode: null,
+    MeetingID: null,
+    ReservedNextMeeting: false,
+    cUserID: null,
+  };
+
+  isAdd.value = false;
+  isDelete.value = false;
+  isEdit.value = false;
+};
 </script>
 <style lang="scss"></style>

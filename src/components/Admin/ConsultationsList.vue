@@ -75,7 +75,18 @@
                 item.name == 'IsExecuted'
               "
             >
-              <q-checkbox size="xs" v-model="props.row[item.field]" disable />
+              <!-- <q-checkbox
+                size="xs"
+                v-model="props.row[item.field]"
+                :false-value="props.row[item.field] == null ? null : false"
+                disable
+              /> -->
+              <q-checkbox
+                size="xs"
+                v-model="props.row[item.field]"
+                :false-value="props.row[item.field] == null ? null : false"
+                disable
+              />
             </span>
             <span v-else-if="item.name == 'operation'">
               <q-btn
@@ -629,6 +640,36 @@ const handleConsultOperation = () => {
       });
   }
   if (isEdit.value) {
+    operationData.value.RequestTitle = operationData.value.Title;
+    delete operationData.value.Title;
+    // dateTimeCreate.value.date != null
+    //   ? handleGoergeanDate(operationData.value.DateCreate)
+    //   : operationData.value.DateCreate;
+    // dateTimeExecute.value.date != null
+    //   ? handleGoergeanDate(operationData.value.DateExecuted)
+    //   : operationData.value.DateExecuted;
+    // dateTimePay.value.date != null
+    //   ? handleGoergeanDate(operationData.value.DateAcceptOrReject)
+    //   : operationData.value.DateAcceptOrReject;
+
+    dateTimeCreate.value.date != null
+      ? (operationData.value.DateCreate = handleGoergeanDate(
+          dateTimeCreate.value
+        ))
+      : new Date();
+    dateTimeExecute.value.date != null
+      ? (operationData.value.DateExecuted = handleGoergeanDate(
+          dateTimeExecute.value
+        ))
+      : null;
+    dateTimePay.value.date != null
+      ? (operationData.value.DateAcceptOrReject = handleGoergeanDate(
+          dateTimePay.value
+        ))
+      : null;
+
+    console.log(operationData.value);
+
     projectService
       .EditConsultanceRequest(operationData.value)
       .then((res) => {
@@ -741,6 +782,12 @@ watch(isOperationDialog, (nVal, oVal) => {
       .then((res) => {
         console.log(res);
         meetingsList.value = res.data;
+        meeting.value = meetingsList.value.find(
+          (el) => el.ID == operationData.value.MeetingID
+        );
+        user.value = usersList.value.find(
+          (el) => el.ID == operationData.value.cUserID
+        );
         // options.value.pageCount = Math.ceil(res.data.length / itemsPerPage.value);
       })
       .catch((err) => {
@@ -770,6 +817,16 @@ const handlePersianDate = (data) => {
     date: moment(dateTime[0], "YYYY-MM-DD").locale("fa").format("YYYY/MM/DD"),
     time: dateTime[1],
   };
+};
+const handleGoergeanDate = (data) => {
+  console.log(data);
+  if (data.date == null) return;
+  return (
+    moment
+      .from(`${data.date} ${data.time}`, "fa", "YYYY/M/D HH:mm:ss")
+      // .from(`${data}`, "fa", "YYYY/M/D HH:mm:ss")
+      .format("YYYY-M-D HH:mm:ss")
+  );
 };
 const handleEditData = (evt) => {
   console.log(evt);

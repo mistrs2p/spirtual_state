@@ -45,8 +45,13 @@
             :props="props"
             style="text-align: right !important"
           >
-            <span v-if="item.name == 'isActive' || item.name == 'isVisible'">
-              <q-checkbox size="xs" v-model="props.row[item.field]" disable />
+            <span v-if="item.name == 'IsActive' || item.name == 'IsVisible'">
+              <q-checkbox
+                size="xs"
+                v-model="props.row[item.field]"
+                :false-value="props.row[item.field] == null ? null : false"
+                disable
+              />
             </span>
             <span v-else-if="item.name == 'operation'" class="q-gutter-x-sm">
               <!-- <q-btn color="primary" @click="handleEdit = true" dense flat
@@ -164,7 +169,7 @@
             <div class="col-12">
               <q-checkbox
                 size="xs"
-                v-model="addDiscountModel.isActive"
+                v-model="addDiscountModel.IsActive"
                 label="فعال بودن"
               />
             </div>
@@ -174,7 +179,7 @@
                 v-model="user"
                 :options="usersList"
                 @update:model-value="handleClickUser"
-                option-label="DisplayName"
+                :option-label="(item) => item.DisplayName + ' ' + item.UserName"
                 option-value="ID"
                 color="primary"
                 filled
@@ -253,7 +258,7 @@ const addDiscountModel = ref({
   DiscountCode: null,
   DiscountPercent: null,
   MasterID: null,
-  isActive: false,
+  IsActive: false,
   CountToBeUser: null,
   cUserID: null,
 });
@@ -312,17 +317,17 @@ const columns = [
     // align: 'center',
   },
   {
-    name: "isActive",
+    name: "IsActive",
     label: "وضعیت",
-    field: "isActive",
+    field: "IsActive",
     // align: 'center',
   },
-  {
-    name: "isVisible",
-    label: "نمایش",
-    field: "isVisible",
-    // align: 'center',
-  },
+  // {
+  //   name: "IsVisible",
+  //   label: "نمایش",
+  //   field: "IsVisible",
+  //   // align: 'center',
+  // },
   {
     name: "operation",
     label: "عملیات",
@@ -370,7 +375,7 @@ const handleResetForm = () => {
     DiscountCode: null,
     DiscountPercent: null,
     MasterID: null,
-    isActive: false,
+    IsActive: false,
     CountToBeUser: null,
     cUserID: null,
   };

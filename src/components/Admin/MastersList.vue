@@ -46,7 +46,12 @@
             style="text-align: right !important"
           >
             <span v-if="item.name == 'IsVisible'">
-              <q-checkbox size="xs" v-model="props.row[item.field]" disable />
+              <q-checkbox
+                size="xs"
+                v-model="props.row[item.field]"
+                :false-value="props.row[item.field] == null ? null : false"
+                disable
+              />
             </span>
 
             <span v-else-if="item.name == 'operation'" class="q-gutter-x-sm">
@@ -75,7 +80,12 @@
               <!-- <q-btn color="secondary" @click="handleDetel = true" dense flat
                 >پیامک</q-btn
               > -->
-              <!-- <q-checkbox size="xs" v-model="props.row[item.field]" disable /> -->
+              <!-- <q-checkbox
+                size="xs"
+                v-model="props.row[item.field]"
+                :false-value="props.row[item.field] == null ? null : false"
+                disable
+              /> -->
             </span>
             <span v-else>
               {{ props.row[item.field] }}

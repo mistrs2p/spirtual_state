@@ -106,8 +106,8 @@ class projectService {
   async GetQuestionsList() {
     return await httpConfig.post(Admin.GetQuestionsList);
   }
-  async GetQuestionItemsList() {
-    return await httpConfig.post(Questions.GetQuestionItemsList);
+  async GetQuestionItemsList(QuestionID) {
+    return await httpConfig.post(Admin.GetQuestionItemsList, { QuestionID });
   }
   async GetMastersInfo(masterInfoModel) {
     return await httpConfig.post(Admin.GetMastersInfo, { ...masterInfoModel });

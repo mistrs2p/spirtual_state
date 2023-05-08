@@ -17,7 +17,16 @@
       <template v-slot:loading>
         <q-inner-loading showing color="primary" />
       </template>
-
+      <template v-slot:top>
+        <div class="col-2 q-table__title">آزمون ها</div>
+        <div>
+          <q-btn dense color="primary" @click="isOperationDialog = true" flat
+            >اضافه کردن</q-btn
+          >
+          <!-- @click="handleExamDialog(), (isAdd = true)" -->
+        </div>
+        <q-space />
+      </template>
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th
@@ -41,7 +50,12 @@
             <span
               v-if="item.name == 'IsRealAzmoon' || item.name == 'IsVisible'"
             >
-              <q-checkbox size="xs" v-model="props.row[item.field]" disable />
+              <q-checkbox
+                size="xs"
+                v-model="props.row[item.field]"
+                :false-value="props.row[item.field] == null ? null : false"
+                disable
+              />
             </span>
             <span v-else-if="item.name == 'QType'">
               <span v-for="(key, index) of QType" :key="index">
@@ -64,11 +78,18 @@
       </template>
     </q-table>
   </div>
+  <q-dialog v-model="isOperationDialog">
+    <q-card>
+      <q-card-section>
+        <QuestionInsert />
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
 import projectService from "@/services/project.service";
-
+import QuestionInsert from "@/components/Helper/QuestionInsert.vue";
 import { ref } from "vue";
 // import { Notify } from 'quasar';
 
@@ -152,5 +173,7 @@ const columns = [
     // align: 'center',
   },
 ];
+
+const isOperationDialog = ref(false);
 </script>
 <style lang="scss"></style>

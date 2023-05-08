@@ -108,6 +108,12 @@
               </q-card-section>
             </q-card>
           </div>
+          <q-inner-loading
+            :showing="visibleLoader"
+            label="لطفا منتظر بمانید..."
+            label-class="text-teal"
+            label-style="font-size: 1.1em"
+          />
         </div>
       </q-page>
     </q-page-container>
@@ -134,8 +140,9 @@ const passwordFieldType = ref("password");
 const btnLabel = ref("ورود");
 const visibility = ref(false);
 const visibilityIcon = ref("visibility");
-
+const visibleLoader = ref(false);
 const onSubmit = () => {
+  visibleLoader.value = true;
   const loginModel = {
     UserName: userName.value,
     Password: CryptoJS.SHA256(
@@ -158,6 +165,8 @@ const onSubmit = () => {
           progress: true,
           color: "positive",
         });
+        visibleLoader.value = false;
+
         router.push({ name: "home" });
       })
       .catch((err) => {
@@ -170,6 +179,7 @@ const onSubmit = () => {
           color: "negative",
         });
         // isLoading.value = false;
+        visibleLoader.value = false;
       });
   } catch (e) {
     console.log(e);

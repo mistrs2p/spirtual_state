@@ -32,7 +32,7 @@ export const Meetings = Object.freeze({
 export const Master = Object.freeze({});
 
 export const Questions = Object.freeze({
-  GetQuestionItemsList: "Questions/GetQuestionItemsList",
+  // GetQuestionItemsList: "Questions/GetQuestionItemsList",
 });
 export const Admin = Object.freeze({
   AddDiscount: "Admin/AddDiscount",
@@ -49,6 +49,8 @@ export const Admin = Object.freeze({
   DeleteMaster: "Admin/DeleteMaster",
   AddMaster: "Admin/AddMaster",
   GetQuestionsList: "Admin/GetQuestionsList",
+  GetQuestionItemsList: "Admin/GetQuestionItemsList",
+
   GetConsultanceRequestList: "Admin/GetConsultanceRequestList",
   EditConsultanceRequest: "Admin/EditConsultanceRequest",
   DeleteConsultanceRequest: "Admin/DeleteConsultanceRequest",
