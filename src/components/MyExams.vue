@@ -57,7 +57,7 @@
               }}
             </span>
             <span
-              v-else-if="item.name == 'isExecuted' || item.name == 'isPayed'"
+              v-else-if="item.name == 'IsExecuted' || item.name == 'IsPayed'"
             >
               <q-checkbox
                 size="xs"
@@ -73,6 +73,16 @@
                 disable
               />
             </span>
+            <span v-else-if="item.name == 'operation'">
+              <q-btn dense flat label="حذف" color="negative" />
+              <q-btn
+                dense
+                flat
+                :label="props.row.IsExecuted ? 'نتیجه ' : 'شروع '"
+                :color="props.row.IsExecuted ? 'positive' : 'primary'"
+                @click="handleGetExamForm(props.row)"
+              />
+            </span>
             <span v-else>
               {{ props.row[item.field] }}
             </span>
@@ -81,11 +91,18 @@
       </template>
     </q-table>
   </div>
+  <q-dialog v-model="isOperationDialog" full-width full-height>
+    <q-card>
+      <q-card-section>
+        <FormG :formData="formData" />
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
 import projectService from "../services/project.service";
-
+import FormG from "@/components/FormG.vue";
 import { ref } from "vue";
 // import { Notify } from 'quasar';
 
@@ -116,7 +133,7 @@ const columns = [
     align: "right",
   },
   { name: "Question", label: "تست", field: "Question", align: "right" },
-  { name: "operation", label: "عملیات", field: "operation", align: "right" },
+  // { name: "operation", label: "عملیات", field: "operation", align: "right" },
   {
     name: "DateStart",
     label: "تاریخ شروع",
@@ -124,7 +141,7 @@ const columns = [
     align: "right",
   },
   { name: "DateEnd", label: "تاریخ پایان", field: "DateEnd", align: "right" },
-  { name: "isPayed", label: "پرداخت شده", field: "isPayed", align: "right" },
+  { name: "IsPayed", label: "پرداخت شده", field: "IsPayed", align: "right" },
   {
     name: "DatePayed",
     label: "تاریخ پرداخت",
@@ -133,10 +150,37 @@ const columns = [
   },
 
   {
-    name: "isExecuted",
+    name: "IsExecuted",
     label: "انجام شده",
-    field: "isExecuted",
+    field: "IsExecuted",
+    align: "right",
+  },
+  {
+    name: "operation",
+    label: "عملیات",
+    field: "operation",
     align: "right",
   },
 ];
+const formData = ref(null);
+const handleGetExamForm = (data) => {
+  console.log(data);
+  if (!data.IsExecuted) {
+    alert("false");
+    projectService
+      .UserGetQuestionItemsList(data.ID)
+      .then((res) => {
+        formData.value = res.data;
+        isOperationDialog.value = true;
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    alert(true);
+  }
+};
+
+const isOperationDialog = ref(false);
 </script>

@@ -21,6 +21,8 @@ export const Requests = Object.freeze({
 export const Exams = Object.freeze({
   GetUserExams: "Exams/GetUserExams",
   GetMasterExams: "Exams/GetMasterExams",
+  ExamRequest: "Exams/ExamRequest",
+  ExamPayment: "Exams/ExamPayment",
 });
 export const Meetings = Object.freeze({
   AddMeeting: "Meetings/AddMeeting",
@@ -32,7 +34,11 @@ export const Meetings = Object.freeze({
 export const Master = Object.freeze({});
 
 export const Questions = Object.freeze({
-  // GetQuestionItemsList: "Questions/GetQuestionItemsList",
+  List: "Questions/QuestionsList",
+});
+export const QuestionItem = Object.freeze({
+  List: "Questions/QuestionsList",
+  GetQuestionItemsList: "QuestionItems/GetQuestionItemsList",
 });
 export const Admin = Object.freeze({
   AddDiscount: "Admin/AddDiscount",
@@ -49,13 +55,17 @@ export const Admin = Object.freeze({
   DeleteMaster: "Admin/DeleteMaster",
   AddMaster: "Admin/AddMaster",
   GetQuestionsList: "Admin/GetQuestionsList",
-  GetQuestionItemsList: "Admin/GetQuestionItemsList",
+  AdminGetQuestionItemsList: "Admin/GetQuestionItemsList",
 
   GetConsultanceRequestList: "Admin/GetConsultanceRequestList",
   EditConsultanceRequest: "Admin/EditConsultanceRequest",
   DeleteConsultanceRequest: "Admin/DeleteConsultanceRequest",
   AddConsultanceRequest: "Admin/AddConsultanceRequest",
   GetUsersList: "Admin/GetUsersList",
+  AddQuestion: "Admin/AddQuestion",
+  EditQuestion: "Admin/EditQuestion",
+  DeleteQuestion: "Admin/DeleteQuestion",
+  GetExamsList: "Admin/GetExamsList",
 });
 export const User = Object.freeze({
   // GetUsersListAdmin: "Users/GetUsersListAdmin",

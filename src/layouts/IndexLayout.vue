@@ -91,6 +91,12 @@
                   </q-item>
                 </router-link>
 
+                <router-link :to="{ name: 'examRequest' }">
+                  <q-item clickable v-ripple>
+                    <q-item-section> درخواست آزمون </q-item-section>
+                  </q-item>
+                </router-link>
+
                 <router-link :to="{ name: 'myExams' }">
                   <q-item clickable v-ripple>
                     <q-item-section>

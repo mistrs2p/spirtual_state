@@ -8,6 +8,7 @@ import {
   Questions,
   Admin,
   User,
+  QuestionItem,
 } from "../helpers/api-constant";
 import httpConfig from "../helpers/http.config.js";
 
@@ -106,8 +107,15 @@ class projectService {
   async GetQuestionsList() {
     return await httpConfig.post(Admin.GetQuestionsList);
   }
-  async GetQuestionItemsList(QuestionID) {
-    return await httpConfig.post(Admin.GetQuestionItemsList, { QuestionID });
+  async AdminGetQuestionItemsList(QuestionID) {
+    return await httpConfig.post(Admin.AdminGetQuestionItemsList, {
+      QuestionID,
+    });
+  }
+  async UserGetQuestionItemsList(ExamID) {
+    return await httpConfig.post(QuestionItem.GetQuestionItemsList, {
+      ExamID,
+    });
   }
   async GetMastersInfo(masterInfoModel) {
     return await httpConfig.post(Admin.GetMastersInfo, { ...masterInfoModel });
@@ -170,6 +178,33 @@ class projectService {
     return await httpConfig.post(Admin.DeleteConsultanceRequest, {
       ID,
     });
+  }
+  async AddQuestion(addQuestionModel) {
+    return await httpConfig.post(Admin.AddQuestion, {
+      ...addQuestionModel,
+    });
+  }
+  async EditQuestion(editQuestionModel) {
+    return await httpConfig.post(Admin.EditQuestion, {
+      ...editQuestionModel,
+    });
+  }
+  async DeleteQuestion(ID) {
+    return await httpConfig.post(Admin.DeleteQuestion, {
+      ID,
+    });
+  }
+  async GetExamsList() {
+    return await httpConfig.post(Admin.GetExamsList);
+  }
+  async QuestionsList() {
+    return await httpConfig.post(Questions.List);
+  }
+  async ExamRequest(examRequestModel) {
+    return await httpConfig.post(Exams.ExamRequest, { ...examRequestModel });
+  }
+  async ExamPayment(examPayModel) {
+    return await httpConfig.post(Exams.ExamPayment, { ...examPayModel });
   }
 }
 export default new projectService();

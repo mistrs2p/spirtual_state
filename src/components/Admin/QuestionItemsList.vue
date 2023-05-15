@@ -1,7 +1,7 @@
 <template>
   <div class="col-10">
     <div class="col-12 row" style="flex-direction: column; align-items: center">
-      <div class="col-12">
+      <!-- <div class="col-12">
         <q-select
           name="masters"
           v-model="questionItem"
@@ -13,8 +13,7 @@
           filled
           label="انتخاب نوع آزمون"
         />
-        <!-- clearable -->
-      </div>
+      </div> -->
       <!-- <q-btn
         @click="loadDataTable"
         color="primary"
@@ -27,6 +26,7 @@
     <q-table
       :pagination="{ rowsPerPage: 10 }"
       dense
+      map-options
       flat
       bordered
       title="آزمون"
@@ -47,12 +47,36 @@
           <q-btn
             dense
             color="primary"
-            @click="handleExamDialog(), (isAdd = true)"
+            @click="
+              handleExamDialog(),
+                (isAdd = true),
+                (isEdit = false),
+                (isDelete = false)
+            "
             flat
             >اضافه کردن</q-btn
           >
         </div>
         <q-space />
+
+        <q-select
+          name="masters"
+          v-model="questionItem"
+          :options="questionItemsList"
+          @update:model-value="handleClickQuestionItem"
+          option-label="Name"
+          option-value="ID"
+          color="primary"
+          filled
+          dense
+          options-dense
+          label="انتخاب نوع آزمون"
+          style="width: 300px"
+        >
+          <template v-slot:prepend>
+            <q-icon name="quiz"> </q-icon>
+          </template>
+        </q-select>
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -82,18 +106,62 @@
                 </span>
               </span>
             </span>
-            <span v-if="item.name == 'QIType'">
+            <span v-else-if="item.name == 'QIType'">
               <span v-for="(key, index) of QItemType" :key="index">
                 <span v-if="props.row[item.field] == key">
                   {{ index }}
                 </span>
               </span>
             </span>
-            <span v-else-if="item.name == 'Title'" class="ellipsis-3-lines">
+            <span
+              v-else-if="item.name == 'Title' || item.name.startsWith('Choice')"
+              class="ellipsis-3-lines"
+            >
               {{ props.row[item.field] }}
               <q-tooltip max-width="500px">{{
                 props.row[item.field]
               }}</q-tooltip>
+            </span>
+            <span v-else-if="item.name == 'operation'" class="q-gutter-x-sm">
+              <!-- <q-btn color="primary" @click="handleEdit = true" dense flat
+                >ویرایش</q-btn
+              > -->
+              <q-btn
+                color="primary"
+                @click="
+                  (operationData = { ...props.row }),
+                    (isOperationDialog = true),
+                    (isEdit = true),
+                    (isDelete = false),
+                    (isAdd = false)
+                "
+                dense
+                flat
+                >ویرایش</q-btn
+              >
+              <q-btn
+                color="negative"
+                @click="
+                  (operationData = { ...props.row }),
+                    (isOperationDialog = true),
+                    (isEdit = false),
+                    (isDelete = true),
+                    (isAdd = false)
+                "
+                dense
+                flat
+                >حذف</q-btn
+              >
+
+              <!-- <q-btn color="secondary" @click="handleDetel = true" dense flat
+                >پیامک</q-btn
+              > -->
+              <!-- <q-checkbox
+                size="xs"
+                v-model="props.row[item.field]"
+                :false-value="props.row[item.field] == null ? null : false"
+                disable
+              /> -->
             </span>
             <span v-else>
               {{ props.row[item.field] }}
@@ -103,10 +171,10 @@
       </template>
     </q-table>
   </div>
-  <q-dialog v-model="isOperationDialog" persistent>
+  <q-dialog v-model="isOperationDialog">
     <q-card>
       <q-card-section>
-        <!-- <QuestionItemsInsert /> -->
+        <QuestionItemsInsert :compData="dialogData" />
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -114,8 +182,8 @@
 
 <script setup lang="ts">
 import projectService from "@/services/project.service";
-// import QuestionItemsInsert from "@/components/Helper/QuestionItemsInsert.vue";
-import { ref } from "vue";
+import QuestionItemsInsert from "@/components/Helper/QuestionItemsInsert.vue";
+import { ref, computed } from "vue";
 // import { Notify } from 'quasar';
 
 const rows = ref([]);
@@ -141,7 +209,7 @@ const QItemType = {
 const loadDataTable = (id) => {
   loading.value = true;
   projectService
-    .GetQuestionItemsList(id)
+    .AdminGetQuestionItemsList(id)
     .then((res) => {
       console.log(res);
       rows.value = res.data;
@@ -271,6 +339,12 @@ const columns = [
     field: "QuestionName",
     // align: 'center',
   },
+  {
+    name: "operation",
+    label: "عملیات",
+    field: "operation",
+    // align: 'center',
+  },
 ];
 
 const questionItem = ref([]);
@@ -326,5 +400,13 @@ const handleResetForm = () => {
   isDelete.value = false;
   isEdit.value = false;
 };
+const dialogData = computed(() => {
+  return {
+    isAdd: isAdd.value,
+    isEdit: isEdit.value,
+    isDelete: isDelete.value,
+    dataM: operationData.value,
+  };
+});
 </script>
 <style lang="scss"></style>

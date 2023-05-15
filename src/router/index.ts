@@ -44,6 +44,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "myCounseling",
       },
       {
+        path: "exam-request",
+        component: () => import("@/components/ExamRequest.vue"),
+        name: "examRequest",
+      },
+      {
         path: "master/add-meeting",
         component: () => import("@/components/Master/AddMeeting.vue"),
         name: "addMeeting",
@@ -111,6 +116,10 @@ const router = createRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
+  console.log(to);
+  if (to.name != "login") {
+    localStorage.getItem("UserStore") ? next() : next({ name: "login" });
+  }
   // const user = JSON.parse(localStorage.getItem("UserStore") || "{}")?.user;
 
   // if (to.name !== "login" && !user) next({ name: "login" });

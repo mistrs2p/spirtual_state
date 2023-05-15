@@ -1,7 +1,22 @@
 <!-- eslint-disable vue/no-parsing-error -->
 <template>
   <div class="col-12">
-    <q-card>
+    <q-card v-if="props.compData.isDelete">
+      <q-card-section class="row items-center">
+        <span class="q-ml-sm">آزمون حذف شود؟</span>
+      </q-card-section>
+
+      <q-card-actions align="center">
+        <q-btn
+          flat
+          label="تایید"
+          color="primary"
+          @click="handleExamOperation"
+        />
+        <q-btn flat label="لغو" color="warning" v-close-popup />
+      </q-card-actions>
+    </q-card>
+    <q-card v-else>
       <q-card-section>
         <q-form
           @submit="handleExamOperation"
@@ -54,7 +69,7 @@
                 :rules="[(val) => val || 'نوع آزمون باید ذکر شود']"
               />
             </div>
-            <div class="col-12">
+            <div class="col-12 q-gutter-x-md">
               <q-checkbox
                 size="xs"
                 name="next_week_reserve"
@@ -67,18 +82,20 @@
                 v-model="operationData.IsRealAzmoon"
                 label="آزمون واقعی"
               />
-              <q-checkbox
-                size="xs"
-                name="next_week_reserve"
-                v-model="operationData.IsForOstad"
-                label="برای استاد"
-              />
-              <q-checkbox
-                size="xs"
-                name="next_week_reserve"
-                v-model="operationData.IsTaklif"
-                label="تکلیف"
-              />
+              <!-- <span v-if="props.compData.isAdd">
+                <q-checkbox
+                  size="xs"
+                  name="next_week_reserve"
+                  v-model="operationData.IsForOstad"
+                  label="برای استاد"
+                />
+                <q-checkbox
+                  size="xs"
+                  name="next_week_reserve"
+                  v-model="operationData.IsTaklif"
+                  label="تکلیف"
+                />
+              </span> -->
             </div>
             <div class="col-12">
               <q-input
@@ -110,16 +127,38 @@
 <script setup lang="ts">
 import projectService from "../../services/project.service";
 
-import { ref, computed } from "vue";
-// import { Notify } from 'quasar';
+import { ref, computed, defineEmits, defineProps, watch } from "vue";
+import { Notify } from "quasar";
+
+const emit = defineEmits(["dialogStatus"]);
+const props = defineProps({
+  compData: {
+    isAdd: {
+      type: Boolean,
+      default: false,
+    },
+    isEdit: {
+      type: Boolean,
+      default: false,
+    },
+    isDelete: {
+      type: Boolean,
+      default: false,
+    },
+    dataM: {
+      type: Object,
+    },
+  },
+});
+
 const operationData = ref({
-  ID: null,
+  // ID: null,
   Name: null,
   Discribtion: null,
   Help: null,
   QType: null,
-  IsTaklif: false,
-  IsForOstad: false,
+  // IsTaklif: false,
+  // IsForOstad: false,
   IsRealAzmoon: false,
   IsVisible: false,
   Price: null,
@@ -177,18 +216,103 @@ const handleClickQType = (evt) => {
 };
 const handleResetForm = () => {
   operationData.value = {
-    ID: null,
     Name: null,
     Discribtion: null,
     Help: null,
     QType: null,
-    IsTaklif: false,
-    IsForOstad: false,
+    // IsTaklif: false,
+    // IsForOstad: false,
     IsRealAzmoon: false,
     IsVisible: false,
     Price: null,
   };
   qTypeModel.value = null;
 };
+const handleExamOperation = () => {
+  console.log(operationData.value);
+  if (props.compData.isAdd) {
+    projectService
+      .AddQuestion(operationData.value)
+      .then((res) => {
+        console.log(res);
+        emit("dialogStatus", { isDialog: false, isReloadData: true });
+        Notify.create({
+          message: "با موفقیت اضافه شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+      })
+      .catch((err) => {
+        Notify.create({
+          message: err.response.data.Message,
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
+      });
+  } else if (props.compData.isEdit) {
+    projectService
+      .EditQuestion(operationData.value)
+      .then((res) => {
+        console.log(res);
+        emit("dialogStatus", { isDialog: false, isReloadData: true });
+        Notify.create({
+          message: "با موفقیت ویرایش شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+      })
+      .catch((err) => {
+        Notify.create({
+          message: err.response.data.Message,
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
+      });
+  } else if (props.compData.isDelete) {
+    projectService
+      .DeleteQuestion(operationData.value.ID)
+      .then((res) => {
+        console.log(res);
+        emit("dialogStatus", { isDialog: false, isReloadData: true });
+        Notify.create({
+          message: "با موفقیت حذف شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+      })
+      .catch((err) => {
+        Notify.create({
+          message: err.response.data.Message,
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
+      });
+  }
+};
+if (!props.compData.isAdd) {
+  operationData.value = { ...props.compData.dataM };
+  qTypeModel.value = qTypeOptions.value.find(
+    (el) => el.id == operationData.value.QType
+  );
+}
+watch(
+  () => props.compData.isAdd,
+  (nVal, oVal) => {
+    // alert(nVal);
+  },
+  { immediate: true }
+);
 </script>
 <style lang="scss"></style>

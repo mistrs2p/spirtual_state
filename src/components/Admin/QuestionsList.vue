@@ -20,7 +20,16 @@
       <template v-slot:top>
         <div class="col-2 q-table__title">آزمون ها</div>
         <div>
-          <q-btn dense color="primary" @click="isOperationDialog = true" flat
+          <q-btn
+            dense
+            color="primary"
+            @click="
+              (isOperationDialog = true),
+                (isEdit = false),
+                (isDelete = false),
+                (isAdd = true)
+            "
+            flat
             >اضافه کردن</q-btn
           >
           <!-- @click="handleExamDialog(), (isAdd = true)" -->
@@ -70,6 +79,34 @@
                 props.row[item.field]
               }}</q-tooltip>
             </span>
+            <span v-else-if="item.name == 'operation'">
+              <q-btn
+                color="primary"
+                @click="
+                  (operationData = { ...props.row }),
+                    (isEdit = true),
+                    (isDelete = false),
+                    (isAdd = false),
+                    (isOperationDialog = true)
+                "
+                dense
+                flat
+                >ویرایش</q-btn
+              >
+              <q-btn
+                color="negative"
+                @click="
+                  (operationData = { ...props.row }),
+                    (isEdit = false),
+                    (isDelete = true),
+                    (isAdd = false),
+                    (isOperationDialog = true)
+                "
+                dense
+                flat
+                >حذف</q-btn
+              >
+            </span>
             <span v-else>
               {{ props.row[item.field] }}
             </span>
@@ -81,7 +118,15 @@
   <q-dialog v-model="isOperationDialog">
     <q-card>
       <q-card-section>
-        <QuestionInsert />
+        <QuestionInsert
+          @dialogStatus="
+            (evt) => {
+              isOperationDialog = evt.isDialog;
+              evt.isReloadData ? loadDataTable() : null;
+            }
+          "
+          :compData="dialogData"
+        />
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -90,7 +135,7 @@
 <script setup lang="ts">
 import projectService from "@/services/project.service";
 import QuestionInsert from "@/components/Helper/QuestionInsert.vue";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 // import { Notify } from 'quasar';
 
 const rows = ref([]);
@@ -172,8 +217,26 @@ const columns = [
     field: "Price",
     // align: 'center',
   },
+  {
+    name: "operation",
+    label: "عملیات",
+    field: "operation",
+    // align: 'center',
+  },
 ];
 
 const isOperationDialog = ref(false);
+const operationData = ref(null);
+const isAdd = ref(false);
+const isEdit = ref(false);
+const isDelete = ref(false);
+const dialogData = computed(() => {
+  return {
+    isAdd: isAdd.value,
+    isEdit: isEdit.value,
+    isDelete: isDelete.value,
+    dataM: operationData.value,
+  };
+});
 </script>
 <style lang="scss"></style>
