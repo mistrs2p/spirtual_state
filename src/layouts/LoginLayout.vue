@@ -10,10 +10,12 @@
             <q-card
               square
               class="shadow-24"
-              style="min-width: 250px; max-width: 400px; height: 540px"
+              style="min-width: 250px; max-width: 400px"
             >
               <q-card-section class="bg-deep-purple-7">
-                <h4 class="text-h5 text-white q-my-md">{{ title }}</h4>
+                <h4 class="text-h5 text-white q-my-md">
+                  {{ isLogin ? "ورود" : "ثبت نام" }}
+                </h4>
               </q-card-section>
               <q-card-section>
                 <!-- <q-fab
@@ -25,27 +27,22 @@
                 >
                   <q-tooltip> Регистрация нового пользователя </q-tooltip>
                 </q-fab> -->
-                <q-form class="q-px-sm q-pt-xl">
+                <q-form
+                  @submit="onSubmit"
+                  @reset="onReset"
+                  class="q-px-sm q-pt-xl"
+                >
                   <q-input
                     square
                     clearable
                     v-model="userName"
-                    type="email"
+                    type="text"
                     lazy-rules
                     label="نام کاربری"
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="person" />
-                    </template>
-                  </q-input>
-                  <q-input
-                    v-if="register"
-                    square
-                    clearable
-                    v-model="userName"
-                    lazy-rules
-                    type="username"
-                    label="Пользователь"
+                    :rules="[
+                      (val) =>
+                        (val && val.length > 0) || 'نام کاربری مورد نیاز است',
+                    ]"
                   >
                     <template v-slot:prepend>
                       <q-icon name="person" />
@@ -55,59 +52,81 @@
                     square
                     clearable
                     v-model="password"
-                    :type="passwordFieldType"
+                    :type="visibility ? 'text' : 'password'"
                     lazy-rules
                     label="کلمه عبور"
+                    :rules="[
+                      (val) =>
+                        (val && val.length > 0) || 'کلمه عبور مورد نیاز است',
+                    ]"
                   >
                     <template v-slot:prepend>
                       <q-icon name="lock" />
                     </template>
                     <template v-slot:append>
                       <q-icon
-                        :name="visibilityIcon"
-                        @click="switchVisibility"
+                        :name="visibility ? 'visibility_off' : 'visibility'"
+                        @click="visibility = !visibility"
                         class="cursor-pointer"
                       />
                     </template>
                   </q-input>
                   <q-input
-                    v-if="register"
                     square
                     clearable
                     v-model="repassword"
-                    :type="passwordFieldType"
+                    :type="reVisibility ? 'text' : 'password'"
                     lazy-rules
-                    label="کلمه عبور"
+                    label="تکرار کلمه عبور"
+                    :rules="[
+                      (val) => val == password || 'با کلمه عبور مطابقت ندارد',
+                    ]"
+                    v-if="!isLogin"
                   >
                     <template v-slot:prepend>
                       <q-icon name="lock" />
                     </template>
                     <template v-slot:append>
                       <q-icon
-                        :name="visibilityIcon"
-                        @click="switchVisibility"
+                        :name="reVisibility ? 'visibility_off' : 'visibility'"
+                        @click="reVisibility = !reVisibility"
                         class="cursor-pointer"
                       />
                     </template>
                   </q-input>
+                  <q-card-actions
+                    class="q-px-lg q-gutter-y-md"
+                    style="display: flex; justify-content: center"
+                  >
+                    <q-btn
+                      unelevated
+                      size="lg"
+                      type="submit"
+                      color="secondary"
+                      class="full-width text-white"
+                      :label="isLogin ? 'ورود' : 'ثبت نام'"
+                    />
+                    <!-- <q-btn
+                      unelevated
+                      size="md"
+                      type="reset"
+                      color="warning"
+                      class="text-white"
+                      label="پاک کردن فرم"
+                    /> -->
+                  </q-card-actions>
                 </q-form>
               </q-card-section>
 
-              <q-card-actions class="q-px-lg">
-                <q-btn
-                  unelevated
-                  size="lg"
-                  color="secondary"
-                  @click="onSubmit"
-                  class="full-width text-white"
-                  :label="btnLabel"
-                />
-              </q-card-actions>
               <q-card-section v-if="!register" class="text-center q-pa-sm">
-                <p class="text-grey-6">ثبت نام نکرده اید؟</p>
+                <p class="text-grey-6"></p>
+                <q-btn @click="isLogin = !isLogin" flat>{{
+                  isLogin ? "ثبت نام نکرده اید؟" : "ورود به پنل کاربری"
+                }}</q-btn>
               </q-card-section>
             </q-card>
           </div>
+
           <q-inner-loading
             :showing="visibleLoader"
             label="لطفا منتظر بمانید..."
@@ -130,19 +149,19 @@ import { Notify } from "quasar";
 
 const userStore = useUserStore();
 const router = useRouter();
-
-const title = ref("ورود");
-const userName = ref("");
-const password = ref("");
-const repassword = ref("");
+const isLogin = ref(true);
+const userName = ref();
+const password = ref();
+const repassword = ref();
 const register = ref(false);
 const passwordFieldType = ref("password");
-const btnLabel = ref("ورود");
 const visibility = ref(false);
+const reVisibility = ref(false);
 const visibilityIcon = ref("visibility");
 const visibleLoader = ref(false);
 const onSubmit = () => {
   visibleLoader.value = true;
+  let myApi = null;
   const loginModel = {
     UserName: userName.value,
     Password: CryptoJS.SHA256(
@@ -150,16 +169,18 @@ const onSubmit = () => {
     ).toString(),
     // SeqKey: seqKey,
   };
+  isLogin.value
+    ? (myApi = projectService.Login(loginModel))
+    : (myApi = projectService.UserRegister(loginModel));
   console.log(loginModel);
   try {
-    projectService
-      .Login(loginModel)
+    myApi
       .then((res) => {
         console.log(res);
         userStore.user = res.data;
         console.log(userStore.user);
         Notify.create({
-          message: "ورود موفقیت آمیز",
+          message: isLogin.value ? "ورود موفقیت آمیز" : "ثبت نام موفقیت آمیز",
           position: "top",
           timeout: 1000,
           progress: true,
@@ -194,5 +215,11 @@ const switchVisibility = () => {
   visibility.value = !visibility.value;
   passwordFieldType.value = visibility.value ? "text" : "password";
   visibilityIcon.value = visibility.value ? "visibility_off" : "visibility";
+};
+
+const onReset = () => {
+  userName.value = null;
+  password.value = null;
+  repassword.value = null;
 };
 </script>

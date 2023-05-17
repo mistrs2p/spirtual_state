@@ -13,8 +13,11 @@ import {
 import httpConfig from "../helpers/http.config.js";
 
 class projectService {
-  async Register(registerModel) {
+  async Register1(registerModel) {
     return await httpConfig.post(ApiConst.Register, { ...registerModel });
+  }
+  async UserRegister(registerModel) {
+    return await httpConfig.post(User.Register, { ...registerModel });
   }
   async Login(loginModel) {
     return await httpConfig.post(ApiConst.Login, { ...loginModel });

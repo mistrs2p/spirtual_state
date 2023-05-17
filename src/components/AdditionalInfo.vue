@@ -219,6 +219,7 @@ const infoModel = ref({
   address: null,
 });
 const onSubmit = () => {
+  console.log(infoModel.value);
   // const changePasswordModel = {
   //   CurrentPassword: CryptoJS.SHA256(
   //     CryptoJS.enc.Utf8.parse(currentPassword.value)

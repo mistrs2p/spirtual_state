@@ -91,7 +91,12 @@
       </template>
     </q-table>
   </div>
-  <q-dialog v-model="isOperationDialog" full-width full-height>
+  <q-dialog
+    v-model="isOperationDialog"
+    full-width
+    full-height
+    style="position: relative"
+  >
     <q-card>
       <q-card-section>
         <FormG :formData="formData" />
@@ -164,22 +169,22 @@ const columns = [
 ];
 const formData = ref(null);
 const handleGetExamForm = (data) => {
-  console.log(data);
-  if (!data.IsExecuted) {
-    alert("false");
-    projectService
-      .UserGetQuestionItemsList(data.ID)
-      .then((res) => {
-        formData.value = res.data;
-        isOperationDialog.value = true;
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  } else {
-    alert(true);
-  }
+  // console.log(data);
+  // if (!data.IsExecuted) {
+  //   alert("false");
+  projectService
+    .UserGetQuestionItemsList(data.ID)
+    .then((res) => {
+      formData.value = res.data;
+      isOperationDialog.value = true;
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  // } else {
+  //   alert(true);
+  // }
 };
 
 const isOperationDialog = ref(false);

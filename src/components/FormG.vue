@@ -1,71 +1,112 @@
 <template>
-  <q-card style="width: 60vw; margin: 0 auto">
-    <template v-for="(item, index) in items">
-      <q-card-section
-        :key="index"
-        class="row"
-        v-if="
-          item.QIType != QItemType.startRow && item.QIType != QItemType.endRow
-        "
-      >
-        {{ index }}
-        <!-- item.AnswerType != AnswerType.None -->
-        <!-- <q-chip>{{ index + 1 }}</q-chip> -->
+  <q-card
+    style="
+      width: 60vw;
+      margin: 0 auto;
+      position: absolute;
+      height: calc(100vh - 200px);
+      overflow-y: scroll;
+      left: 50%;
+      right: 50%;
+      transform: translateX(50%);
+    "
+  >
+    <div>
+      <template v-for="(item, index) in items">
+        <q-card-section
+          :key="index"
+          class="row"
+          v-if="
+            item.QIType != QItemType.startRow && item.QIType != QItemType.endRow
+          "
+        >
+          <div v-if="item.AnswerType == AnswerType.Choice" class="col-12">
+            <div v-if="item.Title && !item.Title?.startsWith('http://')">
+              {{ item.Title }}
+            </div>
+            <div v-else>
+              <q-img loading="lazy" :src="item.Title" width="150px" />
+            </div>
+            <q-option-group
+              v-model="item.Value"
+              :options="item.choiceOptions"
+              color="primary"
+              inline
+            >
+              <template v-slot:label="opt">
+                <div class="row items-center">
+                  <span v-if="!opt.label.startsWith('http://')">
+                    {{ opt.label }}
+                  </span>
+                  <q-img loading="lazy" v-else :src="opt.label" width="150px" />
+                </div>
+              </template>
+            </q-option-group>
+          </div>
+          <div v-else-if="item.AnswerType == AnswerType.Text" class="col-12">
+            <!-- v-if="item.QIType == QItemType.TextAnswer" -->
+            <q-input
+              v-model="item.Value"
+              :type="
+                item.QIType == QItemType.multiTextAnswer
+                  ? 'textarea'
+                  : item.QIType == QItemType.TextAnswer
+                  ? 'text'
+                  : null
+              "
+              :label="item.Title"
+              filled
+            >
+            </q-input>
+            <!-- 
+            <q-input
+              v-else-if="item.QIType == QItemType.multiTextAnswer"
+              v-model="item.Value"
+              type="textarea"
+              :label="item.Title"
+            /> -->
+          </div>
+          <div v-else class="col-12">
+            <!-- <div v-if="item.Title != null && item.Title.startsWith('http://')">
+              <q-img
+                :src="item.title"
+                loading="lazy"
+                spinner-color="white"
+                height="140px"
+                style="max-width: 150px"
+              />
+            </div> -->
+            <!-- <div v-else> -->
+            <p v-if="item.QIType == QItemType.Body">
+              {{ item.Title }}
+            </p>
+            <h4 v-if="item.QIType == QItemType.Title">{{ item.Title }}</h4>
+            <h6 v-if="item.QIType == QItemType.Section">{{ item.Title }}</h6>
+            <div v-if="item.QIType == QItemType.newLine">
+              br
+              <br />
+            </div>
+            <div v-if="item.QIType == QItemType.Choice">{{ item.Title }}</div>
 
-        <div v-if="item.AnswerType == AnswerType.None" class="col-12">
-          <p v-if="item.QIType == QItemType.Body">
-            {{ item.Title }}
-          </p>
-          <h4 v-if="item.QIType == QItemType.Title">{{ item.Title }}</h4>
-          <h6 v-if="item.QIType == QItemType.Section">{{ item.Title }}</h6>
-          <br v-if="item.QIType == QItemType.newLine" />
-          <div v-if="item.QIType == QItemType.Choice">{{ item.Title }}</div>
-
-          <hr
-            v-if="item.QIType == QItemType.hr"
-            style="
-              height: 5px;
-              background-color: teal;
-              border-radius: 1rem;
-              border: none;
-            "
-          />
-        </div>
-        <div v-else-if="item.AnswerType == AnswerType.Choice" class="col-12">
-          <div>{{ item.Title }}</div>
-          <q-option-group
-            v-model="item.Value"
-            :options="item.choiceOptions"
-            color="primary"
-            inline
-          />
-        </div>
-        <div v-else-if="item.AnswerType == AnswerType.Text" class="col-12">
-          <!-- v-if="item.QIType == QItemType.TextAnswer" -->
-          <q-input
-            v-model="item.Value"
-            :type="
-              item.QIType == QItemType.multiTextAnswer
-                ? 'textarea'
-                : item.QIType == QItemType.TextAnswer
-                ? 'text'
-                : null
-            "
-            :label="item.Title"
-            filled
-          >
-          </q-input>
-          <!-- 
-          <q-input
-            v-else-if="item.QIType == QItemType.multiTextAnswer"
-            v-model="item.Value"
-            type="textarea"
-            :label="item.Title"
-          /> -->
-        </div>
-      </q-card-section>
-    </template>
+            <hr
+              v-if="item.QIType == QItemType.hr"
+              style="
+                width: 100%;
+                height: 5px;
+                background-color: teal;
+                border-radius: 1rem;
+                border: none;
+              "
+            />
+            <!-- </div> -->
+          </div>
+        </q-card-section>
+      </template>
+    </div>
   </q-card>
+  <!-- <q-card style="position: absolute; bottom: 0; height: 60px; width: 60vw">
+    <q-card-action> asdfasfd </q-card-action>
+  </q-card> -->
 </template>
 
 <script setup>
