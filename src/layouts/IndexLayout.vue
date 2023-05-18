@@ -231,7 +231,7 @@ const router = useRouter();
 const userStore = useUserStore();
 const leftDrawerOpen = ref(false);
 const logout = () => {
-  localStorage.clear();
+  localStorage.removeItem("UserStore");
   router.push({ name: "login" });
 };
 </script>

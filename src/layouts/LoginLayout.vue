@@ -146,7 +146,7 @@ import projectService from "../services/project.service.js";
 import { useRouter } from "vue-router";
 import CryptoJS from "crypto-js";
 import { Notify } from "quasar";
-
+import { handleNewVersion } from "@/helpers/newVersionSet";
 const userStore = useUserStore();
 const router = useRouter();
 const isLogin = ref(true);
@@ -169,18 +169,20 @@ const onSubmit = () => {
     ).toString(),
     // SeqKey: seqKey,
   };
-  isLogin.value
-    ? (myApi = projectService.Login(loginModel))
-    : (myApi = projectService.UserRegister(loginModel));
+  // isLogin.value
+  //   ? (myApi = projectService.Login(loginModel))
+  //   : (myApi = projectService.UserRegister(loginModel));
   console.log(loginModel);
-  try {
-    myApi
+  if (isLogin.value) {
+    handleNewVersion();
+    projectService
+      .Login(loginModel)
       .then((res) => {
         console.log(res);
         userStore.user = res.data;
         console.log(userStore.user);
         Notify.create({
-          message: isLogin.value ? "ورود موفقیت آمیز" : "ثبت نام موفقیت آمیز",
+          message: "ورود موفقیت آمیز",
           position: "top",
           timeout: 1000,
           progress: true,
@@ -202,8 +204,36 @@ const onSubmit = () => {
         // isLoading.value = false;
         visibleLoader.value = false;
       });
-  } catch (e) {
-    console.log(e);
+  } else {
+    projectService
+      .UserRegister(loginModel)
+      .then((res) => {
+        console.log(res);
+        userStore.user = res.data;
+        console.log(userStore.user);
+        Notify.create({
+          message: "ثبت نام موفقیت آمیز",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          color: "positive",
+        });
+        visibleLoader.value = false;
+
+        router.push({ name: "home" });
+      })
+      .catch((err) => {
+        console.log(err);
+        Notify.create({
+          message: err.response.data.Message,
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
+        // isLoading.value = false;
+        visibleLoader.value = false;
+      });
   }
 };
 const switchTypeForm = () => {

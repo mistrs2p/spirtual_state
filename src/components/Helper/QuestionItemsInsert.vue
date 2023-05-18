@@ -151,8 +151,9 @@
 import projectService from "../../services/project.service";
 
 import { ref, defineEmits, defineProps, computed } from "vue";
+// import { Notify } from 'quasar';
 
-const emit = defineEmits(["dialogStatus"]);
+// const emit = defineEmits(["dialogStatus"]);
 const props = defineProps({
   compData: {
     isAdd: {
@@ -172,7 +173,6 @@ const props = defineProps({
     },
   },
 });
-// import { Notify } from 'quasar';
 const operationData = ref({
   ID: null,
   UnicNumber: null,
