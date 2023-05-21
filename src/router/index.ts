@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 // import projectService from "../services/project.service.js";
 import { handleNewVersion } from "../helpers/newVersionSet";
+import { useUserStore } from "../stores/user.js";
+import { Notify } from "quasar";
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -116,10 +119,27 @@ const router = createRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
-  console.log(to);
+  console.log(to, from);
+  const myStorage = localStorage.getItem("UserStore");
+
   handleNewVersion();
   if (to.name != "login") {
-    localStorage.getItem("UserStore") ? next() : next({ name: "login" });
+    if (!myStorage) {
+      next({ name: "login" });
+    } else if (
+      !useUserStore().user.isInfoComplete &&
+      useUserStore().user.Type != 3 &&
+      to.name != "userInfo"
+    ) {
+      Notify.create({
+        message: "لطفا پروفایل خود را تکمیل کنید و سپس ادامه دهید ...",
+        position: "top",
+        timeout: 1500,
+        progress: true,
+        color: "warning",
+      });
+      next({ name: "userInfo" });
+    } else next();
   } else next();
 });
 export default router;

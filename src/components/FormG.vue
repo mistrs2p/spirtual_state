@@ -207,6 +207,7 @@ const rootUrl = computed(() => {
   return process.env.VUE_APP_ROOT_URL;
 });
 const handleImg = (data) => {
+  if (!data) return;
   return (
     rootUrl.value.substring(0, rootUrl.value.length - 4) +
     data.replace("http://halemanavi.ir/", "")

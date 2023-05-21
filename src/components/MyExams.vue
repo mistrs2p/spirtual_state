@@ -183,7 +183,7 @@ const handleGetExamForm = (data) => {
   // if (!data.IsExecuted) {
   //   alert("false");
   if (data.IsExecuted) {
-    alert(data.ID);
+    // alert(data.ID);
     projectService
       .ExamResult(data.ID)
       .then((res) => {

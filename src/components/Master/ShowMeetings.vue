@@ -362,6 +362,7 @@ const handleEdit = () => {
     .EditMasterMeeting(model)
     .then((res) => {
       console.log(res);
+      loadDataTable();
       Notify.create({
         message: "با موفقیت ویرایش شد!",
         position: "top",

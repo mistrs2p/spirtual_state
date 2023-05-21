@@ -161,7 +161,7 @@ const reVisibility = ref(false);
 const visibleLoader = ref(false);
 const onSubmit = () => {
   visibleLoader.value = true;
-  let myApi = null;
+  // let myApi = null;
   const loginModel = {
     UserName: userName.value,
     Password: isLogin.value
@@ -218,6 +218,8 @@ const onSubmit = () => {
           progress: true,
           color: "positive",
         });
+        handleNewVersion();
+
         visibleLoader.value = false;
 
         router.push({ name: "home" });

@@ -201,7 +201,7 @@
     </q-drawer>
 
     <q-page-container>
-      <q-page class="row items-start justify-evenly q-pt-md bg-blue-2">
+      <q-page class="row items-center justify-evenly bg-blue-2">
         <router-view></router-view>
       </q-page>
     </q-page-container>
