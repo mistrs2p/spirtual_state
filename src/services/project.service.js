@@ -4,7 +4,7 @@ import {
   Exams,
   Requests,
   Meetings,
-  Master,
+  // Master,
   Questions,
   Admin,
   User,
@@ -208,6 +208,16 @@ class projectService {
   }
   async ExamPayment(examPayModel) {
     return await httpConfig.post(Exams.ExamPayment, { ...examPayModel });
+  }
+  async ExamResult(ExamID) {
+    return await httpConfig.post(Exams.ExamResult, {
+      ExamID,
+    });
+  }
+  async ExamsCalculateResult(ExamCalculateResultModel) {
+    return await httpConfig.post(Exams.ExamsCalculateResult, {
+      ...ExamCalculateResultModel,
+    });
   }
 }
 export default new projectService();

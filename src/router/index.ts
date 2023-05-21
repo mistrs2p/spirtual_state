@@ -119,12 +119,6 @@ router.beforeEach((to, from, next) => {
   console.log(to);
   if (to.name != "login") {
     localStorage.getItem("UserStore") ? next() : next({ name: "login" });
-  }
-  // const user = JSON.parse(localStorage.getItem("UserStore") || "{}")?.user;
-
-  // if (to.name !== "login" && !user) next({ name: "login" });
-  // else if (to.name == "login" && user) next({ path: from.path });
-  // if the user is not authenticated, `next` is called twice
-  next();
+  } else next();
 });
 export default router;

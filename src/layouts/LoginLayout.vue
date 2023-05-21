@@ -154,19 +154,19 @@ const userName = ref();
 const password = ref();
 const repassword = ref();
 const register = ref(false);
-const passwordFieldType = ref("password");
+// const passwordFieldType = ref("password");
 const visibility = ref(false);
 const reVisibility = ref(false);
-const visibilityIcon = ref("visibility");
+// const visibilityIcon = ref("visibility");
 const visibleLoader = ref(false);
 const onSubmit = () => {
   visibleLoader.value = true;
   let myApi = null;
   const loginModel = {
     UserName: userName.value,
-    Password: CryptoJS.SHA256(
-      CryptoJS.enc.Utf8.parse(password.value)
-    ).toString(),
+    Password: isLogin.value
+      ? CryptoJS.SHA256(CryptoJS.enc.Utf8.parse(password.value)).toString()
+      : password.value,
     // SeqKey: seqKey,
   };
   isLogin.value
@@ -205,16 +205,6 @@ const onSubmit = () => {
   } catch (e) {
     console.log(e);
   }
-};
-const switchTypeForm = () => {
-  // register.value = !register.value;
-  // title.value = register.value ? "ثبت نام" : "ورود";
-  // btnLabel.value = register.value ? "ثبت نام" : "ورود";
-};
-const switchVisibility = () => {
-  visibility.value = !visibility.value;
-  passwordFieldType.value = visibility.value ? "text" : "password";
-  visibilityIcon.value = visibility.value ? "visibility_off" : "visibility";
 };
 
 const onReset = () => {

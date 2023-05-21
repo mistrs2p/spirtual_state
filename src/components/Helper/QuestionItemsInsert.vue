@@ -150,9 +150,9 @@
 <script setup lang="ts">
 import projectService from "../../services/project.service";
 
-import { ref, defineEmits, defineProps, computed } from "vue";
+import { ref, defineProps, computed } from "vue";
 
-const emit = defineEmits(["dialogStatus"]);
+// const emit = defineEmits(["dialogStatus"]);
 const props = defineProps({
   compData: {
     isAdd: {

@@ -2,13 +2,13 @@
   <q-card
     style="
       width: 60vw;
-      margin: 0 auto;
+      /* margin: 0 auto;
       position: absolute;
       height: calc(100vh - 200px);
       overflow-y: scroll;
       left: 50%;
       right: 50%;
-      transform: translateX(50%);
+      transform: translateX(50%); */
     "
   >
     <div>
@@ -25,7 +25,11 @@
               {{ item.Title }}
             </div>
             <div v-else>
-              <q-img loading="lazy" :src="item.Title" width="150px" />
+              <q-img
+                loading="lazy"
+                :src="handleImg(item.Title)"
+                width="300px"
+              />
             </div>
             <q-option-group
               v-model="item.Value"
@@ -38,7 +42,12 @@
                   <span v-if="!opt.label.startsWith('http://')">
                     {{ opt.label }}
                   </span>
-                  <q-img loading="lazy" v-else :src="opt.label" width="150px" />
+                  <q-img
+                    loading="lazy"
+                    v-else
+                    :src="handleImg(opt.label)"
+                    width="100px"
+                  />
                 </div>
               </template>
             </q-option-group>
@@ -104,17 +113,26 @@
       </template>
     </div>
   </q-card>
+  <div>
+    <q-btn @click="handleResult" flat color="primary" label="ارسال" />
+  </div>
   <!-- <q-card style="position: absolute; bottom: 0; height: 60px; width: 60vw">
     <q-card-action> asdfasfd </q-card-action>
   </q-card> -->
 </template>
 
 <script setup>
-import { ref, defineEmits, defineProps } from "vue";
+import { ref, computed, defineProps } from "vue";
+import { Notify } from "quasar";
+import projectService from "../services/project.service.js";
 
 const props = defineProps({
   formData: {
     type: Object,
+    required: true,
+  },
+  examID: {
+    type: String,
     required: true,
   },
 });
@@ -173,15 +191,64 @@ const loadData = () => {
 };
 loadData();
 
-const handleItem = (el) => {
-  if (el != null) {
-    switch (el.QIType) {
-      case QItemType.Choice:
-        break;
+// const handleItem = (el) => {
+//   if (el != null) {
+//     switch (el.QIType) {
+//       case QItemType.Choice:
+//         break;
 
-      default:
-        break;
+//       default:
+//         break;
+//     }
+//   }
+// };
+
+const rootUrl = computed(() => {
+  return process.env.VUE_APP_ROOT_URL;
+});
+const handleImg = (data) => {
+  return (
+    rootUrl.value.substring(0, rootUrl.value.length - 4) +
+    data.replace("http://halemanavi.ir/", "")
+  );
+};
+
+const handleResult = () => {
+  let str = "";
+  let counter = 1;
+  items.value.forEach((el) => {
+    if (el.AnswerType != AnswerType.None) {
+      str += `${counter}:${el.Value}|`;
+
+      counter++;
     }
-  }
+  });
+  console.log(str);
+  const model = {
+    ExamID: props.examID,
+    Answers: str,
+  };
+  projectService
+    .ExamsCalculateResult(model)
+    .then((res) => {
+      console.log(res);
+      Notify.create({
+        message: "asdasdfafsd",
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "positive",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      Notify.create({
+        message: "خطا",
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "negative",
+      });
+    });
 };
 </script>

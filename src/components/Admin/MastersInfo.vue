@@ -89,9 +89,8 @@
 import projectService from "@/services/project.service";
 import moment from "jalali-moment";
 console.log(moment());
-import { ref, computed, onMounted } from "vue";
+import { ref } from "vue";
 // import { Notify } from 'quasar';
-const newDate = ref(new Date());
 // const dateModel = ref({
 //   from: newDate.value.toLocaleDateString("fa-IR"),
 //   to: new Date(

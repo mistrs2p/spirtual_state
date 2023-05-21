@@ -76,11 +76,19 @@
             <span v-else-if="item.name == 'operation'">
               <q-btn dense flat label="حذف" color="negative" />
               <q-btn
+                v-if="props.row.IsPayed"
                 dense
                 flat
                 :label="props.row.IsExecuted ? 'نتیجه ' : 'شروع '"
                 :color="props.row.IsExecuted ? 'positive' : 'primary'"
                 @click="handleGetExamForm(props.row)"
+              />
+              <q-btn
+                v-else
+                flat
+                label="پرداخت"
+                color="positive"
+                @click="handlePay(props.row.ID)"
               />
             </span>
             <span v-else>
@@ -99,7 +107,7 @@
   >
     <q-card>
       <q-card-section>
-        <FormG :formData="formData" />
+        <FormG :formData="formData" :examID="examID" />
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -111,6 +119,7 @@ import FormG from "@/components/FormG.vue";
 import { ref } from "vue";
 // import { Notify } from 'quasar';
 
+const examID = ref(null);
 const rows = ref([]);
 const loading = ref(false);
 const loadDataTable = () => {
@@ -169,23 +178,54 @@ const columns = [
 ];
 const formData = ref(null);
 const handleGetExamForm = (data) => {
-  // console.log(data);
+  console.log(data);
+  examID.value = data.ID;
   // if (!data.IsExecuted) {
   //   alert("false");
-  projectService
-    .UserGetQuestionItemsList(data.ID)
-    .then((res) => {
-      formData.value = res.data;
-      isOperationDialog.value = true;
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  if (data.IsExecuted) {
+    alert(data.ID);
+    projectService
+      .ExamResult(data.ID)
+      .then((res) => {
+        // formData.value = res.data;
+        // isOperationDialog.value = true;
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    projectService
+      .UserGetQuestionItemsList(data.ID)
+      .then((res) => {
+        formData.value = res.data;
+        isOperationDialog.value = true;
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   // } else {
   //   alert(true);
   // }
 };
 
 const isOperationDialog = ref(false);
+
+const handlePay = (id) => {
+  const model = {
+    ExamID: id,
+    OnlinePayment: true,
+  };
+  projectService
+    .ExamPayment(model)
+    .then((res) => {
+      console.log(res);
+      window.open(res.data.ZarrinPayURL, "_self");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 </script>

@@ -299,31 +299,31 @@ const columns = [
   },
 ];
 
-const handleDelete = (evt) => {
-  projectService
-    .DeleteMaster(operationData.value.ID)
-    .then((res) => {
-      console.log(res);
-      Notify.create({
-        message: "با موفقیت حذف شد!",
-        position: "top",
-        timeout: 500,
-        progress: true,
-        color: "positive",
-      });
-      loadDataTable();
-    })
-    .catch((err) => {
-      console.log(err);
-      Notify.create({
-        message: "حذف استاد با خطا مواجه شد!",
-        position: "top",
-        timeout: 500,
-        progress: true,
-        color: "positive",
-      });
-    });
-};
+// const handleDelete = (evt) => {
+//   projectService
+//     .DeleteMaster(operationData.value.ID)
+//     .then((res) => {
+//       console.log(res);
+//       Notify.create({
+//         message: "با موفقیت حذف شد!",
+//         position: "top",
+//         timeout: 500,
+//         progress: true,
+//         color: "positive",
+//       });
+//       loadDataTable();
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       Notify.create({
+//         message: "حذف استاد با خطا مواجه شد!",
+//         position: "top",
+//         timeout: 500,
+//         progress: true,
+//         color: "positive",
+//       });
+//     });
+// };
 const operationData = ref({
   DisplayName: null,
   Family: null,
@@ -425,7 +425,7 @@ const handleEdit = () => {
   }
 };
 const cUserID = ref(null);
-watch(isEditDialog, (nVal, oVal) => {
+watch(isEditDialog, (nVal) => {
   if (nVal) {
     const myFind = usersList.value.find(
       (el) => el.UserName == operationData.value.UserName

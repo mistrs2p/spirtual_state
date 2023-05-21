@@ -769,7 +769,7 @@ const dateTimeExecute = ref({
   date: null,
   time: null,
 });
-watch(isOperationDialog, (nVal, oVal) => {
+watch(isOperationDialog, (nVal) => {
   if (!nVal) {
     handleResetForm();
   }

@@ -386,20 +386,20 @@ const isOperationDialog = ref(false);
 const isAdd = ref(false);
 const isDelete = ref(false);
 const isEdit = ref(false);
-const handleResetForm = () => {
-  operationData.value = {
-    Title: null,
-    Description: null,
-    DiscountCode: null,
-    MeetingID: null,
-    ReservedNextMeeting: false,
-    cUserID: null,
-  };
+// const handleResetForm = () => {
+//   operationData.value = {
+//     Title: null,
+//     Description: null,
+//     DiscountCode: null,
+//     MeetingID: null,
+//     ReservedNextMeeting: false,
+//     cUserID: null,
+//   };
 
-  isAdd.value = false;
-  isDelete.value = false;
-  isEdit.value = false;
-};
+//   isAdd.value = false;
+//   isDelete.value = false;
+//   isEdit.value = false;
+// };
 const dialogData = computed(() => {
   return {
     isAdd: isAdd.value,

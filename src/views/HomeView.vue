@@ -9,6 +9,7 @@
         color: #bbdefb;
       "
     >
+      <!-- <q-img src="http://192.168.1.32/API_Hale_Manavi/Raven/Q1 (1).jpg" /> -->
       خوش آمدید
     </h3></q-page
   >
@@ -16,4 +17,6 @@
 
 <style></style>
 
-<script setup></script>
+<script setup>
+console.log(process.env.NODE_ENV);
+</script>

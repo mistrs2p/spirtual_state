@@ -25,6 +25,8 @@ export const Exams = Object.freeze({
   GetMasterExams: "Exams/GetMasterExams",
   ExamRequest: "Exams/ExamRequest",
   ExamPayment: "Exams/ExamPayment",
+  ExamsCalculateResult: "Exams/CalculateResult",
+  ExamResult: "Exams/ExamResult",
 });
 export const Meetings = Object.freeze({
   AddMeeting: "Meetings/AddMeeting",

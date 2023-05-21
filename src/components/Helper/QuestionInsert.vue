@@ -127,7 +127,7 @@
 <script setup lang="ts">
 import projectService from "../../services/project.service";
 
-import { ref, computed, defineEmits, defineProps, watch } from "vue";
+import { ref, computed, defineEmits, defineProps } from "vue";
 import { Notify } from "quasar";
 
 const emit = defineEmits(["dialogStatus"]);
@@ -190,22 +190,22 @@ const qTypeOptions = computed(() => {
   }
   return data;
 });
-const rows = ref([]);
-const loading = ref(false);
-const loadDataTable = () => {
-  loading.value = true;
-  projectService
-    .GetUserConsultanceRequests()
-    .then((res) => {
-      console.log(res);
-      rows.value = res.data;
-      loading.value = false;
-    })
-    .catch((err) => {
-      console.log(err);
-      loading.value = false;
-    });
-};
+// const rows = ref([]);
+// const loading = ref(false);
+// const loadDataTable = () => {
+//   loading.value = true;
+//   projectService
+//     .GetUserConsultanceRequests()
+//     .then((res) => {
+//       console.log(res);
+//       rows.value = res.data;
+//       loading.value = false;
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       loading.value = false;
+//     });
+// };
 // loadDataTable();
 const handleClickQType = (evt) => {
   if (!evt) {
@@ -307,12 +307,5 @@ if (!props.compData.isAdd) {
     (el) => el.id == operationData.value.QType
   );
 }
-watch(
-  () => props.compData.isAdd,
-  (nVal, oVal) => {
-    // alert(nVal);
-  },
-  { immediate: true }
-);
 </script>
 <style lang="scss"></style>

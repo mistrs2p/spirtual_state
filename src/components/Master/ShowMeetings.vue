@@ -238,7 +238,7 @@
 <script setup lang="ts">
 import projectService from "@/services/project.service";
 
-import { ref, computed, watch } from "vue";
+import { ref, watch } from "vue";
 import { Notify } from "quasar";
 import moment from "jalali-moment";
 
@@ -384,7 +384,7 @@ const handleEdit = () => {
 watch(dateTime, (nVal, oVal) => {
   console.log(nVal, oVal);
 });
-watch(isEditDialog, (nVal, oVal) => {
+watch(isEditDialog, (nVal) => {
   if (!nVal) {
     editData.value = {
       Title: null,
