@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 // import projectService from "../services/project.service.js";
-
+import { handleNewVersion } from "../helpers/newVersionSet";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -117,6 +117,7 @@ const router = createRouter({
 });
 router.beforeEach((to, from, next) => {
   console.log(to);
+  handleNewVersion();
   if (to.name != "login") {
     localStorage.getItem("UserStore") ? next() : next({ name: "login" });
   } else next();
