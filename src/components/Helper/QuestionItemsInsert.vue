@@ -150,12 +150,7 @@
 <script setup lang="ts">
 import projectService from "../../services/project.service";
 
-<<<<<<< HEAD
 import { ref, defineProps, computed } from "vue";
-=======
-import { ref, defineEmits, defineProps, computed } from "vue";
-// import { Notify } from 'quasar';
->>>>>>> b2d94446c7745410a7deb88d1b3fbff8860a59a1
 
 // const emit = defineEmits(["dialogStatus"]);
 const props = defineProps({
