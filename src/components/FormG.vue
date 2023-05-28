@@ -1,7 +1,6 @@
 <template>
   <q-card
     style="
-      width: 60vw;
       /* margin: 0 auto;
       position: absolute;
       height: calc(100vh - 200px);
@@ -11,7 +10,16 @@
       transform: translateX(50%); */
     "
   >
-    <div>
+    <q-card
+      style="
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 200px;
+        overflow: auto;
+      "
+    >
       <template v-for="(item, index) in items">
         <q-card-section
           :key="index"
@@ -111,21 +119,42 @@
           </div>
         </q-card-section>
       </template>
-    </div>
+    </q-card>
+    <q-card-actions
+      align="left"
+      style="
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(100vh - 200px);
+        bottom: 0;
+        overflow: auto;
+        text-align: center;
+      "
+    >
+      <q-btn
+        @click="handlePreResult"
+        color="primary"
+        label="پایان"
+        outline
+        class="q-ml-md"
+      />
+      <q-btn color="negative" label="خروج" v-close-popup outline />
+    </q-card-actions>
   </q-card>
-  <div>
-    <q-btn @click="handleResult" flat color="primary" label="ارسال" />
-  </div>
+  <!-- <q-card>
+  </q-card> -->
   <!-- <q-card style="position: absolute; bottom: 0; height: 60px; width: 60vw">
     <q-card-action> asdfasfd </q-card-action>
   </q-card> -->
 </template>
 
 <script setup>
-import { ref, computed, defineProps } from "vue";
+import { ref, computed, defineProps, defineEmits } from "vue";
 import { Notify } from "quasar";
 import projectService from "../services/project.service.js";
 
+const emit = defineEmits(["closeDialog"]);
 const props = defineProps({
   formData: {
     type: Object,
@@ -213,13 +242,35 @@ const handleImg = (data) => {
     data.replace("http://halemanavi.ir/", "")
   );
 };
-
+const handlePreResult = () => {
+  Notify.create({
+    message: "آزمونتان را به اتمام می رسانید؟",
+    position: "center",
+    color: "light-blue-2",
+    actions: [
+      {
+        label: "بله",
+        color: "primary",
+        handler: () => {
+          handleResult();
+        },
+      },
+      {
+        label: "بستن",
+        color: "warning",
+        handler: () => {
+          return;
+        },
+      },
+    ],
+  });
+};
 const handleResult = () => {
   let str = "";
   let counter = 1;
   items.value.forEach((el) => {
     if (el.AnswerType != AnswerType.None) {
-      str += `${counter}:${el.Value}|`;
+      str += `${counter}:${el.Value != null ? el.Value : 0}|`;
 
       counter++;
     }
@@ -234,12 +285,13 @@ const handleResult = () => {
     .then((res) => {
       console.log(res);
       Notify.create({
-        message: "asdasdfafsd",
+        message: "آزمون با موفقیت به اتمام رسید.",
         position: "top",
         timeout: 500,
         progress: true,
         color: "positive",
       });
+      emit("closeDialog", false);
     })
     .catch((err) => {
       console.log(err);

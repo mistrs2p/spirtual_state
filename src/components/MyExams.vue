@@ -86,8 +86,9 @@
               <q-btn
                 v-else
                 flat
+                dense
                 label="پرداخت"
-                color="positive"
+                color="secondary"
                 @click="handlePay(props.row.ID)"
               />
             </span>
@@ -105,11 +106,11 @@
     full-height
     style="position: relative"
   >
-    <q-card>
-      <q-card-section>
-        <FormG :formData="formData" :examID="examID" />
-      </q-card-section>
-    </q-card>
+    <FormG
+      :formData="formData"
+      :examID="examID"
+      @closeDialog="(isOperationDialog = false), loadDataTable()"
+    />
   </q-dialog>
 </template>
 
@@ -181,7 +182,7 @@ const handleGetExamForm = (data) => {
   console.log(data);
   examID.value = data.ID;
   // if (!data.IsExecuted) {
-  //   alert("false");
+  // alert(data.IsExecuted);
   if (data.IsExecuted) {
     // alert(data.ID);
     projectService
