@@ -252,7 +252,7 @@ const userData = JSON.parse(localStorage.getItem("UserStore") || "{}").user;
 for (let k in infoModel1.value) {
   infoModel1.value[k] = userData[k];
   if (k == "BirthDate" && infoModel1.value[k] != null) {
-    alert(infoModel1.value[k]);
+    // alert(infoModel1.value[k]);
     console.log(infoModel1.value[k]);
     const dateTimeEdit = userData[k].split("T");
     infoModel1.value.BirthDate = moment(dateTimeEdit[0], "YYYY-MM-DD")

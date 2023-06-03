@@ -76,15 +76,15 @@
             <span v-else-if="item.name == 'operation'">
               <q-btn dense flat label="حذف" color="negative" />
               <q-btn
-                v-if="props.row.IsPayed"
+                v-if="props.row.IsPayed && !props.row.IsExecuted"
                 dense
                 flat
-                :label="props.row.IsExecuted ? 'نتیجه ' : 'شروع '"
+                :label="props.row.Answers != null ? 'ادامه' : 'شروع '"
                 :color="props.row.IsExecuted ? 'positive' : 'primary'"
                 @click="handleGetExamForm(props.row)"
               />
               <q-btn
-                v-else
+                v-else-if="!props.row.IsPayed"
                 flat
                 dense
                 label="پرداخت"
@@ -108,6 +108,7 @@
   >
     <FormG
       :formData="formData"
+      :answers="answers"
       :examID="examID"
       @closeDialog="(isOperationDialog = false), loadDataTable()"
     />
@@ -178,6 +179,7 @@ const columns = [
   },
 ];
 const formData = ref(null);
+const answers = ref(null);
 const handleGetExamForm = (data) => {
   console.log(data);
   examID.value = data.ID;
@@ -200,6 +202,7 @@ const handleGetExamForm = (data) => {
       .UserGetQuestionItemsList(data.ID)
       .then((res) => {
         formData.value = res.data;
+        answers.value = data.Answers;
         isOperationDialog.value = true;
         console.log(res);
       })

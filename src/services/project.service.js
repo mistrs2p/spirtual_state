@@ -219,5 +219,11 @@ class projectService {
       ...ExamCalculateResultModel,
     });
   }
+
+  async ExamAsnwerSaveDraft(ExamAsnwerSaveDraftModel) {
+    return await httpConfig.post(Exams.ExamAsnwerSaveDraft, {
+      ...ExamAsnwerSaveDraftModel,
+    });
+  }
 }
 export default new projectService();

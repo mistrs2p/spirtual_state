@@ -1,22 +1,47 @@
 <template>
-  <q-card
-    style="
-      /* margin: 0 auto;
-      position: absolute;
-      height: calc(100vh - 200px);
-      overflow-y: scroll;
-      left: 50%;
-      right: 50%;
-      transform: translateX(50%); */
-    "
-  >
-    <q-card
+  <q-card>
+    <q-card-actions
+      align="left"
       style="
         position: absolute;
         left: 0;
         right: 0;
         top: 0;
-        bottom: 200px;
+        overflow: auto;
+        text-align: center;
+      "
+      class="bg-blue-grey-10"
+    >
+      <q-btn
+        @click="handleCloseAction"
+        round
+        color="secondary"
+        icon="close"
+        flat
+        class="q-ml-md"
+        dense
+      >
+      </q-btn>
+      <q-btn
+        dense
+        @click="handlePreResult"
+        round
+        color="secondary"
+        icon="save"
+        outline
+        class="q-ml-md"
+      >
+        <q-tooltip>ذخیره اطلاعات</q-tooltip>
+      </q-btn>
+      <!-- <q-btn dense color="negative" label="خروج" v-close-popup outline /> -->
+    </q-card-actions>
+    <q-card
+      style="
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 52px;
+        bottom: 52px;
         overflow: auto;
       "
     >
@@ -126,7 +151,6 @@
         position: absolute;
         left: 0;
         right: 0;
-        top: calc(100vh - 200px);
         bottom: 0;
         overflow: auto;
         text-align: center;
@@ -150,7 +174,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineProps, defineEmits } from "vue";
+import { ref, computed, defineProps, defineEmits, onDeactivated } from "vue";
 import { Notify } from "quasar";
 import projectService from "../services/project.service.js";
 
@@ -159,6 +183,10 @@ const props = defineProps({
   formData: {
     type: Object,
     required: true,
+  },
+  answers: {
+    type: String,
+    default: null,
   },
   examID: {
     type: String,
@@ -185,6 +213,13 @@ const AnswerType = {
   None: 2,
 };
 
+const activeNotifications = ref([]);
+onDeactivated(() => {
+  activeNotifications.value.forEach((notification) => {
+    notification.close();
+  });
+  alert(true);
+});
 const items = ref([]);
 const loadData = () => {
   const myData = [...props.formData];
@@ -243,65 +278,163 @@ const handleImg = (data) => {
   );
 };
 const handlePreResult = () => {
-  Notify.create({
+  const myNotif = Notify.create({
     message: "آزمونتان را به اتمام می رسانید؟",
     position: "center",
     color: "light-blue-2",
+    textColor: "black",
+    timeout: 0,
     actions: [
       {
         label: "بله",
+        icon: "done",
         color: "primary",
         handler: () => {
           handleResult();
         },
       },
       {
-        label: "بستن",
-        color: "warning",
+        label: "خیر",
+        icon: "close",
+        color: "secondary",
         handler: () => {
           return;
         },
       },
     ],
   });
+  activeNotifications.value.push(myNotif);
 };
-const handleResult = () => {
+
+const handlePreAnswers = () => {
+  if (props.answers != null) {
+    const answersPairs = props.answers.split("|");
+    console.log(answersPairs);
+    answersPairs.forEach((el) => {
+      const answersKeyValue = el.split(":");
+      const myFind = items.value.find(
+        (ztel) => ztel.UnicNumber == answersKeyValue[0]
+      );
+      console.log(myFind);
+      if (myFind) {
+        myFind.Value = answersKeyValue[1];
+      }
+    });
+  }
+};
+handlePreAnswers();
+const handleCalculateResult = () => {
   let str = "";
-  let counter = 1;
+  // let counter = 1;
   items.value.forEach((el) => {
     if (el.AnswerType != AnswerType.None) {
-      str += `${counter}:${el.Value != null ? el.Value : 0}|`;
+      str += `${el.UnicNumber}:${
+        el.Value != null
+          ? el.Value
+          : el.AnswerType == AnswerType.Choice
+          ? 0
+          : ""
+      }|`;
 
-      counter++;
+      // counter++;
     }
   });
-  console.log(str);
+  return str;
+};
+const handleResult = async (isDone = false) => {
   const model = {
     ExamID: props.examID,
-    Answers: str,
+    Answers: handleCalculateResult(),
   };
-  projectService
-    .ExamsCalculateResult(model)
-    .then((res) => {
-      console.log(res);
-      Notify.create({
-        message: "آزمون با موفقیت به اتمام رسید.",
-        position: "top",
-        timeout: 500,
-        progress: true,
-        color: "positive",
-      });
-      emit("closeDialog", false);
-    })
-    .catch((err) => {
-      console.log(err);
-      Notify.create({
-        message: "خطا",
-        position: "top",
-        timeout: 500,
-        progress: true,
-        color: "negative",
-      });
+  console.log(model);
+  const myModelApi = isDone
+    ? await projectService.ExamsCalculateResult(model)
+    : await projectService.ExamAsnwerSaveDraft(model);
+  // console.log(myModelApi.data);
+  // console.log(myModelApi);
+  if (myModelApi.status == 200) {
+    console.log(myModelApi);
+    Notify.create({
+      message: isDone
+        ? "آزمون با موفقیت به اتمام رسید."
+        : "آزمون با موفقیت ذخیره شد.",
+      position: "top",
+      timeout: 500,
+      progress: true,
+      color: "positive",
     });
+    emit("closeDialog", false);
+  } else {
+    Notify.create({
+      message: "خطا",
+      position: "top",
+      timeout: 500,
+      progress: true,
+      color: "negative",
+    });
+  }
+
+  // projectService
+  //   .ExamsCalculateResult(model)
+  //   .then((res) => {
+  //     console.log(res);
+  //     Notify.create({
+  //       message: "آزمون با موفقیت به اتمام رسید.",
+  //       position: "top",
+  //       timeout: 500,
+  //       progress: true,
+  //       color: "positive",
+  //     });
+  //     emit("closeDialog", false);
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     Notify.create({
+  //       message: "خطا",
+  //       position: "top",
+  //       timeout: 500,
+  //       progress: true,
+  //       color: "negative",
+  //     });
+  //   });
+};
+
+// const handleSaveDraft = () => {};
+const handleCloseAction = () => {
+  Notify.create({
+    message: "آزمون ذخیره شود؟",
+    position: "center",
+    color: "light-blue-2",
+    textColor: "black",
+    timeout: 0,
+    actions: [
+      {
+        label: "ذخیره و خروج",
+        icon: "save",
+        color: "primary",
+        handler: () => {
+          handleResult(false);
+        },
+      },
+      {
+        label: "ذخیره نشود!",
+        icon: "close",
+        color: "negative",
+        handler: () => {
+          setTimeout(() => {
+            emit("closeDialog", false);
+          }, 500);
+        },
+      },
+      {
+        label: "ادامه آزمون!",
+        icon: "arrow_right_alt",
+        color: "secondary",
+        handler: () => {
+          return;
+        },
+      },
+    ],
+  });
 };
 </script>
