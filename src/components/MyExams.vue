@@ -74,7 +74,7 @@
               />
             </span>
             <span v-else-if="item.name == 'operation'">
-              <q-btn dense flat label="حذف" color="negative" />
+              <!-- <q-btn dense flat label="حذف" color="negative" /> -->
               <q-btn
                 v-if="props.row.IsPayed && !props.row.IsExecuted"
                 dense
@@ -105,6 +105,7 @@
     full-width
     full-height
     style="position: relative"
+    persistent
   >
     <FormG
       :formData="formData"

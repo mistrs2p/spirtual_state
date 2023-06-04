@@ -121,7 +121,9 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   console.log(to, from);
   const myStorage = localStorage.getItem("UserStore");
-
+  console.log("document", document);
+  console.log("asdasd", document.referrer);
+  console.log("sargrre", window.location);
   handleNewVersion();
   if (to.name != "login") {
     if (!myStorage) {

@@ -163,7 +163,7 @@
         outline
         class="q-ml-md"
       />
-      <q-btn color="negative" label="خروج" v-close-popup outline />
+      <!-- <q-btn color="negative" label="خروج" v-close-popup outline /> -->
     </q-card-actions>
   </q-card>
   <!-- <q-card>
@@ -174,7 +174,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineProps, defineEmits, onDeactivated } from "vue";
+import { ref, computed, defineProps, defineEmits } from "vue";
 import { Notify } from "quasar";
 import projectService from "../services/project.service.js";
 
@@ -213,13 +213,6 @@ const AnswerType = {
   None: 2,
 };
 
-const activeNotifications = ref([]);
-onDeactivated(() => {
-  activeNotifications.value.forEach((notification) => {
-    notification.close();
-  });
-  alert(true);
-});
 const items = ref([]);
 const loadData = () => {
   const myData = [...props.formData];
@@ -278,7 +271,9 @@ const handleImg = (data) => {
   );
 };
 const handlePreResult = () => {
-  const myNotif = Notify.create({
+  Notify.create({
+    group: "myG",
+    spinner: true,
     message: "آزمونتان را به اتمام می رسانید؟",
     position: "center",
     color: "light-blue-2",
@@ -303,7 +298,6 @@ const handlePreResult = () => {
       },
     ],
   });
-  activeNotifications.value.push(myNotif);
 };
 
 const handlePreAnswers = () => {
@@ -355,6 +349,8 @@ const handleResult = async (isDone = false) => {
   if (myModelApi.status == 200) {
     console.log(myModelApi);
     Notify.create({
+      group: "myG",
+      spinner: true,
       message: isDone
         ? "آزمون با موفقیت به اتمام رسید."
         : "آزمون با موفقیت ذخیره شد.",
@@ -366,6 +362,8 @@ const handleResult = async (isDone = false) => {
     emit("closeDialog", false);
   } else {
     Notify.create({
+      group: "myG",
+      spinner: true,
       message: "خطا",
       position: "top",
       timeout: 500,
@@ -378,7 +376,7 @@ const handleResult = async (isDone = false) => {
   //   .ExamsCalculateResult(model)
   //   .then((res) => {
   //     console.log(res);
-  //     Notify.create({
+  //     activeNotifications.create({
   //       message: "آزمون با موفقیت به اتمام رسید.",
   //       position: "top",
   //       timeout: 500,
@@ -389,7 +387,7 @@ const handleResult = async (isDone = false) => {
   //   })
   //   .catch((err) => {
   //     console.log(err);
-  //     Notify.create({
+  //     activeNotifications.create({
   //       message: "خطا",
   //       position: "top",
   //       timeout: 500,
@@ -402,6 +400,8 @@ const handleResult = async (isDone = false) => {
 // const handleSaveDraft = () => {};
 const handleCloseAction = () => {
   Notify.create({
+    group: "myG",
+    spinner: true,
     message: "آزمون ذخیره شود؟",
     position: "center",
     color: "light-blue-2",
