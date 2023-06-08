@@ -1,5 +1,5 @@
 <template>
-  <div class="col-10">
+  <div class="col-12 q-px-md">
     <q-table
       :pagination="{ rowsPerPage: 10 }"
       dense
@@ -55,17 +55,35 @@
             <span v-else-if="item.name == 'isExecuted'">
               <q-checkbox
                 size="xs"
-                v-if="props.row[item.field] == null"
-                v-model="props.row[item.field]"
+                v-if="props.row.IsExecuted == null"
+                v-model="props.row.IsExecuted"
                 :false-value="null"
                 disable
               />
               <q-checkbox
                 size="xs"
                 v-else
-                v-model="props.row[item.field]"
+                v-model="props.row.IsExecuted"
                 disable
               />
+            </span>
+            <span v-else-if="item.name == 'operation'">
+              <span v-if="props.row.IsExecuted">
+                <q-btn
+                  dense
+                  flat
+                  :label="'نمایش'"
+                  :color="'primary'"
+                  @click="handleShowExam(props.row)"
+                />
+                <q-btn
+                  flat
+                  dense
+                  label="نتیجه"
+                  color="secondary"
+                  @click="handleResultExam(props.row)"
+                />
+              </span>
             </span>
             <span v-else>
               {{ props.row[item.field] }}
@@ -74,14 +92,52 @@
         </q-tr>
       </template>
     </q-table>
+    <q-inner-loading
+      :showing="visibleLoader"
+      label="لطفا منتظر بمانید..."
+      label-class="text-teal"
+      label-style="font-size: 1.1em"
+    />
   </div>
+  <q-dialog
+    v-model="isOperationDialog"
+    full-width
+    full-height
+    style="position: relative"
+    persistent
+  >
+    <FormG
+      :formData="formData"
+      :answers="answers"
+      :examID="examID"
+      formDisable
+      forShow
+      @closeDialog="(isOperationDialog = false), loadDataTable()"
+    />
+  </q-dialog>
+  <q-dialog v-model="isResultShow" full-height>
+    <q-card>
+      <q-card-section>
+        <h5>{{ resultData.UserDisplayName }}</h5>
+      </q-card-section>
+      <q-card-section style="direction: ltr">
+        <div v-for="(value, key) of resultData" :key="key">
+          <span v-if="key != 'UserDisplayName' && key != 'QuestionType'"
+            >{{ key }}: {{ value }}</span
+          >
+        </div>
+        <!-- {{ resultData }} -->
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
 import projectService from "../../services/project.service";
 
 import { ref } from "vue";
-// import { Notify } from 'quasar';
+import { Notify } from "quasar";
+import FormG from "@/components/FormG.vue";
 
 const rows = ref([]);
 const loading = ref(false);
@@ -141,4 +197,57 @@ const columns = [
   },
   { name: "operation", label: "عملیات", field: "operation", align: "right" },
 ];
+const isOperationDialog = ref(false);
+const visibleLoader = ref(false);
+const formData = ref(null);
+const answers = ref(null);
+const examID = ref(null);
+const handleShowExam = (evt) => {
+  visibleLoader.value = true;
+  examID.value = evt.ID;
+
+  console.log(evt);
+  projectService
+    .UserGetQuestionItemsList(evt.ID)
+    .then((res) => {
+      formData.value = res.data;
+      answers.value = evt.Answer;
+      console.log(res);
+      visibleLoader.value = false;
+      isOperationDialog.value = true;
+    })
+    .catch((err) => {
+      console.log(err);
+      visibleLoader.value = false;
+    });
+};
+const isResultShow = ref(false);
+const resultData = ref(null);
+const handleResultExam = (evt) => {
+  visibleLoader.value = true;
+  const model = {
+    ExamID: evt.ID,
+    Answers: evt.Answer,
+  };
+  console.log(model);
+  projectService
+    .ExamsCalculateResult(model)
+    .then((res) => {
+      console.log(res);
+      resultData.value = res.data;
+      // handleResultExamDecorate();
+      visibleLoader.value = false;
+      isResultShow.value = true;
+    })
+    .catch((err) => {
+      console.log(err);
+      visibleLoader.value = false;
+    });
+  console.log(evt);
+};
+// const handleResultExamDecorate = () => {
+//   console.log(true);
+//   for (let k in resultData.value) {
+//   }
+// };
 </script>

@@ -1,28 +1,5 @@
 <template>
-  <div class="col-10">
-    <div class="col-12 row" style="flex-direction: column; align-items: center">
-      <!-- <div class="col-12">
-        <q-select
-          name="masters"
-          v-model="questionItem"
-          :options="questionItemsList"
-          @update:model-value="handleClickQuestionItem"
-          option-label="Name"
-          option-value="ID"
-          color="primary"
-          filled
-          label="انتخاب نوع آزمون"
-        />
-      </div> -->
-      <!-- <q-btn
-        @click="loadDataTable"
-        color="primary"
-        class="q-mt-lg"
-        style="font-size: 1.25rem; border-radius: 0.6rem"
-        >گزارش گیری</q-btn
-      > -->
-    </div>
-    <hr />
+  <div class="col-12 q-px-md">
     <q-table
       :pagination="{ rowsPerPage: 10 }"
       dense

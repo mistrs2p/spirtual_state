@@ -121,27 +121,29 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   console.log(to, from);
   const myStorage = localStorage.getItem("UserStore");
-  console.log("document", document);
-  console.log("asdasd", document.referrer);
-  console.log("sargrre", window.location);
+  // console.log("document", document);
+  // console.log("asdasd", document.referrer);
+  // console.log("sargrre", window.location);
   handleNewVersion();
   if (to.name != "login") {
     if (!myStorage) {
       next({ name: "login" });
-    } else if (
-      !useUserStore().user.isInfoComplete &&
-      useUserStore().user.Type != 3 &&
-      to.name != "userInfo"
-    ) {
-      Notify.create({
-        message: "لطفا پروفایل خود را تکمیل کنید و سپس ادامه دهید ...",
-        position: "top",
-        timeout: 1500,
-        progress: true,
-        color: "warning",
-      });
-      next({ name: "userInfo" });
-    } else next();
+    }
+    // else if (
+    //   !useUserStore().user.isInfoComplete &&
+    //   useUserStore().user.Type != 3 &&
+    //   to.name != "userInfo"
+    // ) {
+    //   Notify.create({
+    //     message: "لطفا پروفایل خود را تکمیل کنید و سپس ادامه دهید ...",
+    //     position: "top",
+    //     timeout: 1500,
+    //     progress: true,
+    //     color: "warning",
+    //   });
+    //   next({ name: "userInfo" });
+    // }
+    else next();
   } else next();
 });
 export default router;

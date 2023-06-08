@@ -23,8 +23,9 @@
       >
       </q-btn>
       <q-btn
+        v-if="!forShow"
         dense
-        @click="handlePreResult"
+        @click="handleResult(false)"
         round
         color="secondary"
         icon="save"
@@ -36,14 +37,14 @@
       <!-- <q-btn dense color="negative" label="خروج" v-close-popup outline /> -->
     </q-card-actions>
     <q-card
-      style="
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 52px;
-        bottom: 52px;
-        overflow: auto;
-      "
+      :style="{
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: '52px',
+        bottom: forShow ? 0 : '52px',
+        overflow: 'auto',
+      }"
     >
       <template v-for="(item, index) in items">
         <q-card-section
@@ -69,6 +70,7 @@
               :options="item.choiceOptions"
               color="primary"
               inline
+              :disable="formDisable"
             >
               <template v-slot:label="opt">
                 <div class="row items-center">
@@ -89,6 +91,7 @@
             <!-- v-if="item.QIType == QItemType.TextAnswer" -->
             <q-input
               v-model="item.Value"
+              :disable="formDisable"
               :type="
                 item.QIType == QItemType.multiTextAnswer
                   ? 'textarea'
@@ -162,6 +165,7 @@
         label="پایان"
         outline
         class="q-ml-md"
+        v-if="!forShow"
       />
       <!-- <q-btn color="negative" label="خروج" v-close-popup outline /> -->
     </q-card-actions>
@@ -191,6 +195,14 @@ const props = defineProps({
   examID: {
     type: String,
     required: true,
+  },
+  formDisable: {
+    type: Boolean,
+    default: false,
+  },
+  forShow: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -399,42 +411,46 @@ const handleResult = async (isDone = false) => {
 
 // const handleSaveDraft = () => {};
 const handleCloseAction = () => {
-  Notify.create({
-    group: "myG",
-    spinner: true,
-    message: "آزمون ذخیره شود؟",
-    position: "center",
-    color: "light-blue-2",
-    textColor: "black",
-    timeout: 0,
-    actions: [
-      {
-        label: "ذخیره و خروج",
-        icon: "save",
-        color: "primary",
-        handler: () => {
-          handleResult(false);
+  if (props.forShow) {
+    emit("closeDialog", false);
+  } else {
+    Notify.create({
+      group: "myG",
+      spinner: true,
+      message: "آزمون ذخیره شود؟",
+      position: "center",
+      color: "light-blue-2",
+      textColor: "black",
+      timeout: 0,
+      actions: [
+        {
+          label: "ذخیره و خروج",
+          icon: "save",
+          color: "primary",
+          handler: () => {
+            handleResult(false);
+          },
         },
-      },
-      {
-        label: "ذخیره نشود!",
-        icon: "close",
-        color: "negative",
-        handler: () => {
-          setTimeout(() => {
-            emit("closeDialog", false);
-          }, 500);
+        {
+          label: "ذخیره نشود!",
+          icon: "close",
+          color: "negative",
+          handler: () => {
+            setTimeout(() => {
+              emit("closeDialog", false);
+            }, 500);
+          },
         },
-      },
-      {
-        label: "ادامه آزمون!",
-        icon: "arrow_right_alt",
-        color: "secondary",
-        handler: () => {
-          return;
+        {
+          label: "ادامه آزمون!",
+          icon: "arrow_right_alt",
+          color: "secondary",
+          handler: () => {
+            return;
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
+  }
 };
 </script>

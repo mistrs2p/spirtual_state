@@ -36,6 +36,7 @@
           </q-input>
         </div>
         <div class="col-6">
+          <!-- <custom-date-picker /> -->
           <q-input filled v-model="dateTime.time">
             <template v-slot:append>
               <q-icon name="access_time" class="cursor-pointer">
@@ -44,7 +45,12 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-time v-model="dateTime.time" mask="HH:mm" format24h>
+                  <q-time
+                    v-model="dateTime.time"
+                    mask="HH:mm"
+                    format24h
+                    calendar="persian"
+                  >
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -69,7 +75,7 @@
             filled
             type="number"
             v-model="addMeetingModel.Cost"
-            label="مبلغ جلسه"
+            label="مبلغ جلسه (به تومان)"
             lazy-rules
             :rules="[(val) => (val && val > 0) || 'مبلغ جلسه باید ذکر شود']"
           />
@@ -79,7 +85,7 @@
             filled
             type="number"
             v-model="addMeetingModel.Duration"
-            label="مدت جلسه"
+            label="مدت جلسه (به دقیقه)"
             lazy-rules
             :rules="[(val) => (val && val > 0) || 'مدت جلسه باید ذکر شود']"
           />
@@ -121,7 +127,7 @@ import { ref } from "vue";
 import projectService from "../../services/project.service.js";
 import moment from "jalali-moment";
 import { Notify } from "quasar";
-
+// import VuePersianDatetimePicker from 'vue-persian-datetime-picker'
 const dateTime = ref({
   date: null,
   time: null,

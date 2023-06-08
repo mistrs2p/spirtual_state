@@ -1,5 +1,5 @@
 <template>
-  <div class="col-10">
+  <div class="col-12 q-px-md">
     <q-table
       :pagination="{ rowsPerPage: 10 }"
       dense

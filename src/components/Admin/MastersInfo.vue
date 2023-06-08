@@ -18,7 +18,7 @@
       >
     </div>
     <hr />
-    <div class="col-12">
+    <div class="col-12 q-px-md">
       <q-table
         :pagination="{ rowsPerPage: 10 }"
         dense

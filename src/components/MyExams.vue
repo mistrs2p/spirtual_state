@@ -1,5 +1,5 @@
 <template>
-  <div class="col-10">
+  <div class="col-12 q-px-md">
     <q-table
       :pagination="{ rowsPerPage: 10 }"
       dense
@@ -99,6 +99,12 @@
         </q-tr>
       </template>
     </q-table>
+    <q-inner-loading
+      :showing="visibleLoader"
+      label="لطفا منتظر بمانید..."
+      label-class="text-teal"
+      label-style="font-size: 1.1em"
+    />
   </div>
   <q-dialog
     v-model="isOperationDialog"
@@ -181,7 +187,9 @@ const columns = [
 ];
 const formData = ref(null);
 const answers = ref(null);
+const visibleLoader = ref(false);
 const handleGetExamForm = (data) => {
+  visibleLoader.value = true;
   console.log(data);
   examID.value = data.ID;
   // if (!data.IsExecuted) {
@@ -206,9 +214,11 @@ const handleGetExamForm = (data) => {
         answers.value = data.Answers;
         isOperationDialog.value = true;
         console.log(res);
+        visibleLoader.value = false;
       })
       .catch((err) => {
         console.log(err);
+        visibleLoader.value = false;
       });
   }
   // } else {
@@ -219,6 +229,8 @@ const handleGetExamForm = (data) => {
 const isOperationDialog = ref(false);
 
 const handlePay = (id) => {
+  visibleLoader.value = true;
+
   const model = {
     ExamID: id,
     OnlinePayment: true,
@@ -228,6 +240,7 @@ const handlePay = (id) => {
     .then((res) => {
       console.log(res);
       window.open(res.data.ZarrinPayURL, "_self");
+      visibleLoader.value = false;
     })
     .catch((err) => {
       console.log(err);
