@@ -10,6 +10,7 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^1.4.0",
+    "chart.js": "^4.3.0",
     "core-js": "^3.8.3",
     "crypto-js": "^4.1.1",
     "jalali-moment": "^3.3.11",
