@@ -37,6 +37,12 @@ const routes: Array<RouteRecordRaw> = [
         name: "myExams",
       },
       {
+        path: "my-tickets",
+        component: () => import("@/components/myTickets.vue"),
+        name: "myTickets",
+      },
+
+      {
         path: "master-exams",
         component: () => import("@/components/Master/ExamsList.vue"),
         name: "masterExams",

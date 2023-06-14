@@ -71,9 +71,18 @@ export const Admin = Object.freeze({
   EditQuestion: "Admin/EditQuestion",
   DeleteQuestion: "Admin/DeleteQuestion",
   GetExamsList: "Admin/GetExamsList",
+  GetTicketList: "Admin/GetTicketList",
 });
 export const User = Object.freeze({
   // GetUsersListAdmin: "Users/GetUsersListAdmin",
   UserInfoCompletion: "Users/InfoCompletion",
   Register: "Register",
+});
+
+export const Ticket = Object.freeze({
+  SendTicket: "Tickets/SendTicket",
+  EditTicket: "Tickets/EditTicket",
+  DeleteTicket: "Tickets/DeleteTicket",
+  AnswerTicket: "Tickets/AnswerTicket",
+  GetUserTickets: "Tickets/GetUserTickets",
 });

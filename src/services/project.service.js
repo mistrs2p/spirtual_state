@@ -9,6 +9,7 @@ import {
   Admin,
   User,
   QuestionItem,
+  Ticket,
 } from "../helpers/api-constant";
 import httpConfig from "../helpers/http.config.js";
 
@@ -224,6 +225,37 @@ class projectService {
     return await httpConfig.post(Exams.ExamAsnwerSaveDraft, {
       ...ExamAsnwerSaveDraftModel,
     });
+  }
+
+  async SendTicket(SendTicketModel) {
+    return await httpConfig.post(Ticket.SendTicket, {
+      ...SendTicketModel,
+    });
+  }
+
+  async EditTicket(EditTicketModel) {
+    return await httpConfig.post(Ticket.EditTicket, {
+      ...EditTicketModel,
+    });
+  }
+
+  async DeleteTicket(ID) {
+    return await httpConfig.post(Ticket.DeleteTicket, {
+      ID,
+    });
+  }
+
+  async AnswerTicket(AnswerTicketModel) {
+    return await httpConfig.post(Ticket.AnswerTicket, {
+      ...AnswerTicketModel,
+    });
+  }
+
+  async GetUserTickets() {
+    return await httpConfig.post(Ticket.GetUserTickets);
+  }
+  async GetTicketList() {
+    return await httpConfig.post(Admin.GetTicketList);
   }
 }
 export default new projectService();

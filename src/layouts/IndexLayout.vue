@@ -128,6 +128,13 @@
                     </q-item-section>
                   </q-item>
                 </router-link>
+                <router-link :to="{ name: 'myTickets' }">
+                  <q-item clickable v-ripple>
+                    <q-item-section>
+                      <q-item-label> تیکت ها </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </router-link>
               </q-list>
             </q-card-section>
           </q-card>
