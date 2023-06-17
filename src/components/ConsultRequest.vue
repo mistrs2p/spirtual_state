@@ -52,7 +52,12 @@
         label="رزرو همین ساعت برای هفته آینده"
       />
       <div>
-        <q-btn label="ثبت و پرداخت" type="submit" color="primary" />
+        <q-btn
+          :disable="visibleLoader"
+          label="ثبت و پرداخت"
+          type="submit"
+          color="primary"
+        />
         <!-- <q-btn
             label="خالی کردن"
             type="reset"
@@ -62,6 +67,12 @@
           /> -->
       </div>
     </q-form>
+    <q-inner-loading
+      :showing="visibleLoader"
+      label="لطفا منتظر بمانید..."
+      label-class="text-teal"
+      label-style="font-size: 1.1em"
+    />
   </div>
   <q-dialog v-model="isCheckBeforePay">
     <q-card style="width: 700px; max-width: 80vw">
@@ -161,16 +172,20 @@ const handleClickMeeting = (evt) => {
   console.log(evt);
   requestModle.value.MeetingID = evt.ID;
 };
+const visibleLoader = ref(false);
 const onSubmit = () => {
+  visibleLoader.value = true;
   projectService
     .ConsultanceRequest(requestModle.value)
     .then((res) => {
       console.log(res);
       previewData.value = res.data;
       isCheckBeforePay.value = true;
+      visibleLoader.value = false;
     })
     .catch((err) => {
       console.log(err);
+      visibleLoader.value = false;
     });
 };
 const handlePayPage = () => {

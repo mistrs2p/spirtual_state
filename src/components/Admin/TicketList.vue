@@ -5,7 +5,7 @@
       dense
       flat
       bordered
-      title="تیکت های من"
+      title="لیست تیکت ها"
       :rows="rows"
       :columns="columns"
       row-key="name"
@@ -17,7 +17,7 @@
         <q-inner-loading showing color="primary" />
       </template>
       <template v-slot:top>
-        <div class="col-2 q-table__title">تیکت های من</div>
+        <div class="col-2 q-table__title">لیست تیکت ها</div>
         <div>
           <q-btn
             dense
@@ -54,6 +54,9 @@
                 selectOption.find((el) => el.value == props.row[item.field])
                   ?.label
               }}
+            </span>
+            <span v-else-if="item.name == 'createdBy'">
+              {{ props.row[item.field].DisplayName }}
             </span>
 
             <span v-else-if="item.name == 'State'">
@@ -150,7 +153,7 @@
 </template>
 
 <script setup lang="ts">
-import projectService from "../services/project.service";
+import projectService from "../../services/project.service";
 import { Notify } from "quasar";
 
 import { ref, watch } from "vue";
@@ -173,6 +176,12 @@ const TicketCategory = {
 };
 const loading = ref(false);
 const columns = [
+  {
+    name: "createdBy",
+    label: "کاربر سازنده",
+    field: "createdBy",
+    // align: 'center',
+  },
   {
     name: "Subject",
     label: "عنوان",
@@ -331,14 +340,22 @@ const handleEdit = (evt) => {
   requestModle.value.Question = evt.Question;
   requestModle.value.ID = evt.ID;
 };
-const getTicketsData = () => {
+const getTicketsData = async () => {
   loading.value = true;
-
+  let data = [];
+  await projectService.GetUsersList().then((res) => {
+    console.log(res);
+    data = res.data;
+  });
   projectService
-    .GetUserTickets()
+    .GetTicketsList()
     .then((res) => {
       console.log(res);
       rows.value = res.data;
+      rows.value.forEach((el) => {
+        el.createdBy = data.find((f) => f.ID == el.CreatedByID);
+        console.log(el);
+      });
       loading.value = false;
 
       // Notify.create({

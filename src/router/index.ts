@@ -3,6 +3,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { handleNewVersion } from "../helpers/newVersionSet";
 import { useUserStore } from "../stores/user.js";
 import { Notify } from "quasar";
+import { appVersion } from "../main";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -38,7 +39,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "my-tickets",
-        component: () => import("@/components/myTickets.vue"),
+        component: () => import("@/components/MyTickets.vue"),
         name: "myTickets",
       },
 
@@ -107,6 +108,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/components/Admin/MastersInfo.vue"),
         name: "mastersInfo",
       },
+      {
+        path: "admin/ticket-list",
+        component: () => import("@/components/Admin/TicketList.vue"),
+        name: "ticketList",
+      },
     ],
   },
   {
@@ -127,7 +133,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   console.log(to, from);
   const myStorage = localStorage.getItem("UserStore");
-  // console.log("document", document);
+  console.log("document", appVersion);
   // console.log("asdasd", document.referrer);
   // console.log("sargrre", window.location);
   handleNewVersion();

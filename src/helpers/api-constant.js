@@ -71,7 +71,7 @@ export const Admin = Object.freeze({
   EditQuestion: "Admin/EditQuestion",
   DeleteQuestion: "Admin/DeleteQuestion",
   GetExamsList: "Admin/GetExamsList",
-  GetTicketList: "Admin/GetTicketList",
+  GetTicketsList: "Admin/GetTicketsList",
 });
 export const User = Object.freeze({
   // GetUsersListAdmin: "Users/GetUsersListAdmin",

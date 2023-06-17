@@ -141,7 +141,12 @@
               />
             </div>
             <div class="col-6">
-              <q-input filled v-model="dateTime.date">
+              <DatePicker
+                :disabled="false"
+                v-model="dateTime.date"
+                type="date"
+              />
+              <!-- <q-input filled v-model="dateTime.date">
                 <template v-slot:prepend>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy
@@ -162,10 +167,15 @@
                     </q-popup-proxy>
                   </q-icon>
                 </template>
-              </q-input>
+              </q-input> -->
             </div>
             <div class="col-6">
-              <q-input filled v-model="dateTime.time">
+              <DatePicker
+                :disabled="false"
+                v-model="dateTime.time"
+                type="time"
+              />
+              <!-- <q-input filled v-model="dateTime.time">
                 <template v-slot:append>
                   <q-icon name="access_time" class="cursor-pointer">
                     <q-popup-proxy
@@ -186,7 +196,7 @@
                     </q-popup-proxy>
                   </q-icon>
                 </template>
-              </q-input>
+              </q-input> -->
             </div>
             <div class="col-12 col-md-4">
               <q-input

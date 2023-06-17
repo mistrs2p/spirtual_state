@@ -68,7 +68,8 @@
               />
             </span>
             <span v-else-if="item.name == 'operation'">
-              <span v-if="props.row.IsExecuted">
+              <!-- <span v-if="props.row.IsExecuted"> -->
+              <span>
                 <q-btn
                   dense
                   flat
@@ -117,6 +118,7 @@
   </q-dialog>
   <q-dialog v-model="isResultShow" full-height full-width>
     <q-card>
+      <q-btn v-close-popup icon="close" flat round></q-btn>
       <q-card-section>
         <h5>
           مراجع: {{ resultData.UserDisplayName }}
@@ -456,6 +458,13 @@ const handleGetResultExam = (evt) => {
     })
     .catch((err) => {
       console.log(err);
+      Notify.create({
+        message: "برای این آزمون نتیجه ای وجود ندارد!",
+        position: "top",
+        timeout: 1000,
+        progress: true,
+        color: "negative",
+      });
       visibleLoader.value = false;
     });
   console.log(evt);

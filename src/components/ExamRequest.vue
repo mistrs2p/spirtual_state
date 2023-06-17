@@ -42,7 +42,12 @@
         </div>
 
         <div>
-          <q-btn label="ثبت و پرداخت" type="submit" color="primary" />
+          <q-btn
+            :disable="visibleLoader"
+            label="ثبت و پرداخت"
+            type="submit"
+            color="primary"
+          />
           <!-- <q-btn
               label="خالی کردن"
               type="reset"
@@ -53,6 +58,12 @@
         </div>
       </div>
     </q-form>
+    <q-inner-loading
+      :showing="visibleLoader"
+      label="لطفا منتظر بمانید..."
+      label-class="text-teal"
+      label-style="font-size: 1.1em"
+    />
   </div>
   <q-dialog v-model="isCheckBeforePay">
     <q-card style="width: 700px; max-width: 80vw">
@@ -134,7 +145,9 @@ handleGetQuestions();
 //   console.log(evt);
 //   question.value = evt;
 // };
+const visibleLoader = ref(false);
 const onSubmit = () => {
+  visibleLoader.value = true;
   console.log(requestModle.value);
   projectService
     .ExamRequest(requestModle.value)
@@ -142,9 +155,11 @@ const onSubmit = () => {
       isCheckBeforePay.value = true;
       console.log(res);
       previewData.value = res.data;
+      visibleLoader.value = false;
     })
     .catch((err) => {
       console.log(err);
+      visibleLoader.value = false;
     });
 };
 const handlePayPage = () => {

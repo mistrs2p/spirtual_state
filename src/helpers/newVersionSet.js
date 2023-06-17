@@ -1,9 +1,11 @@
 import { Notify } from "quasar";
+import { appVersion } from "../main";
 
 export const handleNewVersion = () => {
   const myVersion = localStorage.getItem("version");
-  const myEnvVersion = process.env.VUE_APP_VERSE;
-  if (!myVersion || (myVersion && myVersion != myEnvVersion)) {
+  const myEnvVersion = appVersion;
+  console.log(myEnvVersion, myVersion);
+  if (myVersion == null || (myVersion != null && myVersion != myEnvVersion)) {
     localStorage.setItem("version", myEnvVersion);
     Notify.create({
       message: "نسخه جدید دریافت شده، سایت بروز رسانی میشود ...",
@@ -13,7 +15,7 @@ export const handleNewVersion = () => {
       color: "secondary",
     });
     setTimeout(() => {
-      window.location.reload();
+      window.location.reload(true);
     }, 2000);
   } else {
     return;

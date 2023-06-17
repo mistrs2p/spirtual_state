@@ -16,7 +16,19 @@
       <template v-slot:loading>
         <q-inner-loading showing color="primary" />
       </template>
-
+      <template v-slot:top>
+        <div class="col-2 q-table__title">نمایش جلسات</div>
+        <div>
+          <q-btn
+            dense
+            color="primary"
+            @click="(isAdd = true), (isDialog = true)"
+            flat
+            >اضافه کردن جلسه</q-btn
+          >
+        </div>
+        <q-space />
+      </template>
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th
@@ -75,7 +87,7 @@
                 dense
                 color="primary"
                 flat
-                @click="(isEditDialog = true), (editData = { ...props.row })"
+                @click="(isDialog = true), (meetingData = { ...props.row })"
                 >ویرایش</q-btn
               >
             </span>
@@ -88,14 +100,14 @@
       </template>
     </q-table>
   </div>
-  <q-dialog v-model="isEditDialog" persistent>
+  <q-dialog v-model="isDialog">
     <q-card>
       <q-card-section class="row items-center">
-        <span class="q-ml-sm">ویرایش جلسه</span>
+        <span class="q-ml-sm">{{ isAdd ? "اضافه کردن" : "ویرایش" }} جلسه</span>
       </q-card-section>
       <q-card-section>
         <q-form
-          @submit="handleEdit"
+          @submit="handleSubmit"
           @reset="handleResetForm"
           class="q-gutter-md"
         >
@@ -104,7 +116,7 @@
               <q-input
                 filled
                 type="text"
-                v-model="editData.Title"
+                v-model="meetingData.Title"
                 label="عنوان"
                 lazy-rules
                 :rules="[
@@ -113,7 +125,8 @@
               />
             </div>
             <div class="col-6">
-              <q-input filled v-model="dateTime.date">
+              <DatePicker v-model="dateTime.date" type="date" />
+              <!-- <q-input filled v-model="dateTime.date">
                 <template v-slot:prepend>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy
@@ -134,10 +147,11 @@
                     </q-popup-proxy>
                   </q-icon>
                 </template>
-              </q-input>
+              </q-input> -->
             </div>
             <div class="col-6">
-              <q-input filled v-model="dateTime.time">
+              <DatePicker v-model="dateTime.time" type="time" />
+              <!-- <q-input filled v-model="dateTime.time">
                 <template v-slot:append>
                   <q-icon name="access_time" class="cursor-pointer">
                     <q-popup-proxy
@@ -158,13 +172,13 @@
                     </q-popup-proxy>
                   </q-icon>
                 </template>
-              </q-input>
+              </q-input> -->
             </div>
             <div class="col-12 col-md-4">
               <q-input
                 filled
                 type="number"
-                v-model="editData.Order"
+                v-model="meetingData.Order"
                 label="ردیف"
                 lazy-rules
                 :rules="[(val) => (val && val > 0) || 'ردیف باید ذکر شود']"
@@ -174,7 +188,7 @@
               <q-input
                 filled
                 type="number"
-                v-model="editData.Cost"
+                v-model="meetingData.Cost"
                 label="مبلغ جلسه"
                 lazy-rules
                 :rules="[(val) => (val && val > 0) || 'مبلغ جلسه باید ذکر شود']"
@@ -184,7 +198,7 @@
               <q-input
                 filled
                 type="number"
-                v-model="editData.Duration"
+                v-model="meetingData.Duration"
                 label="مدت جلسه"
                 lazy-rules
                 :rules="[(val) => (val && val > 0) || 'مدت جلسه باید ذکر شود']"
@@ -193,24 +207,30 @@
             <div class="col-12">
               <q-checkbox
                 size="xs"
-                v-model="editData.isVisible"
+                v-model="meetingData.isVisible"
                 label="قابلیت نمایش"
               />
               <q-checkbox
                 size="xs"
-                v-model="editData.IsReservable"
+                v-model="meetingData.IsReservable"
                 label="قابلیت رزرو"
               />
             </div>
           </div>
           <div class="q-gutter-x-sm">
-            <q-btn label="ثبت" type="submit" color="primary" />
+            <q-btn
+              :disable="visibleLoader"
+              label="ثبت"
+              type="submit"
+              color="primary"
+            />
             <q-btn
               label="پاک کردن فرم"
               id="resetBtn"
               type="reset"
               color="warning"
             />
+            <q-btn label="لغو" color="negative" v-close-popup />
             <!-- <q-btn
             label="خالی کردن"
             type="reset"
@@ -221,16 +241,12 @@
           </div>
         </q-form>
       </q-card-section>
-      <q-card-actions align="right">
-        <q-btn
-          flat
-          label="تایید"
-          color="primary"
-          @click="handleEdit"
-          v-close-popup
-        />
-        <q-btn flat label="لغو" color="warning" v-close-popup />
-      </q-card-actions>
+      <q-inner-loading
+        :showing="visibleLoader"
+        label="لطفا منتظر بمانید..."
+        label-class="text-teal"
+        label-style="font-size: 1.1em"
+      />
     </q-card>
   </q-dialog>
 </template>
@@ -329,7 +345,7 @@ const columns = [
   },
 ];
 
-const editData = ref({
+const meetingData = ref({
   Title: null,
   Order: null,
   StartTime: null,
@@ -342,13 +358,17 @@ const dateTime = ref({
   date: null,
   time: null,
 });
-const isEditDialog = ref(false);
-const handleEdit = () => {
+const isAdd = ref(false);
+const isDialog = ref(false);
+const visibleLoader = ref(false);
+
+const handleSubmit = async () => {
+  visibleLoader.value = true;
   console.log(true);
-  const model = { ...editData.value };
-  model.Order = parseFloat(editData.value.Order);
-  model.Duration = parseFloat(editData.value.Duration);
-  model.Cost = parseFloat(editData.value.Cost);
+  const model = { ...meetingData.value };
+  model.Order = parseFloat(meetingData.value.Order);
+  model.Duration = parseFloat(meetingData.value.Duration);
+  model.Cost = parseFloat(meetingData.value.Cost);
   model.StartTime = moment
     .from(
       `${dateTime.value.date} ${dateTime.value.time}`,
@@ -358,36 +378,68 @@ const handleEdit = () => {
     .format("YYYY-M-D HH:mm:ss");
 
   console.log(model);
-  projectService
-    .EditMasterMeeting(model)
-    .then((res) => {
-      console.log(res);
-      loadDataTable();
-      Notify.create({
-        message: "با موفقیت ویرایش شد!",
-        position: "top",
-        timeout: 500,
-        progress: true,
-        color: "positive",
+  if (!isAdd.value) {
+    await projectService
+      .EditMasterMeeting(model)
+      .then((res) => {
+        console.log(res);
+        loadDataTable();
+        Notify.create({
+          message: "با موفقیت ویرایش شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+        isDialog.value = false;
+        visibleLoader.value = false;
+      })
+      .catch((err) => {
+        console.log(err);
+        Notify.create({
+          message: "خطا",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
+        visibleLoader.value = false;
       });
-    })
-    .catch((err) => {
-      console.log(err);
-      Notify.create({
-        message: "خطا",
-        position: "top",
-        timeout: 500,
-        progress: true,
-        color: "negative",
+  } else {
+    await projectService
+      .AddMeeting(model)
+      .then((res) => {
+        console.log(res);
+        Notify.create({
+          message: "با موفقیت اضافه شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+        handleResetForm();
+        loadDataTable();
+        isDialog.value = false;
+        visibleLoader.value = false;
+      })
+      .catch((err) => {
+        console.log(err);
+        Notify.create({
+          message: "خطا",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
+        visibleLoader.value = false;
       });
-    });
+  }
 };
-watch(dateTime, (nVal, oVal) => {
-  console.log(nVal, oVal);
-});
-watch(isEditDialog, (nVal) => {
+
+watch(isDialog, (nVal) => {
   if (!nVal) {
-    editData.value = {
+    isAdd.value = false;
+    meetingData.value = {
       Title: null,
       Order: null,
       StartTime: null,
@@ -396,8 +448,8 @@ watch(isEditDialog, (nVal) => {
       isVisible: true,
       IsReservable: false,
     };
-  } else {
-    const dateTimeEdit = editData.value.StartTime.split("T");
+  } else if (!isAdd.value) {
+    const dateTimeEdit = meetingData.value.StartTime.split("T");
     dateTime.value.date = moment(dateTimeEdit[0], "YYYY-MM-DD")
       .locale("fa")
       .format("YYYY/MM/DD");
@@ -406,7 +458,11 @@ watch(isEditDialog, (nVal) => {
   }
 });
 const handleResetForm = () => {
-  editData.value = {
+  dateTime.value = {
+    date: null,
+    time: null,
+  };
+  meetingData.value = {
     Title: null,
     Order: null,
     StartTime: null,

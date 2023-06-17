@@ -254,8 +254,8 @@ class projectService {
   async GetUserTickets() {
     return await httpConfig.post(Ticket.GetUserTickets);
   }
-  async GetTicketList() {
-    return await httpConfig.post(Admin.GetTicketList);
+  async GetTicketsList() {
+    return await httpConfig.post(Admin.GetTicketsList);
   }
 }
 export default new projectService();

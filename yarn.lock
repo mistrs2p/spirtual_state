@@ -5027,7 +5027,7 @@
   "resolved" "https://registry.npmjs.org/module-alias/-/module-alias-2.2.2.tgz"
   "version" "2.2.2"
 
-"moment-jalaali@^0.9.2":
+"moment-jalaali@^0.9.2", "moment-jalaali@^0.9.4":
   "integrity" "sha512-v8wXjQplvk5ez+sUqgsWIrafwIf1BEXXvzTYwsg1wHcqh27nSgKPCJ6FnZRrCz03MoNyB9N31L0oms+vE8Rq7g=="
   "resolved" "https://registry.npmjs.org/moment-jalaali/-/moment-jalaali-0.9.6.tgz"
   "version" "0.9.6"
@@ -7106,6 +7106,13 @@
     "@vue/runtime-dom" "3.2.47"
     "@vue/server-renderer" "3.2.47"
     "@vue/shared" "3.2.47"
+
+"vue3-persian-datetime-picker@^1.2.2":
+  "integrity" "sha512-d7nkj5vgtUvEXZboSdRmP1uwBfXvXgXqdvsOOMQb34jiMZU/aBDrTYWTEe1N+XKF9pvTTJn8Rws9ttJmyhK/hw=="
+  "resolved" "https://registry.npmjs.org/vue3-persian-datetime-picker/-/vue3-persian-datetime-picker-1.2.2.tgz"
+  "version" "1.2.2"
+  dependencies:
+    "moment-jalaali" "^0.9.4"
 
 "watchpack@^2.4.0":
   "integrity" "sha512-Lcvm7MGST/4fup+ifyKi2hjyIAwcdI4HRgtvTpIUxBRhB+RFtUh8XtDOxUfctVCnhVi+QQj49i91OyvzkJl6cg=="

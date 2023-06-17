@@ -16,8 +16,9 @@
             :rules="[(val) => (val && val.length > 0) || 'عنوان باید ذکر شود']"
           />
         </div>
-        <div class="col-6">
-          <q-input filled v-model="dateTime.date">
+        <div class="col-12 col-md-6">
+          <DatePicker :disabled="false" v-model="dateTime.date" type="date" />
+          <!-- <q-input filled v-model="dateTime.date">
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
@@ -33,11 +34,13 @@
                 </q-popup-proxy>
               </q-icon>
             </template>
-          </q-input>
+          </q-input> -->
         </div>
-        <div class="col-6">
+        <div class="col-12 col-md-6">
+          <DatePicker :disabled="false" v-model="dateTime.time" type="time" />
+
           <!-- <custom-date-picker /> -->
-          <q-input filled v-model="dateTime.time">
+          <!-- <q-input filled v-model="dateTime.time">
             <template v-slot:append>
               <q-icon name="access_time" class="cursor-pointer">
                 <q-popup-proxy
@@ -58,7 +61,7 @@
                 </q-popup-proxy>
               </q-icon>
             </template>
-          </q-input>
+          </q-input> -->
         </div>
         <div class="col-12 col-md-4">
           <q-input
@@ -104,7 +107,12 @@
         </div>
       </div>
       <div class="q-gutter-x-sm">
-        <q-btn label="ثبت" type="submit" color="primary" />
+        <q-btn
+          label="ثبت"
+          type="submit"
+          color="primary"
+          :disable="visibleLoader"
+        />
         <q-btn
           label="پاک کردن فرم"
           id="resetBtn"
@@ -120,6 +128,12 @@
           /> -->
       </div>
     </q-form>
+    <q-inner-loading
+      :showing="visibleLoader"
+      label="لطفا منتظر بمانید..."
+      label-class="text-teal"
+      label-style="font-size: 1.1em"
+    />
   </div>
 </template>
 <script setup>
@@ -127,6 +141,7 @@ import { ref } from "vue";
 import projectService from "../../services/project.service.js";
 import moment from "jalali-moment";
 import { Notify } from "quasar";
+import DatePicker from "vue3-persian-datetime-picker";
 // import VuePersianDatetimePicker from 'vue-persian-datetime-picker'
 const dateTime = ref({
   date: null,
@@ -141,7 +156,9 @@ const addMeetingModel = ref({
   isVisible: true,
   IsReservable: false,
 });
+const visibleLoader = ref(false);
 const handleAddMeeting = () => {
+  visibleLoader.value = true;
   const model = { ...addMeetingModel.value };
   console.log(model);
   model.Order = parseFloat(addMeetingModel.value.Order);
@@ -158,6 +175,7 @@ const handleAddMeeting = () => {
   projectService
     .AddMeeting(model)
     .then((res) => {
+      visibleLoader.value = false;
       console.log(res);
       Notify.create({
         message: "با موفقیت اضافه شد!",
@@ -166,6 +184,7 @@ const handleAddMeeting = () => {
         progress: true,
         color: "positive",
       });
+      handleResetForm();
     })
     .catch((err) => {
       console.log(err);
@@ -176,6 +195,7 @@ const handleAddMeeting = () => {
         progress: true,
         color: "negative",
       });
+      visibleLoader.value = false;
     });
 };
 const handleResetForm = () => {
@@ -194,3 +214,5 @@ const handleResetForm = () => {
   };
 };
 </script>
+
+<style lang="scss"></style>

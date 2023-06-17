@@ -222,7 +222,12 @@
             <div class="row q-col-gutter-md">
               <div class="col-12">تاریخ درخواست</div>
               <div class="col-6">
-                <q-input filled v-model="dateTimeCreate.date">
+                <DatePicker
+                  :disabled="false"
+                  v-model="dateTimeCreate.date"
+                  type="date"
+                />
+                <!-- <q-input filled v-model="dateTimeCreate.date">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy
@@ -246,10 +251,16 @@
                       </q-popup-proxy>
                     </q-icon>
                   </template>
-                </q-input>
+                </q-input> -->
               </div>
               <div class="col-6">
-                <q-input filled v-model="dateTimeCreate.time">
+                <DatePicker
+                  :disabled="false"
+                  v-model="dateTimeCreate.time"
+                  type="time"
+                />
+
+                <!-- <q-input filled v-model="dateTimeCreate.time">
                   <template v-slot:append>
                     <q-icon name="access_time" class="cursor-pointer">
                       <q-popup-proxy
@@ -274,12 +285,18 @@
                       </q-popup-proxy>
                     </q-icon>
                   </template>
-                </q-input>
+                </q-input> -->
               </div>
               <div class="col-12">تاریخ پرداخت</div>
 
               <div class="col-6">
-                <q-input filled v-model="dateTimePay.date">
+                <DatePicker
+                  :disabled="false"
+                  v-model="dateTimePay.date"
+                  type="date"
+                />
+
+                <!-- <q-input filled v-model="dateTimePay.date">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy
@@ -300,10 +317,16 @@
                       </q-popup-proxy>
                     </q-icon>
                   </template>
-                </q-input>
+                </q-input> -->
               </div>
               <div class="col-6">
-                <q-input filled v-model="dateTimePay.time">
+                <DatePicker
+                  :disabled="false"
+                  v-model="dateTimePay.time"
+                  type="time"
+                />
+
+                <!-- <q-input filled v-model="dateTimePay.time">
                   <template v-slot:append>
                     <q-icon name="access_time" class="cursor-pointer">
                       <q-popup-proxy
@@ -328,12 +351,18 @@
                       </q-popup-proxy>
                     </q-icon>
                   </template>
-                </q-input>
+                </q-input> -->
               </div>
               <div class="col-12">تاریخ انجام</div>
 
               <div class="col-6">
-                <q-input filled v-model="dateTimeExecute.date">
+                <DatePicker
+                  :disabled="false"
+                  v-model="dateTimeExecute.date"
+                  type="date"
+                />
+
+                <!-- <q-input filled v-model="dateTimeExecute.date">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy
@@ -357,10 +386,16 @@
                       </q-popup-proxy>
                     </q-icon>
                   </template>
-                </q-input>
+                </q-input> -->
               </div>
               <div class="col-6">
-                <q-input filled v-model="dateTimeExecute.time">
+                <DatePicker
+                  :disabled="false"
+                  v-model="dateTimeExecute.time"
+                  type="time"
+                />
+
+                <!-- <q-input filled v-model="dateTimeExecute.time">
                   <template v-slot:append>
                     <q-icon name="access_time" class="cursor-pointer">
                       <q-popup-proxy
@@ -385,7 +420,7 @@
                       </q-popup-proxy>
                     </q-icon>
                   </template>
-                </q-input>
+                </q-input> -->
               </div>
             </div>
             <div class="col-12">
