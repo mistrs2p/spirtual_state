@@ -53,6 +53,11 @@
                 disable
               />
             </span>
+            <span v-else-if="item.name == 'User'" class="q-gutter-x-sm">
+              {{
+                usersList.find((el) => el.ID == props.row.UserID).DisplayName
+              }}
+            </span>
             <span v-else-if="item.name == 'operation'" class="q-gutter-x-sm">
               <!-- <q-btn color="primary" @click="handleEdit = true" dense flat
                 >ویرایش</q-btn

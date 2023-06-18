@@ -3,15 +3,17 @@
 </template>
 
 <script setup>
-import axios from "axios";
-const httpConfig = axios.create({
-  baseURL: "127.0.0.1:8000",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-httpConfig.get("/").then((res) => console.log(res));
-console.log(process.env);
+console.log(process.env.BASE_URL);
+
+// import axios from "axios";
+// const httpConfig = axios.create({
+//   baseURL: "127.0.0.1:8000",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// });
+// httpConfig.get("/").then((res) => console.log(res));
+// console.log(process.env);
 
 // import projectService from "./services/project.service.js";
 // alert(true);

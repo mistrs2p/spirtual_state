@@ -76,7 +76,7 @@
                 <router-link :to="{ name: 'showMeetings' }">
                   <q-item clickable v-ripple>
                     <q-item-section>
-                      <q-item-label>نمایش جلسات</q-item-label>
+                      <q-item-label>مدیریت جلسات</q-item-label>
                     </q-item-section>
                   </q-item>
                 </router-link>

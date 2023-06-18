@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center">
+  <div class="flex flex-center">
     <h3
       class=""
       style="
@@ -11,8 +11,8 @@
     >
       <!-- <q-img src="http://192.168.1.32/API_Hale_Manavi/Raven/Q1 (1).jpg" /> -->
       خوش آمدید
-    </h3></q-page
-  >
+    </h3>
+  </div>
 </template>
 
 <style></style>

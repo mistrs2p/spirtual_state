@@ -5,7 +5,7 @@
       dense
       flat
       bordered
-      title="نمایش جلسات"
+      title="مدیریت جلسات"
       :rows="rows"
       :columns="columns"
       row-key="name"
@@ -17,7 +17,7 @@
         <q-inner-loading showing color="primary" />
       </template>
       <template v-slot:top>
-        <div class="col-2 q-table__title">نمایش جلسات</div>
+        <div class="col-2 q-table__title">مدیریت جلسات</div>
         <div>
           <q-btn
             dense
@@ -253,7 +253,7 @@
 
 <script setup lang="ts">
 import projectService from "@/services/project.service";
-
+import { setDateStr } from "@/helpers/jalali-date-name-g";
 import { ref, watch } from "vue";
 import { Notify } from "quasar";
 import moment from "jalali-moment";
@@ -439,15 +439,7 @@ const handleSubmit = async () => {
 watch(isDialog, (nVal) => {
   if (!nVal) {
     isAdd.value = false;
-    meetingData.value = {
-      Title: null,
-      Order: null,
-      StartTime: null,
-      Cost: null,
-      Duration: null,
-      isVisible: true,
-      IsReservable: false,
-    };
+    handleResetForm();
   } else if (!isAdd.value) {
     const dateTimeEdit = meetingData.value.StartTime.split("T");
     dateTime.value.date = moment(dateTimeEdit[0], "YYYY-MM-DD")
@@ -457,6 +449,20 @@ watch(isDialog, (nVal) => {
     console.log(dateTimeEdit);
   }
 });
+
+watch(
+  dateTime,
+  (val) => {
+    console.log(val);
+    if (val.date != null && val.time != null) {
+      meetingData.value.Title =
+        setDateStr(`${val.date} ${val.time}`) +
+        ". " +
+        (meetingData.value.Title != null ? meetingData.value.Title : "");
+    }
+  },
+  { deep: true }
+);
 const handleResetForm = () => {
   dateTime.value = {
     date: null,

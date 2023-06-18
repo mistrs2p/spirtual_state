@@ -133,6 +133,11 @@
             label-class="text-teal"
             label-style="font-size: 1.1em"
           />
+          <p class="bg-blue-5 text-center q-pa-xs">
+            <a class="text-white" href="tel:+989372031851"
+              >پشتیبانی: 09372031851</a
+            >
+          </p>
         </div>
       </q-page>
     </q-page-container>

@@ -338,7 +338,7 @@ const getTicketsData = () => {
     .GetUserTickets()
     .then((res) => {
       console.log(res);
-      rows.value = res.data;
+      rows.value = res.data.filter((el) => el.IsVisible);
       loading.value = false;
 
       // Notify.create({

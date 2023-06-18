@@ -16,7 +16,7 @@
       <template v-slot:loading>
         <q-inner-loading showing color="primary" />
       </template>
-      <template v-slot:top>
+      <!-- <template v-slot:top>
         <div class="col-2 q-table__title">لیست تیکت ها</div>
         <div>
           <q-btn
@@ -28,7 +28,7 @@
           >
         </div>
         <q-space />
-      </template>
+      </template> -->
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th
@@ -87,6 +87,17 @@
                     (requestModle.ID = props.row.ID)
                 "
               />
+              <q-btn
+                flat
+                dense
+                label="پاسخ"
+                color="secondary"
+                @click="
+                  (isAnswer = true),
+                    (isDialog = true),
+                    (requestModle.ID = props.row.ID)
+                "
+              />
               <!-- disable -->
             </span>
             <span v-else>
@@ -102,12 +113,21 @@
     <q-card>
       <q-card-section class="row items-center">
         <span class="q-ml-sm"
-          >{{ isAdd ? "اضافه کردن" : isEdit ? "ویرایش" : "حذف" }} تیکت</span
+          >{{
+            isAdd
+              ? "اضافه کردن"
+              : isEdit
+              ? "ویرایش"
+              : isAnswer
+              ? "پاسخ به"
+              : "حذف"
+          }}
+          تیکت</span
         >
       </q-card-section>
       <q-card-section>
         <q-form @submit="onSubmit" class="q-gutter-md">
-          <div v-if="!isDelete">
+          <div v-if="isAdd || isEdit">
             <q-input
               filled
               type="text"
@@ -136,7 +156,16 @@
               :rules="[(val) => val != null || 'بخش مورد نظر باید ذکر شود']"
             />
           </div>
-          <h6 v-else>از حذف تیکت اطمینان دارید؟</h6>
+          <h6 v-else-if="isDelete">از حذف تیکت اطمینان دارید؟</h6>
+          <div v-else-if="isAnswer">
+            <q-input
+              filled
+              type="textarea"
+              v-model="requestModle.Answer"
+              label="پاسخ"
+              :rules="[(val) => (val && val.length > 0) || 'پاسخ باید ذکر شود']"
+            />
+          </div>
           <div>
             <q-btn label="انجام عملیات" type="submit" color="primary" />
           </div>
@@ -264,7 +293,7 @@ const onSubmit = (evt) => {
       });
   } else if (isEdit.value) {
     projectService
-      .EditTicket(requestModle.value)
+      .AdminEditTicket(requestModle.value)
       .then((res) => {
         console.log(res);
         Notify.create({
@@ -290,9 +319,9 @@ const onSubmit = (evt) => {
         });
         visibleLoader.value = false;
       });
-  } else {
+  } else if (isDelete.value) {
     projectService
-      .DeleteTicket(requestModle.value.ID)
+      .AdminDeleteTicket(requestModle.value.ID)
       .then((res) => {
         console.log(res);
         Notify.create({
@@ -318,6 +347,38 @@ const onSubmit = (evt) => {
         });
         visibleLoader.value = false;
       });
+  } else {
+    const model = {
+      Answer: requestModle.value.Answer,
+      ID: requestModle.value.ID,
+    };
+    projectService
+      .AnswerTicket(model)
+      .then((res) => {
+        console.log(res);
+        Notify.create({
+          message: "تیکت با موفقیت پاسخ داده شد!",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          color: "positive",
+        });
+
+        visibleLoader.value = false;
+        getTicketsData();
+        isDialog.value = false;
+      })
+      .catch((err) => {
+        console.log(err);
+        Notify.create({
+          message: "خطا در ایجاد پاسخ!",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          color: "negative",
+        });
+        visibleLoader.value = false;
+      });
   }
   console.log(requestModle.value);
 };
@@ -328,6 +389,7 @@ watch(isDialog, (nVal) => {
     isAdd.value = false;
     isEdit.value = false;
     isDelete.value = false;
+    isAnswer.value = false;
   }
 });
 const handleEdit = (evt) => {
@@ -386,5 +448,9 @@ const resetForm = () => {
     Category: null,
   };
   ticketCat.value = null;
+};
+const isAnswer = ref(false);
+const handleAnswer = () => {
+  // const model = {}
 };
 </script>

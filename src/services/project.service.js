@@ -257,5 +257,16 @@ class projectService {
   async GetTicketsList() {
     return await httpConfig.post(Admin.GetTicketsList);
   }
+  async AdminEditTicket(AdminEditTicketModel) {
+    return await httpConfig.post(Admin.AdminEditTicket, {
+      ...AdminEditTicketModel,
+    });
+  }
+
+  async AdminDeleteTicket(ID) {
+    return await httpConfig.post(Admin.AdminDeleteTicket, {
+      ID,
+    });
+  }
 }
 export default new projectService();
