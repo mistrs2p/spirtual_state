@@ -12,11 +12,13 @@
       <!-- <q-img src="http://192.168.1.32/API_Hale_Manavi/Raven/Q1 (1).jpg" /> -->
       خوش آمدید
     </h3>
+    <span>
+      {{ $appVersion }}
+    </span>
   </div>
 </template>
 
 <style></style>
 
-<script setup>
-console.log(process.env.NODE_ENV);
-</script>
+<!-- <script setup>
+</script> -->

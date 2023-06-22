@@ -12,7 +12,8 @@
         />
 
         <q-toolbar-title>
-          <router-link :to="{ name: 'home' }"> حال معنوی </router-link>
+          <router-link :to="{ name: 'home' }"> حال معنوی </router-link
+          ><span style="font-size: 0.8rem">{{ $appVersion }}</span>
         </q-toolbar-title>
         <div>
           <q-btn @click="logout" push glossy dense color="red-14">
@@ -42,7 +43,7 @@
             <q-space />
             <router-link :to="{ name: 'myTickets' }">
               <q-btn push glossy color="teal" icon="local_activity" round dense>
-                <q-tooltip>تیکت</q-tooltip></q-btn
+                <q-tooltip>پشتیبانی</q-tooltip></q-btn
               >
             </router-link>
           </div>

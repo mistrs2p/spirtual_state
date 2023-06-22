@@ -1,4 +1,5 @@
 const { defineConfig } = require("@vue/cli-service");
+process.env.VUE_APP_VERSION = require("./package.json").version;
 module.exports = defineConfig({
   transpileDependencies: ["quasar"],
 
@@ -13,4 +14,5 @@ module.exports = defineConfig({
     config.output.filename("[name].[contenthash].js").end();
     config.output.chunkFilename("[name].[contenthash].js").end();
   },
+  filenameHashing: true,
 });

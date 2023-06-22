@@ -58,6 +58,9 @@
             <span v-else-if="item.name == 'createdBy'">
               {{ props.row[item.field].DisplayName }}
             </span>
+            <span v-else-if="item.name == 'Qusetion'">
+              {{ props.row[item.field] }}
+            </span>
 
             <span v-else-if="item.name == 'State'">
               <q-chip
@@ -250,12 +253,19 @@ const columns = [
 ];
 const rows = ref([]);
 const ticketCat = ref(null);
+// const selectOption = ref([
+//   { label: "Consultation", value: 1 },
+//   { label: "Exam", value: 2 },
+//   { label: "Master", value: 3 },
+//   { label: "Payment", value: 4 },
+//   { label: "Account", value: 5 },
+// ]);
 const selectOption = ref([
-  { label: "Consultation", value: 1 },
-  { label: "Exam", value: 2 },
-  { label: "Master", value: 3 },
-  { label: "Payment", value: 4 },
-  { label: "Account", value: 5 },
+  { label: "مشاوره", value: 1 },
+  { label: "آزمون", value: 2 },
+  { label: "استاد مشاور", value: 3 },
+  { label: "پرداخت", value: 4 },
+  { label: "حساب کاربری", value: 5 },
 ]);
 
 const onSubmit = (evt) => {

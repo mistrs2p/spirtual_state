@@ -19,6 +19,7 @@
         name="masters"
         v-model="master"
         :options="mastersList"
+        :loading="isLoadMaster"
         @update:model-value="handleClickMaster"
         option-label="DisplayName"
         option-value="ID"
@@ -26,11 +27,20 @@
         filled
         clearable
         label="انتخاب استاد"
-      />
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              داده ای وجود ندارد...
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
       <q-select
         name="meeting"
         v-model="meeting"
         :options="meetingsList"
+        :loading="isLoadMeet"
         @update:model-value="handleClickMeeting"
         option-label="Title"
         option-value="ID"
@@ -38,7 +48,17 @@
         filled
         clearable
         label="انتخاب جلسه"
-      />
+        placeholder="asdfasdf"
+      >
+        <!-- :disable="!isMeetExist" -->
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              داده ای وجود ندارد...
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
       <q-input
         filled
         type="text"
@@ -116,11 +136,18 @@
         <q-btn flat label="پرداخت" color="primary" @click="handlePayPage" />
         <q-btn flat label="لغو" v-close-popup color="warning" />
       </q-card-actions>
+      <q-inner-loading
+        :showing="visibleLoader"
+        label="لطفا منتظر بمانید..."
+        label-class="text-teal"
+        label-style="font-size: 1.1em"
+      />
     </q-card>
   </q-dialog>
 </template>
 
 <script setup lang="ts">
+import { Notify } from "quasar";
 import { ref } from "vue";
 // import { Notify } from 'quasar';
 import projectService from "../services/project.service.js";
@@ -138,20 +165,28 @@ const meeting = ref(null);
 const meetingsList = ref([]);
 const isCheckBeforePay = ref(false);
 const previewData = ref(null);
+const isLoadMaster = ref(false);
+const isLoadMeet = ref(false);
 const handleGetMasters = () => {
+  isLoadMaster.value = true;
   projectService
     .Masters()
     .then((res) => {
       console.log(res);
+
       mastersList.value = res.data;
+      isLoadMaster.value = false;
     })
     .catch((err) => {
       console.log(err);
+      isLoadMaster.value = false;
     });
 };
 handleGetMasters();
-
+const isMeetExist = ref(false);
 const handleClickMaster = (evt) => {
+  meeting.value = null;
+  isLoadMeet.value = true;
   console.log(evt);
   if (evt == null) {
     meetingsList.value = [];
@@ -163,9 +198,17 @@ const handleClickMaster = (evt) => {
     .then((res) => {
       console.log(res);
       meetingsList.value = res.data;
+      isLoadMeet.value = false;
+
+      if (res.data.length < 1) {
+        isMeetExist.value = true;
+      } else {
+        isMeetExist.value = true;
+      }
     })
     .catch((err) => {
       console.log(err);
+      isLoadMeet.value = false;
     });
 };
 const handleClickMeeting = (evt) => {
@@ -189,6 +232,7 @@ const onSubmit = () => {
     });
 };
 const handlePayPage = () => {
+  visibleLoader.value = true;
   const model = {
     RequestID: previewData.value?.ID,
     OnlinePayment: true,
@@ -199,10 +243,19 @@ const handlePayPage = () => {
       console.log(res);
       window.open(res.data.ZarrinPayURL, "_self");
       isCheckBeforePay.value = false;
+      visibleLoader.value = false;
     })
     .catch((err) => {
+      Notify.create({
+        message: err.response.data.Message,
+        position: "top",
+        timeout: 1000,
+        progress: true,
+        color: "negative",
+      });
       console.log(err);
       isCheckBeforePay.value = false;
+      visibleLoader.value = false;
     });
 };
 </script>

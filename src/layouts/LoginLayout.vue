@@ -39,9 +39,11 @@
                     type="text"
                     lazy-rules
                     label="نام کاربری"
+                    @keydown="handleRegex"
                     :rules="[
                       (val) =>
-                        (val && val.length > 0) || 'نام کاربری مورد نیاز است',
+                        /^09\d{9}$/.test(val) ||
+                        'Invalid format. Must start with 09 and have 9 digits.',
                     ]"
                   >
                     <template v-slot:prepend>
@@ -137,6 +139,7 @@
             <a class="text-white" href="tel:+989372031851"
               >پشتیبانی: 09372031851</a
             >
+            <small style="display: block">نسخه {{ $appVersion }}</small>
           </p>
         </div>
       </q-page>
@@ -155,9 +158,9 @@ import { handleNewVersion } from "@/helpers/newVersionSet";
 const userStore = useUserStore();
 const router = useRouter();
 const isLogin = ref(true);
-const userName = ref();
-const password = ref();
-const repassword = ref();
+const userName = ref(null);
+const password = ref(null);
+const repassword = ref(null);
 const register = ref(false);
 // const passwordFieldType = ref("password");
 const visibility = ref(false);
@@ -248,5 +251,18 @@ const onReset = () => {
   userName.value = null;
   password.value = null;
   repassword.value = null;
+};
+
+const handleRegex = (event) => {
+  if (!userName.value) return;
+  const keyPressed = String.fromCharCode(event.keyCode);
+  if (/[a-zA-Z]/.test(keyPressed)) {
+    console.log("str");
+    console.log(userName.value);
+    // userName.value = userName.value.slice(0, -1);
+  }
+  const pattern = "^09\\d{9}$";
+  const regex = new RegExp(pattern);
+  console.log(regex.test(userName.value));
 };
 </script>

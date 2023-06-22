@@ -3,10 +3,10 @@ import { appVersion } from "../main";
 
 export const handleNewVersion = () => {
   const myVersion = localStorage.getItem("version");
-  const myEnvVersion = appVersion;
-  console.log(myEnvVersion, myVersion);
-  if (myVersion == null || (myVersion != null && myVersion != myEnvVersion)) {
-    localStorage.setItem("version", myEnvVersion);
+  const myEnvVersion = process.env.VUE_APP_VERSION;
+  console.log(myEnvVersion, myVersion, appVersion);
+  if (!myVersion || (myVersion && myVersion != appVersion)) {
+    localStorage.setItem("version", appVersion);
     Notify.create({
       message: "نسخه جدید دریافت شده، سایت بروز رسانی میشود ...",
       position: "top",

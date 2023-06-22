@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-// import projectService from "../services/project.service.js";
+import projectService from "../services/project.service.js";
 import { handleNewVersion } from "../helpers/newVersionSet";
 import { useUserStore } from "../stores/user.js";
 import { Notify } from "quasar";
@@ -131,6 +131,10 @@ const router = createRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
+  projectService
+    .QuestionsList()
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
   console.log(to, from);
   const myStorage = localStorage.getItem("UserStore");
   console.log("document", appVersion);

@@ -16,6 +16,7 @@ const httpConfig = axios.create({
 httpConfig.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 httpConfig.defaults.headers.post["Access-Control-Allow-Methods"] = "*";
 httpConfig.defaults.headers.post["Access-Control-Allow-Headers"] = "*";
+httpConfig.defaults.headers.post["Cache-Control"] = "no-cache";
 console.log(authHeader());
 const authInterceptor = (config) => {
   config.headers["Authorization"] = authHeader();

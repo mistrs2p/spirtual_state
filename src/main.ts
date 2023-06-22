@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 import { createApp } from "vue";
 import App from "./App.vue";
 import "./registerServiceWorker";
@@ -6,10 +8,10 @@ import { Quasar, Notify } from "quasar";
 import quasarUserOptions from "./quasar-user-options";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
-
 import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+
 export const appVersion: string = require("../package.json").version;
+
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 if (process.env.NODE_ENV === "production") {
@@ -27,7 +29,7 @@ const SpirtualState = createApp(App);
 console.log(appVersion);
 SpirtualState.config.globalProperties.$appVersion = appVersion;
 SpirtualState.component("DatePicker", Vue3PersianDatetimePicker);
-console.log(SpirtualState.config);
+console.log(SpirtualState);
 SpirtualState.use(Quasar, {
   ...quasarUserOptions,
   plugins: {

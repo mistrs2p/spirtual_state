@@ -14,12 +14,14 @@
             filled
             clearable
             label="انتخاب تست"
+            :loading="isLoadTest"
           />
         </div>
         <div class="col-12">
           <q-select
             name="masters"
             v-model="master"
+            :loading="isLoadMaster"
             :options="mastersList"
             @update:model-value="
               (evt) => (requestModle.MasterCUserID = evt.cUserID)
@@ -94,6 +96,12 @@
         <q-btn flat label="پرداخت" color="primary" @click="handlePayPage" />
         <q-btn flat label="لغو" v-close-popup color="warning" />
       </q-card-actions>
+      <q-inner-loading
+        :showing="visibleLoader"
+        label="لطفا منتظر بمانید..."
+        label-class="text-teal"
+        label-style="font-size: 1.1em"
+      />
     </q-card>
   </q-dialog>
 </template>
@@ -113,27 +121,36 @@ const question = ref(null);
 const questionsList = ref([]);
 const isCheckBeforePay = ref(false);
 const previewData = ref(null);
+const isLoadMaster = ref(false);
+const isLoadTest = ref(false);
+
 const handleGetMasters = () => {
+  isLoadMaster.value = true;
   projectService
     .Masters()
     .then((res) => {
+      isLoadMaster.value = false;
       console.log(res);
       mastersList.value = res.data;
     })
     .catch((err) => {
+      isLoadMaster.value = false;
       console.log(err);
     });
 };
 handleGetMasters();
 const handleGetQuestions = () => {
+  isLoadTest.value = true;
   projectService
     .QuestionsList()
     .then((res) => {
       console.log(res);
       questionsList.value = res.data;
+      isLoadTest.value = false;
     })
     .catch((err) => {
       console.log(err);
+      isLoadTest.value = false;
     });
 };
 handleGetQuestions();
@@ -163,6 +180,7 @@ const onSubmit = () => {
     });
 };
 const handlePayPage = () => {
+  visibleLoader.value = true;
   const model = {
     ExamID: previewData.value?.ID,
     OnlinePayment: true,
@@ -174,10 +192,12 @@ const handlePayPage = () => {
       window.open(res.data.ZarrinPayURL, "_self");
       isCheckBeforePay.value = false;
       handleResetForm();
+      visibleLoader.value = false;
     })
     .catch((err) => {
       console.log(err);
       isCheckBeforePay.value = false;
+      visibleLoader.value = false;
     });
 };
 const handleResetForm = () => {
