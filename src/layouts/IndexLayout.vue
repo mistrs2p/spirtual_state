@@ -209,6 +209,13 @@
                     </q-item-section>
                   </q-item>
                 </router-link>
+                <router-link :to="{ name: 'sendSMS' }">
+                  <q-item clickable v-ripple>
+                    <q-item-section>
+                      <q-item-label>ارسال پیام</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </router-link>
               </q-list>
             </q-card-section>
           </q-card>
@@ -239,7 +246,7 @@
   </q-dialog> -->
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import { useUserStore } from "../stores/user";
 import { useRouter } from "vue-router";

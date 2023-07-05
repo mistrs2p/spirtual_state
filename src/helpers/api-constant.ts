@@ -74,6 +74,7 @@ export const Admin = Object.freeze({
   GetTicketsList: "Admin/GetTicketsList",
   AdminEditTicket: "Admin/EditTicket",
   AdminDeleteTicket: "Admin/DeleteTicket",
+  SendSMS: "Admin/SendSMS",
 });
 export const User = Object.freeze({
   // GetUsersListAdmin: "Users/GetUsersListAdmin",

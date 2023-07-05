@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "target": "esnext",
     "module": "esnext",
     "strict": true,
@@ -11,10 +11,12 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
+    // "allowImportingTsExtensions": true,
+
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env"
+      "webpack-env", "quasar"
     ],
     "paths": {
       "@/*": [
@@ -34,7 +36,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-, "src/stores/user.js"  ],
+, "src/stores/user.ts", "src/services/project.service.ts", "src/helpers/http.config.ts","shims-quasar.d.ts"  ],
   "exclude": [
     "node_modules"
   ]

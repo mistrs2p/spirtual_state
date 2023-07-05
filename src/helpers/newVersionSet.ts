@@ -15,7 +15,7 @@ export const handleNewVersion = () => {
       color: "secondary",
     });
     setTimeout(() => {
-      window.location.reload(true);
+      window.location.reload();
     }, 2000);
   } else {
     return;

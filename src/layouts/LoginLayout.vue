@@ -35,17 +35,18 @@
                   <q-input
                     square
                     clearable
-                    v-model="userName"
+                    v-model="login.UserName"
                     type="text"
                     lazy-rules
-                    label="نام کاربری"
-                    @keydown="handleRegex"
+                    label="نام کاربری (شماره موبایل)"
+                  >
+                    <!-- :maxlength="11" -->
+                    <!-- @keyup="handleRegex"
                     :rules="[
                       (val) =>
                         /^09\d{9}$/.test(val) ||
-                        'Invalid format. Must start with 09 and have 9 digits.',
-                    ]"
-                  >
+                        'لطفا فرمت مناسب موبایل وارد نمایید',
+                    ]" -->
                     <template v-slot:prepend>
                       <q-icon name="person" />
                     </template>
@@ -53,7 +54,7 @@
                   <q-input
                     square
                     clearable
-                    v-model="password"
+                    v-model="login.Password"
                     :type="visibility ? 'text' : 'password'"
                     lazy-rules
                     label="کلمه عبور"
@@ -81,7 +82,8 @@
                     lazy-rules
                     label="تکرار کلمه عبور"
                     :rules="[
-                      (val) => val == password || 'با کلمه عبور مطابقت ندارد',
+                      (val) =>
+                        val == login.Password || 'با کلمه عبور مطابقت ندارد',
                     ]"
                     v-if="!isLogin"
                   >
@@ -120,7 +122,7 @@
                 </q-form>
               </q-card-section>
 
-              <q-card-section v-if="!register" class="text-center q-pa-sm">
+              <q-card-section v-if="!isRegister" class="text-center q-pa-sm">
                 <p class="text-grey-6"></p>
                 <q-btn @click="isLogin = !isLogin" flat>{{
                   isLogin ? "ثبت نام نکرده اید؟" : "ورود به پنل کاربری"
@@ -147,48 +149,48 @@
   </q-layout>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script setup lang="ts">
+import interfaces from "@/interfaces/interfaces";
+import { ref, Ref } from "vue";
 import { useUserStore } from "../stores/user";
-import projectService from "../services/project.service.js";
+import projectService from "../services/project.service";
 import { useRouter } from "vue-router";
 import CryptoJS from "crypto-js";
 import { Notify } from "quasar";
 import { handleNewVersion } from "@/helpers/newVersionSet";
+
 const userStore = useUserStore();
 const router = useRouter();
 const isLogin = ref(true);
-const userName = ref(null);
-const password = ref(null);
 const repassword = ref(null);
-const register = ref(false);
-// const passwordFieldType = ref("password");
+const isRegister = ref(false);
+
+const login: Ref<interfaces.UserLogin> = ref({
+  UserName: "",
+  Password: "",
+});
+
 const visibility = ref(false);
 const reVisibility = ref(false);
-// const visibilityIcon = ref("visibility");
 const visibleLoader = ref(false);
 const onSubmit = () => {
   visibleLoader.value = true;
-  // let myApi = null;
-  const loginModel = {
-    UserName: userName.value,
+  const loginModel: interfaces.UserLogin = {
+    UserName: login.value.UserName,
     Password: isLogin.value
-      ? CryptoJS.SHA256(CryptoJS.enc.Utf8.parse(password.value)).toString()
-      : password.value,
-    // SeqKey: seqKey,
+      ? CryptoJS.SHA256(
+          CryptoJS.enc.Utf8.parse(login.value.Password)
+        ).toString()
+      : login.value.Password,
   };
-  // isLogin.value
-  //   ? (myApi = projectService.Login(loginModel))
-  //   : (myApi = projectService.UserRegister(loginModel));
   console.log(loginModel);
   if (isLogin.value) {
     handleNewVersion();
     projectService
       .Login(loginModel)
-      .then((res) => {
-        console.log(res);
-        userStore.user = res.data;
-        console.log(userStore.user);
+      .then(({ data }: { data: interfaces.LoginResponse }) => {
+        console.log(data);
+        userStore.user = data;
         Notify.create({
           message: "ورود موفقیت آمیز",
           position: "top",
@@ -215,10 +217,8 @@ const onSubmit = () => {
   } else {
     projectService
       .UserRegister(loginModel)
-      .then((res) => {
-        console.log(res);
-        userStore.user = res.data;
-        console.log(userStore.user);
+      .then(({ data }: { data: interfaces.RegisterResponse }) => {
+        userStore.user = data;
         Notify.create({
           message: "ثبت نام موفقیت آمیز",
           position: "top",
@@ -241,28 +241,27 @@ const onSubmit = () => {
           progress: true,
           color: "negative",
         });
-        // isLoading.value = false;
         visibleLoader.value = false;
       });
   }
 };
 
 const onReset = () => {
-  userName.value = null;
-  password.value = null;
+  login.value.UserName = "";
+  login.value.Password = "";
   repassword.value = null;
 };
 
 const handleRegex = (event) => {
-  if (!userName.value) return;
-  const keyPressed = String.fromCharCode(event.keyCode);
-  if (/[a-zA-Z]/.test(keyPressed)) {
+  if (login.value.UserName == "" && login.value.UserName == null) return;
+  // const keyPressed = String.fromCharCode(event.keyCode);
+  const keyPressed = event.key;
+  if (/\D/.test(keyPressed)) {
     console.log("str");
-    console.log(userName.value);
-    // userName.value = userName.value.slice(0, -1);
+    if (login.value.UserName.length < 11) {
+      login.value.UserName = login.value.UserName.slice(0, -1);
+    }
   }
-  const pattern = "^09\\d{9}$";
-  const regex = new RegExp(pattern);
-  console.log(regex.test(userName.value));
 };
 </script>
+@/helpers/newVersionSet.jts

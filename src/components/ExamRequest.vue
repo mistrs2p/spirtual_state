@@ -109,7 +109,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 // import { Notify } from 'quasar';
-import projectService from "../services/project.service.js";
+import projectService from "../services/project.service";
 const requestModle = ref({
   QuestionID: null,
   MasterCUserID: null,

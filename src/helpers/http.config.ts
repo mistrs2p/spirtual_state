@@ -1,4 +1,9 @@
-import axios from "axios";
+import axios, {
+  AxiosInstance,
+  AxiosRequestConfig,
+  InternalAxiosRequestConfig,
+  AxiosResponse,
+} from "axios";
 import { authHeader } from "./auth-header";
 import router from "../router";
 import { useUserStore } from "../stores/user";
@@ -6,7 +11,7 @@ const baseUrl = process.env.VUE_APP_ROOT_URL; // "http://localhost:8811/api"; //
 
 const Api_Path = `${baseUrl}/`;
 
-const httpConfig = axios.create({
+const httpConfig: AxiosInstance = axios.create({
   baseURL: Api_Path,
   headers: {
     "Content-Type": "application/json",
@@ -17,19 +22,19 @@ httpConfig.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 httpConfig.defaults.headers.post["Access-Control-Allow-Methods"] = "*";
 httpConfig.defaults.headers.post["Access-Control-Allow-Headers"] = "*";
 httpConfig.defaults.headers.post["Cache-Control"] = "no-cache";
-console.log(authHeader());
-const authInterceptor = (config) => {
+const authInterceptor = (config: InternalAxiosRequestConfig) => {
   config.headers["Authorization"] = authHeader();
   return config;
 };
 
 httpConfig.interceptors.response.use(
-  function (response) {
+  (response: AxiosResponse) => {
     // console.log(response);
     // handleNewVersion();
     return response;
   },
   function (error) {
+    console.log(error);
     if (error.response.status === 401) {
       console.log(error);
       console.log(router);

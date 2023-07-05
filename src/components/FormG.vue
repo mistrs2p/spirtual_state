@@ -180,7 +180,7 @@
 <script setup>
 import { ref, computed, defineProps, defineEmits } from "vue";
 import { Notify } from "quasar";
-import projectService from "../services/project.service.js";
+import projectService from "../services/project.service";
 
 const emit = defineEmits(["closeDialog"]);
 const props = defineProps({

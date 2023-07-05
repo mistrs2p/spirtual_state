@@ -13,6 +13,12 @@
       :separator="'cell'"
       :loading="loading"
     >
+      <template v-slot:item="props">
+        <div v-for="(value, key) in props.row" :key="key">
+          {{ value }}
+        </div>
+        <br />
+      </template>
       <template v-slot:loading>
         <q-inner-loading showing color="primary" />
       </template>

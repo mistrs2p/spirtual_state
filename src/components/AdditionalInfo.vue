@@ -200,8 +200,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Notify } from "quasar";
-import projectService from "../services/project.service.js";
-import { useUserStore } from "../stores/user.js";
+import projectService from "../services/project.service";
+import { useUserStore } from "../stores/user";
 import { useRouter } from "vue-router";
 import moment from "jalali-moment";
 

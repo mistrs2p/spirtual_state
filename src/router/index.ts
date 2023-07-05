@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import projectService from "../services/project.service.js";
+import projectService from "../services/project.service";
 import { handleNewVersion } from "../helpers/newVersionSet";
-import { useUserStore } from "../stores/user.js";
-import { Notify } from "quasar";
+// import { useUserStore } from "../stores/user.ts";
+// import { Notify } from "quasar";
 import { appVersion } from "../main";
 
 const routes: Array<RouteRecordRaw> = [
@@ -112,6 +112,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "admin/ticket-list",
         component: () => import("@/components/Admin/TicketList.vue"),
         name: "ticketList",
+      },
+      {
+        path: "admin/send-sms",
+        component: () => import("@/components/Admin/SendSMS.vue"),
+        name: "sendSMS",
       },
     ],
   },

@@ -11,24 +11,24 @@ import {
   QuestionItem,
   Ticket,
 } from "../helpers/api-constant";
-import httpConfig from "../helpers/http.config.js";
+import httpConfig from "../helpers/http.config";
 
 class projectService {
-  async Register1(registerModel) {
+  async Register1(registerModel: object) {
     return await httpConfig.post(ApiConst.Register, { ...registerModel });
   }
-  async UserRegister(registerModel) {
+  async UserRegister(registerModel: object) {
     return await httpConfig.post(User.Register, { ...registerModel });
   }
-  async Login(loginModel) {
+  async Login(loginModel: object) {
     return await httpConfig.post(ApiConst.Login, { ...loginModel });
   }
-  async UserInfoCompletion(userInfoModel) {
+  async UserInfoCompletion(userInfoModel: object) {
     return await httpConfig.post(ApiConst.UserInfoCompletion, {
       ...userInfoModel,
     });
   }
-  async UserChangePassword(passwordModel) {
+  async UserChangePassword(passwordModel: object) {
     return await httpConfig.post(ApiConst.UserChangePassword, {
       ...passwordModel,
     });
@@ -42,12 +42,12 @@ class projectService {
   async UserTests() {
     return await httpConfig.post(ApiConst.UserTests);
   }
-  async GetMasterMeetings(MasterID) {
+  async GetMasterMeetings(MasterID: string | number) {
     return await httpConfig.post(Meetings.GetMasterMeetings, {
       MasterID,
     });
   }
-  async GetMasterMeetingsForMaster(MasterID) {
+  async GetMasterMeetingsForMaster(MasterID: string | number) {
     return await httpConfig.post(Meetings.GetMasterMeetingsForMaster, {
       MasterID,
     });
@@ -55,12 +55,12 @@ class projectService {
   async GetUserDiscounts() {
     return await httpConfig.get(Discount.GetUserDiscounts);
   }
-  async ConsultanceRequest(consultRequestModel) {
+  async ConsultanceRequest(consultRequestModel: object) {
     return await httpConfig.post(Requests.ConsultanceRequest, {
       ...consultRequestModel,
     });
   }
-  async ConsultancePayment(consultConsultancePaymentModel) {
+  async ConsultancePayment(consultConsultancePaymentModel: object) {
     return await httpConfig.post(Requests.ConsultancePayment, {
       ...consultConsultancePaymentModel,
     });
@@ -75,26 +75,24 @@ class projectService {
   async GetUserConsultanceRequests() {
     return await httpConfig.post(Requests.GetUserConsultanceRequests);
   }
-  async AddMeeting(addMeetingModel) {
+  async AddMeeting(addMeetingModel: object) {
     return await httpConfig.post(Meetings.AddMeeting, { ...addMeetingModel });
   }
-  async DeleteMasterMeeting(MeetingID) {
+  async DeleteMasterMeeting(MeetingID: string | number) {
     return await httpConfig.post(Meetings.DeleteMasterMeeting, {
       MeetingID,
     });
   }
-  async EditMasterMeeting(editMeetingModel) {
+  async EditMasterMeeting(editMeetingModel: object) {
     return await httpConfig.post(Meetings.EditMasterMeeting, {
       ...editMeetingModel,
     });
   }
-  async CheckRequestPay(RequestID) {
+  async CheckRequestPay(RequestID: string | number) {
     return await httpConfig.post(Requests.CheckRequestPay, { RequestID });
   }
-  async GetMasterConsultances(MasterID) {
-    return await httpConfig.post(Requests.GetMasterConsultances, {
-      MasterID,
-    });
+  async GetMasterConsultances() {
+    return await httpConfig.post(Requests.GetMasterConsultances);
   }
   async GetDiscountsList() {
     return await httpConfig.post(Admin.GetDiscountsList);
@@ -111,89 +109,89 @@ class projectService {
   async GetQuestionsList() {
     return await httpConfig.post(Admin.GetQuestionsList);
   }
-  async AdminGetQuestionItemsList(QuestionID) {
+  async AdminGetQuestionItemsList(QuestionID: string | number) {
     return await httpConfig.post(Admin.AdminGetQuestionItemsList, {
       QuestionID,
     });
   }
-  async UserGetQuestionItemsList(ExamID) {
+  async UserGetQuestionItemsList(ExamID: string | number) {
     return await httpConfig.post(QuestionItem.GetQuestionItemsList, {
       ExamID,
     });
   }
-  async GetMastersInfo(masterInfoModel) {
+  async GetMastersInfo(masterInfoModel: object) {
     return await httpConfig.post(Admin.GetMastersInfo, { ...masterInfoModel });
   }
-  async DeleteMaster(MasterID) {
+  async DeleteMaster(MasterID: string | number) {
     return await httpConfig.post(Admin.DeleteMaster, { MasterID });
   }
   async GetUsersList() {
     return await httpConfig.post(Admin.GetUsersList);
   }
-  async DeleteDiscount(ID) {
+  async DeleteDiscount(ID: string | number) {
     return await httpConfig.post(Admin.DeleteDiscount, { ID });
   }
-  async AddDiscount(addDiscountModel) {
+  async AddDiscount(addDiscountModel: object) {
     return await httpConfig.post(Admin.AddDiscount, {
       ...addDiscountModel,
     });
   }
-  async EditMaster(editMasterModel) {
+  async EditMaster(editMasterModel: object) {
     return await httpConfig.post(Admin.EditMaster, {
       ...editMasterModel,
     });
   }
-  async AddMaster(addMasterModel) {
+  async AddMaster(addMasterModel: object) {
     return await httpConfig.post(Admin.AddMaster, {
       ...addMasterModel,
     });
   }
-  async EditDiscount(editDiscountModel) {
+  async EditDiscount(editDiscountModel: object) {
     return await httpConfig.post(Admin.EditDiscount, {
       ...editDiscountModel,
     });
   }
-  async DeleteMeeting(MeetingID) {
+  async DeleteMeeting(MeetingID: string | number) {
     return await httpConfig.post(Admin.DeleteMeeting, {
       MeetingID,
     });
   }
-  async EditMeeting(editMeetingModel) {
+  async EditMeeting(editMeetingModel: object) {
     return await httpConfig.post(Admin.EditMeeting, {
       ...editMeetingModel,
     });
   }
-  async AddMeetingAdmin(adminAddMeetingModel) {
+  async AddMeetingAdmin(adminAddMeetingModel: object) {
     return await httpConfig.post(Admin.AddMeeting, {
       ...adminAddMeetingModel,
     });
   }
-  async AddConsultanceRequest(adminAddConsultModel) {
+  async AddConsultanceRequest(adminAddConsultModel: object) {
     return await httpConfig.post(Admin.AddConsultanceRequest, {
       ...adminAddConsultModel,
     });
   }
-  async EditConsultanceRequest(adminEditConsultModel) {
+  async EditConsultanceRequest(adminEditConsultModel: object) {
     return await httpConfig.post(Admin.EditConsultanceRequest, {
       ...adminEditConsultModel,
     });
   }
-  async DeleteConsultanceRequest(ID) {
+  async DeleteConsultanceRequest(ID: string | number) {
     return await httpConfig.post(Admin.DeleteConsultanceRequest, {
       ID,
     });
   }
-  async AddQuestion(addQuestionModel) {
+  async AddQuestion(addQuestionModel: object) {
     return await httpConfig.post(Admin.AddQuestion, {
       ...addQuestionModel,
     });
   }
-  async EditQuestion(editQuestionModel) {
+  async EditQuestion(editQuestionModel: object) {
     return await httpConfig.post(Admin.EditQuestion, {
       ...editQuestionModel,
     });
   }
-  async DeleteQuestion(ID) {
+  async DeleteQuestion(ID: string | number) {
     return await httpConfig.post(Admin.DeleteQuestion, {
       ID,
     });
@@ -204,48 +202,48 @@ class projectService {
   async QuestionsList() {
     return await httpConfig.post(Questions.List);
   }
-  async ExamRequest(examRequestModel) {
+  async ExamRequest(examRequestModel: object) {
     return await httpConfig.post(Exams.ExamRequest, { ...examRequestModel });
   }
-  async ExamPayment(examPayModel) {
+  async ExamPayment(examPayModel: object) {
     return await httpConfig.post(Exams.ExamPayment, { ...examPayModel });
   }
-  async ExamResult(ExamID) {
+  async ExamResult(ExamID: string | number) {
     return await httpConfig.post(Exams.ExamResult, {
       ExamID,
     });
   }
-  async ExamsCalculateResult(ExamCalculateResultModel) {
+  async ExamsCalculateResult(ExamCalculateResultModel: object) {
     return await httpConfig.post(Exams.ExamsCalculateResult, {
       ...ExamCalculateResultModel,
     });
   }
 
-  async ExamAsnwerSaveDraft(ExamAsnwerSaveDraftModel) {
+  async ExamAsnwerSaveDraft(ExamAsnwerSaveDraftModel: object) {
     return await httpConfig.post(Exams.ExamAsnwerSaveDraft, {
       ...ExamAsnwerSaveDraftModel,
     });
   }
 
-  async SendTicket(SendTicketModel) {
+  async SendTicket(SendTicketModel: object) {
     return await httpConfig.post(Ticket.SendTicket, {
       ...SendTicketModel,
     });
   }
 
-  async EditTicket(EditTicketModel) {
+  async EditTicket(EditTicketModel: object) {
     return await httpConfig.post(Ticket.EditTicket, {
       ...EditTicketModel,
     });
   }
 
-  async DeleteTicket(ID) {
+  async DeleteTicket(ID: string | number) {
     return await httpConfig.post(Ticket.DeleteTicket, {
       ID,
     });
   }
 
-  async AnswerTicket(AnswerTicketModel) {
+  async AnswerTicket(AnswerTicketModel: object) {
     return await httpConfig.post(Ticket.AnswerTicket, {
       ...AnswerTicketModel,
     });
@@ -257,15 +255,20 @@ class projectService {
   async GetTicketsList() {
     return await httpConfig.post(Admin.GetTicketsList);
   }
-  async AdminEditTicket(AdminEditTicketModel) {
+  async AdminEditTicket(AdminEditTicketModel: object) {
     return await httpConfig.post(Admin.AdminEditTicket, {
       ...AdminEditTicketModel,
     });
   }
 
-  async AdminDeleteTicket(ID) {
+  async AdminDeleteTicket(ID: string | number) {
     return await httpConfig.post(Admin.AdminDeleteTicket, {
       ID,
+    });
+  }
+  async SendSMS(SendSMSModel: object) {
+    return await httpConfig.post(Admin.SendSMS, {
+      ...SendSMSModel,
     });
   }
 }

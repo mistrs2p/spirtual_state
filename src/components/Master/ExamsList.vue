@@ -280,24 +280,25 @@
   </q-dialog>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends string">
+import interfaces from "@/interfaces/interfaces";
 import projectService from "../../services/project.service";
-
-import { ref, onMounted, nextTick, computed } from "vue";
+import { ref, defineComponent, nextTick, computed } from "vue";
 import { Notify } from "quasar";
+import { type genericComp } from "type";
 import FormG from "@/components/FormG.vue";
 import ChartG from "@/components/ChartG.vue";
 
-const rows = ref([]);
+const rows = ref<interfaces.MasterExamResponse[]>([]);
 const loading = ref(false);
 
 const loadDataTable = () => {
   loading.value = true;
   projectService
     .GetMasterExams()
-    .then((res) => {
-      console.log(res);
-      rows.value = res.data;
+    .then(({ data }: { data: interfaces.MasterExamResponse[] }) => {
+      console.log(data);
+      rows.value = data;
       loading.value = false;
     })
     .catch((err) => {
@@ -409,7 +410,7 @@ const visibleLoader = ref(false);
 const formData = ref(null);
 const answers = ref(null);
 const examID = ref(null);
-const examQType = ref(null);
+const examQType = ref<string | null>(null);
 
 const handleShowExam = (evt) => {
   visibleLoader.value = true;
@@ -433,9 +434,9 @@ const handleShowExam = (evt) => {
 };
 const isResultShow = ref(false);
 const resultData = ref(null);
-const handleGetResultExam = (evt) => {
+const handleGetResultExam = (evt: interfaces.MasterExamResponse) => {
   visibleLoader.value = true;
-  const model = {
+  const model: interfaces.ExamCalculateResultRequest = {
     ExamID: evt.ID,
     Answers: evt.Answer,
   };

@@ -3,9 +3,9 @@
 </template>
 
 <script setup>
-console.log(process.env.BASE_URL);
-console.log(process.env.VUE_APP_VERSION);
-console.log(process.env);
+// console.log(process.env.BASE_URL);
+// console.log(process.env.VUE_APP_VERSION);
+// console.log(process.env);
 
 // import axios from "axios";
 // const httpConfig = axios.create({

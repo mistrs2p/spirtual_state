@@ -138,7 +138,7 @@
 </template>
 <script setup>
 import { ref } from "vue";
-import projectService from "../../services/project.service.js";
+import projectService from "../../services/project.service";
 import moment from "jalali-moment";
 import { Notify } from "quasar";
 import DatePicker from "vue3-persian-datetime-picker";

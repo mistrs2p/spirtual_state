@@ -150,7 +150,7 @@
 import { Notify } from "quasar";
 import { ref } from "vue";
 // import { Notify } from 'quasar';
-import projectService from "../services/project.service.js";
+import projectService from "../services/project.service";
 const requestModle = ref({
   ID: null,
   Title: null,
