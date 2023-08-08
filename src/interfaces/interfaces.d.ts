@@ -115,3 +115,19 @@ export interface sendSMS {
   Text: string;
   Mobile: string;
 }
+
+export interface ForgotPassword {
+  Password: string;
+  ForgotPassCode: string;
+  PhoneNumber: string;
+}
+
+export interface ForgotPasswordStep2 {
+  PhoneNumber: string;
+  ForgotPassCode: number;
+}
+
+export interface ForgotPasswordFinalStep {
+  PhoneNumber: string;
+  Password: string;
+}

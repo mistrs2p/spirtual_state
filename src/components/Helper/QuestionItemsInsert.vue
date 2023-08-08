@@ -40,7 +40,19 @@
               />
             </div>
             <div class="col-12">
-              <q-select
+              <SelectView
+                :valInit="QITypeMolde"
+                :selectOption="QITypeList"
+                label="نوع آیتم آزمون"
+                filled
+                @listenChangeValue="(evt) => (QITypeMolde = evt)"
+                :optionLabel="'name'"
+                :optionValue="'id'"
+                :color="'primary'"
+                :myFilterProp="'name'"
+                :myRules="[(val) => val || 'نوع آیتم آزمون باید ذکر شود']"
+              />
+              <!-- <q-select
                 name="tests"
                 v-model="QITypeMolde"
                 :options="QITypeList"
@@ -51,10 +63,22 @@
                 clearable
                 label="نوع آیتم آزمون"
                 :rules="[(val) => val || 'نوع آیتم آزمون باید ذکر شود']"
-              />
+              /> -->
             </div>
             <div class="col-12">
-              <q-select
+              <SelectView
+                :valInit="AnswerTypeModel"
+                :selectOption="AnswerTypeList"
+                label="نوع پاسخ"
+                filled
+                @listenChangeValue="(evt) => (AnswerTypeModel = evt)"
+                :optionLabel="'name'"
+                :optionValue="'id'"
+                :color="'primary'"
+                :myFilterProp="'name'"
+                :myRules="[(val) => val || 'نوع پاسخ باید ذکر شود']"
+              />
+              <!-- <q-select
                 name="tests"
                 v-model="AnswerTypeModel"
                 :options="AnswerTypeList"
@@ -65,7 +89,7 @@
                 clearable
                 label="نوع پاسخ"
                 :rules="[(val) => val || 'نوع پاسخ باید ذکر شود']"
-              />
+              /> -->
             </div>
             <div class="col-12">
               <q-input
@@ -114,7 +138,19 @@
             </div>
             <div class="col-12">
               <!-- @update:model-value="handleClickQType" -->
-              <q-select
+              <SelectView
+                :valInit="test"
+                :selectOption="rows"
+                label="آزمون"
+                filled
+                @listenChangeValue="(evt) => (test = evt)"
+                :optionLabel="'Name'"
+                :optionValue="'ID'"
+                :color="'primary'"
+                :myFilterProp="'Name'"
+                :myRules="[(val) => val || 'آزمون باید ذکر شود']"
+              />
+              <!-- <q-select
                 name="tests"
                 v-model="test"
                 :options="rows"
@@ -125,7 +161,7 @@
                 clearable
                 label="آزمون"
                 :rules="[(val) => val || 'آزمون باید ذکر شود']"
-              />
+              /> -->
             </div>
 
             <div class="q-gutter-x-sm">
@@ -149,6 +185,7 @@
 
 <script setup lang="ts">
 import projectService from "../../services/project.service";
+import SelectView from "@/components/Helper/SelectView.vue";
 
 import { ref, defineProps, computed } from "vue";
 

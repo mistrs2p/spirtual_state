@@ -151,7 +151,20 @@
               />
             </div>
             <div class="col-12" v-if="isAdd">
-              <q-select
+              <SelectView
+                :valInit="master"
+                :selectOption="mastersList"
+                :label="'انتخاب استاد'"
+                filled
+                @listenChangeValue="
+                  (evt) => ((master = evt), handleClickMaster(evt))
+                "
+                :optionLabel="'DisplayName'"
+                :optionValue="'ID'"
+                :color="'primary'"
+                :myFilterProp="'DisplayName'"
+              />
+              <!-- <q-select
                 name="masters"
                 v-model="master"
                 :options="mastersList"
@@ -162,10 +175,23 @@
                 filled
                 clearable
                 label="انتخاب استاد"
-              />
+              /> -->
             </div>
             <div class="col-12">
-              <q-select
+              <SelectView
+                :valInit="meeting"
+                :selectOption="meetingsList"
+                :label="'انتخاب جلسه'"
+                filled
+                @listenChangeValue="
+                  (evt) => ((meeting = evt), handleClickMeeting(evt))
+                "
+                :optionLabel="'Title'"
+                :optionValue="'ID'"
+                :color="'primary'"
+                :myFilterProp="'Title'"
+              />
+              <!-- <q-select
                 name="meeting"
                 v-model="meeting"
                 :options="meetingsList"
@@ -176,10 +202,23 @@
                 filled
                 clearable
                 label="انتخاب جلسه"
-              />
+              /> -->
             </div>
             <div class="col-12">
-              <q-select
+              <SelectView
+                :valInit="user"
+                :selectOption="usersList"
+                :label="'انتخاب کاربر'"
+                filled
+                @listenChangeValue="
+                  (evt) => ((user = evt), handleClickUser(evt))
+                "
+                :optionLabel="'DisplayName'"
+                :optionValue="'ID'"
+                :color="'primary'"
+                :myFilterProp="'DisplayName'"
+              />
+              <!-- <q-select
                 name="user"
                 v-model="user"
                 :options="usersList"
@@ -190,7 +229,7 @@
                 filled
                 clearable
                 label="انتخاب کاربر"
-              />
+              /> -->
             </div>
 
             <div class="col-12">
@@ -489,6 +528,7 @@
 <script setup lang="ts">
 import projectService from "@/services/project.service";
 import moment from "jalali-moment";
+import SelectView from "@/components/Helper/SelectView.vue";
 
 import { ref, watch } from "vue";
 import { Notify } from "quasar";
@@ -784,11 +824,11 @@ const handleClickMaster = (evt) => {
 };
 const handleClickMeeting = (evt) => {
   console.log(evt);
-  operationData.value.MeetingID = evt.ID;
+  operationData.value.MeetingID = evt?.ID;
 };
 
 const handleClickUser = (evt) => {
-  operationData.value.cUserID = evt.ID;
+  operationData.value.cUserID = evt?.ID;
   console.log(evt);
 };
 

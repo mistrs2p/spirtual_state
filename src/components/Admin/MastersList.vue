@@ -169,18 +169,20 @@
                 v-model="operationData.Tel"
                 label="شماره تماس"
                 lazy-rules
-                :rules="[(val) => val.length > 0 || 'شماره تماس باید ذکر شود']"
+                :rules="[(val) => val?.length > 0 || 'شماره تماس باید ذکر شود']"
               />
             </div>
             <div class="col-12">
               <q-select
                 name="users"
                 v-model="cUserID"
-                :options="usersList"
-                option-label="DisplayName"
+                :options="usersListFilter"
+                :option-label="(item) => item.DisplayName + ' ' + item.UserName"
                 :option-value="'ID'"
                 color="primary"
                 filled
+                use-input
+                @filter="filterFn"
                 clearable
                 label="انتخاب مراجعه کننده"
                 :rules="[(val) => val || 'مراجعه کننده باید ذکر شود']"
@@ -232,6 +234,7 @@ import projectService from "@/services/project.service";
 import { Notify } from "quasar";
 import { ref, watch } from "vue";
 // import { Notify } from 'quasar';
+import SelectView from "@/components/Helper/SelectView.vue";
 const isOperationDialog = ref(false);
 const isEditDialog = ref(false);
 // const operationData = ref(null);
@@ -348,6 +351,8 @@ const handleResetForm = () => {
   cUserID.value = null;
 };
 const usersList = ref([]);
+const usersListFilter = ref([]);
+
 const handleGetUsers = () => {
   loading.value = true;
   projectService
@@ -355,6 +360,7 @@ const handleGetUsers = () => {
     .then((res) => {
       console.log(res);
       usersList.value = res.data;
+      usersListFilter.value = res.data;
       // options.value.pageCount = Math.ceil(res.data.length / itemsPerPage.value);
       loading.value = false;
     })
@@ -443,6 +449,27 @@ const handleAddMasterDialog = () => {
   handleResetForm();
   isAdd.value = true;
   isEditDialog.value = true;
+};
+const filterFn = (val, update) => {
+  console.log(val, update);
+  if (val === "") {
+    update(() => {
+      usersListFilter.value = usersList.value;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    console.log(needle.toLowerCase());
+    console.log(usersListFilter.value);
+    console.log(usersList.value);
+    usersListFilter.value = usersList.value.filter(
+      (vall) =>
+        vall.DisplayName?.toLowerCase().indexOf(needle) > -1 ||
+        vall.UserName?.toLowerCase().indexOf(needle) > -1
+    );
+  });
 };
 </script>
 <style lang="scss"></style>

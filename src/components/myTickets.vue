@@ -122,7 +122,17 @@
               label="سوال"
               :rules="[(val) => (val && val.length > 0) || 'سوال باید ذکر شود']"
             />
-            <q-select
+            <SelectView
+              :valInit="ticketCat"
+              :selectOption="selectOption"
+              :label="'انتخاب بخش'"
+              filled
+              @listenChangeValue="(evt) => (ticketCat = evt)"
+              :color="'primary'"
+              :myFilterProp="'Name'"
+              :myRules="[(val) => val != null || 'بخش مورد نظر باید ذکر شود']"
+            />
+            <!-- <q-select
               name="masters"
               v-model="ticketCat"
               :options="selectOption"
@@ -131,7 +141,7 @@
               clearable
               label="انتخاب بخش"
               :rules="[(val) => val != null || 'بخش مورد نظر باید ذکر شود']"
-            />
+            /> -->
           </div>
           <h6 v-else>از حذف تیکت اطمینان دارید؟</h6>
           <div>
@@ -152,6 +162,7 @@
 <script setup lang="ts">
 import projectService from "../services/project.service";
 import { Notify } from "quasar";
+import SelectView from "@/components/Helper/SelectView.vue";
 
 import { ref, watch } from "vue";
 const requestModle = ref({

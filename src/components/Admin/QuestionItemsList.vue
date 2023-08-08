@@ -35,8 +35,22 @@
           >
         </div>
         <q-space />
-
-        <q-select
+        <SelectView
+          :valInit="questionItem"
+          :selectOption="questionItemsList"
+          :label="'انتخاب نوع آزمون'"
+          filled
+          @listenChangeValue="
+            (evt) => ((questionItem = evt), handleClickQuestionItem(evt))
+          "
+          :optionLabel="'Name'"
+          :optionValue="'ID'"
+          :color="'primary'"
+          :myFilterProp="'Name'"
+          :myRules="[(val) => val || 'استاد باید ذکر شود']"
+          :prepIcon="'quiz'"
+        />
+        <!-- <q-select
           name="masters"
           v-model="questionItem"
           :options="questionItemsList"
@@ -53,7 +67,7 @@
           <template v-slot:prepend>
             <q-icon name="quiz"> </q-icon>
           </template>
-        </q-select>
+        </q-select> -->
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -161,6 +175,7 @@
 import projectService from "@/services/project.service";
 import QuestionItemsInsert from "@/components/Helper/QuestionItemsInsert.vue";
 import { ref, computed } from "vue";
+import SelectView from "@/components/Helper/SelectView.vue";
 // import { Notify } from 'quasar';
 
 const rows = ref([]);

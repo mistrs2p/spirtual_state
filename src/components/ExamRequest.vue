@@ -3,7 +3,21 @@
     <q-form @submit="onSubmit" class="q-gutter-md">
       <div class="row q-col-gutter-y-md">
         <div class="col-12">
-          <q-select
+          <SelectView
+            :valInit="question"
+            :selectOption="questionsList"
+            :loading="isLoadTest"
+            :label="'انتخاب تست'"
+            filled
+            @listenChangeValue="
+              (evt) => ((question = evt), (requestModle.QuestionID = evt.ID))
+            "
+            :optionLabel="'Name'"
+            :optionValue="'ID'"
+            :color="'primary'"
+            :myFilterProp="'Name'"
+          />
+          <!-- <q-select
             name="meeting"
             v-model="question"
             :options="questionsList"
@@ -15,10 +29,26 @@
             clearable
             label="انتخاب تست"
             :loading="isLoadTest"
-          />
+          /> -->
         </div>
         <div class="col-12">
-          <q-select
+          <SelectView
+            :valInit="master"
+            :selectOption="mastersList"
+            :loading="isLoadMaster"
+            :label="'انتخاب استاد'"
+            filled
+            @listenChangeValue="
+              (evt) => (
+                (master = evt), (requestModle.MasterCUserID = evt.cUserID)
+              )
+            "
+            :optionLabel="'DisplayName'"
+            :optionValue="'ID'"
+            :color="'primary'"
+            :myFilterProp="'DisplayName'"
+          />
+          <!-- <q-select
             name="masters"
             v-model="master"
             :loading="isLoadMaster"
@@ -32,7 +62,7 @@
             filled
             clearable
             label="انتخاب استاد"
-          />
+          /> -->
         </div>
         <div class="col-12">
           <q-input
@@ -108,6 +138,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import SelectView from "@/components/Helper/SelectView.vue";
 // import { Notify } from 'quasar';
 import projectService from "../services/project.service";
 const requestModle = ref({

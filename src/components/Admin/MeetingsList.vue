@@ -229,7 +229,19 @@
               />
             </div>
             <div class="col-12">
-              <q-select
+              <SelectView
+                :valInit="master"
+                :selectOption="mastersList"
+                :label="'انتخاب استاد'"
+                filled
+                @listenChangeValue="(evt) => (master = evt)"
+                :optionLabel="'DisplayName'"
+                :optionValue="'ID'"
+                :color="'primary'"
+                :myFilterProp="'DisplayName'"
+                :myRules="[(val) => val || 'استاد باید ذکر شود']"
+              />
+              <!-- <q-select
                 name="masters"
                 v-model="master"
                 :options="mastersList"
@@ -240,7 +252,7 @@
                 clearable
                 label="انتخاب استاد"
                 :rules="[(val) => val || 'استاد باید ذکر شود']"
-              />
+              /> -->
             </div>
             <div class="col-12">
               <q-checkbox
@@ -276,6 +288,7 @@
 <script setup lang="ts">
 import projectService from "@/services/project.service";
 import moment from "jalali-moment";
+import SelectView from "@/components/Helper/SelectView.vue";
 
 import { ref } from "vue";
 import { Notify } from "quasar";

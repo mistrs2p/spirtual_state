@@ -2,6 +2,7 @@
   <q-layout view="lHh Lpr fff">
     <q-page-container>
       <q-page
+        v-if="!isForgetPass"
         class="window-height window-width row justify-center items-center"
         style="background: linear-gradient(#8274c5, #5a4a9f)"
       >
@@ -18,15 +19,6 @@
                 </h4>
               </q-card-section>
               <q-card-section>
-                <!-- <q-fab
-                  color="primary"
-                  @click="switchTypeForm"
-                  icon="add"
-                  class="absolute"
-                  style="top: 0; right: 12px; transform: translateY(-50%)"
-                >
-                  <q-tooltip> Регистрация нового пользователя </q-tooltip>
-                </q-fab> -->
                 <q-form
                   @submit="onSubmit"
                   @reset="onReset"
@@ -40,13 +32,6 @@
                     lazy-rules
                     label="نام کاربری (شماره موبایل)"
                   >
-                    <!-- :maxlength="11" -->
-                    <!-- @keyup="handleRegex"
-                    :rules="[
-                      (val) =>
-                        /^09\d{9}$/.test(val) ||
-                        'لطفا فرمت مناسب موبایل وارد نمایید',
-                    ]" -->
                     <template v-slot:prepend>
                       <q-icon name="person" />
                     </template>
@@ -110,14 +95,6 @@
                       class="full-width text-white"
                       :label="isLogin ? 'ورود' : 'ثبت نام'"
                     />
-                    <!-- <q-btn
-                      unelevated
-                      size="md"
-                      type="reset"
-                      color="warning"
-                      class="text-white"
-                      label="پاک کردن فرم"
-                    /> -->
                   </q-card-actions>
                 </q-form>
               </q-card-section>
@@ -126,6 +103,164 @@
                 <p class="text-grey-6"></p>
                 <q-btn @click="isLogin = !isLogin" flat>{{
                   isLogin ? "ثبت نام نکرده اید؟" : "ورود به پنل کاربری"
+                }}</q-btn>
+                <q-btn @click="isForgetPass = !isForgetPass" flat>{{
+                  isLogin ? "فراموشی رمز عبور" : "فراموشی رمز عبور"
+                }}</q-btn>
+              </q-card-section>
+            </q-card>
+          </div>
+
+          <q-inner-loading
+            :showing="visibleLoader"
+            label="لطفا منتظر بمانید..."
+            label-class="text-teal"
+            label-style="font-size: 1.1em"
+          />
+          <p class="bg-blue-5 text-center q-pa-xs">
+            <a class="text-white" href="tel:+989372031851"
+              >پشتیبانی: 09372031851</a
+            >
+            <small style="display: block">نسخه {{ $appVersion }}</small>
+          </p>
+        </div>
+      </q-page>
+      <q-page
+        v-else
+        class="window-height window-width row justify-center items-center"
+        style="background: linear-gradient(#8274c5, #5a4a9f)"
+      >
+        <div class="column q-pa-lg">
+          <div class="row">
+            <q-card
+              square
+              class="shadow-24"
+              style="min-width: 250px; max-width: 400px"
+            >
+              <q-card-section>
+                <q-form class="q-px-sm q-pt-xl">
+                  <q-input
+                    square
+                    clearable
+                    v-model="forgetPhone.PhoneNumber"
+                    type="text"
+                    lazy-rules
+                    label="شماره موبایل"
+                    :disable="isStep2 || isStep3"
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="phone" />
+                    </template>
+                  </q-input>
+                  <q-input
+                    v-if="isStep2"
+                    square
+                    clearable
+                    v-model="forgetPhone.ForgotPassCode"
+                    type="text"
+                    lazy-rules
+                    label="کد ارسالی"
+                    :disable="isStep3"
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="code" />
+                    </template>
+                  </q-input>
+
+                  <q-input
+                    square
+                    clearable
+                    v-model="newForgetPass"
+                    :type="fVisibility ? 'text' : 'password'"
+                    lazy-rules
+                    label="کلمه عبور"
+                    :rules="[
+                      (val) =>
+                        (val && val.length > 0) || 'کلمه عبور مورد نیاز است',
+                    ]"
+                    v-if="isStep3"
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="lock" />
+                    </template>
+                    <template v-slot:append>
+                      <q-icon
+                        :name="fVisibility ? 'visibility_off' : 'visibility'"
+                        @click="fVisibility = !fVisibility"
+                        class="cursor-pointer"
+                      />
+                    </template>
+                  </q-input>
+                  <q-input
+                    square
+                    v-if="isStep3"
+                    clearable
+                    v-model="reNewForgetPass"
+                    :type="fReVisibility ? 'text' : 'password'"
+                    lazy-rules
+                    label="تکرار کلمه عبور"
+                    :rules="[
+                      (val) =>
+                        val == newForgetPass || 'با کلمه عبور مطابقت ندارد',
+                    ]"
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="lock" />
+                    </template>
+                    <template v-slot:append>
+                      <q-icon
+                        :name="fReVisibility ? 'visibility_off' : 'visibility'"
+                        @click="fReVisibility = !fReVisibility"
+                        class="cursor-pointer"
+                      />
+                    </template>
+                  </q-input>
+
+                  <q-card-actions
+                    class="q-px-lg q-gutter-y-md"
+                    style="display: flex; justify-content: center"
+                  >
+                    <q-btn
+                      unelevated
+                      size="lg"
+                      type="submit"
+                      @click="sendForgetCode"
+                      color="secondary"
+                      class="full-width text-white"
+                      :label="true ? 'دریافت کد' : 'ثبت نام'"
+                      v-if="!isStep2 && !isStep3"
+                    />
+                    <q-btn
+                      unelevated
+                      size="lg"
+                      type="submit"
+                      @click="handleSendCode"
+                      color="secondary"
+                      class="full-width text-white"
+                      :label="true ? 'ارسال کد' : 'ثبت نام'"
+                      v-if="isStep2 && !isStep3"
+                    />
+                    <q-btn
+                      unelevated
+                      size="lg"
+                      type="submit"
+                      @click="handleFinish"
+                      color="secondary"
+                      class="full-width text-white"
+                      :label="true ? 'تغییر رمز' : 'ثبت نام'"
+                      v-if="isStep3"
+                    />
+                  </q-card-actions>
+                </q-form>
+              </q-card-section>
+
+              <q-card-section v-if="!isRegister" class="text-center q-pa-sm">
+                <p class="text-grey-6"></p>
+                <q-btn @click="isLogin = !isLogin" flat>{{
+                  isLogin ? "ثبت نام نکرده اید؟" : "ورود به پنل کاربری"
+                }}</q-btn>
+                <q-btn @click="isForgetPass = !isForgetPass" flat>{{
+                  isLogin ? "صفحه ورود" : "صفحه ورود"
                 }}</q-btn>
               </q-card-section>
             </q-card>
@@ -164,14 +299,30 @@ const router = useRouter();
 const isLogin = ref(true);
 const repassword = ref(null);
 const isRegister = ref(false);
+const isForgetPass = ref(false);
 
 const login: Ref<interfaces.UserLogin> = ref({
   UserName: "",
   Password: "",
 });
 
+const newForgetPass = ref(null);
+const reNewForgetPass = ref(null);
+const forgetPhone: Ref<interfaces.ForgotPassword> = ref({
+  PhoneNumber: "",
+  Password: null,
+  ForgotPassCode: null,
+});
+// const forgetPhone: Ref<interfaces.ForgotPasswordStep1> = ref({
+//   PhoneNumber: "",
+// });
+
 const visibility = ref(false);
 const reVisibility = ref(false);
+
+const fVisibility = ref(false);
+const fReVisibility = ref(false);
+
 const visibleLoader = ref(false);
 const onSubmit = () => {
   visibleLoader.value = true;
@@ -251,17 +402,116 @@ const onReset = () => {
   login.value.Password = "";
   repassword.value = null;
 };
+const resetForgotElement = () => {
+  fVisibility.value = false;
+  fReVisibility.value = false;
+  isStep2.value = false;
+  isStep3.value = false;
+  isForgetPass.value = false;
+  forgetPhone.value.PhoneNumber = "";
+  forgetPhone.value.ForgotPassCode = "";
+  forgetPhone.value.Password = "";
+  newForgetPass.value = null;
+  reNewForgetPass.value = null;
+};
+const isStep2 = ref(false);
+const isStep3 = ref(false);
+const handleSendCode = (e) => {
+  visibleLoader.value = true;
+  e.preventDefault();
+  projectService
+    .ForgotPasswordStep2({
+      PhoneNumber: forgetPhone.value.PhoneNumber,
+      ForgotPassCode: forgetPhone.value.ForgotPassCode,
+    })
+    .then((res) => {
+      console.log(res);
+      isStep2.value = false;
+      isStep3.value = true;
+      Notify.create({
+        message: res.data,
+        position: "top",
+        timeout: 1000,
+        progress: true,
+        color: "positive",
+      });
 
-const handleRegex = (event) => {
-  if (login.value.UserName == "" && login.value.UserName == null) return;
-  // const keyPressed = String.fromCharCode(event.keyCode);
-  const keyPressed = event.key;
-  if (/\D/.test(keyPressed)) {
-    console.log("str");
-    if (login.value.UserName.length < 11) {
-      login.value.UserName = login.value.UserName.slice(0, -1);
-    }
-  }
+      visibleLoader.value = false;
+    })
+    .catch((err) => {
+      console.log(err);
+      Notify.create({
+        message: err.response.data.Message,
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "negative",
+      });
+      visibleLoader.value = false;
+    });
+};
+const sendForgetCode = (e) => {
+  e.preventDefault();
+  visibleLoader.value = true;
+  console.log("submit forget");
+  projectService
+    .ForgotPasswordStep1({ PhoneNumber: forgetPhone.value.PhoneNumber })
+    .then((res) => {
+      console.log(res);
+      isStep2.value = true;
+      Notify.create({
+        message: res.data,
+        position: "top",
+        timeout: 1000,
+        progress: true,
+        color: "positive",
+      });
+
+      visibleLoader.value = false;
+    })
+    .catch((err) => {
+      console.log(err);
+      Notify.create({
+        message: err.response.data.Message,
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "negative",
+      });
+      visibleLoader.value = false;
+    });
+};
+const handleFinish = (e) => {
+  e.preventDefault();
+  visibleLoader.value = true;
+  console.log("submit forget");
+  projectService
+    .ForgotPasswordFinalStep({
+      PhoneNumber: forgetPhone.value.PhoneNumber,
+      Password: newForgetPass.value,
+    })
+    .then((res) => {
+      console.log(res);
+      Notify.create({
+        message: res.data,
+        position: "top",
+        timeout: 1000,
+        progress: true,
+        color: "positive",
+      });
+      visibleLoader.value = false;
+      resetForgotElement();
+    })
+    .catch((err) => {
+      console.log(err);
+      Notify.create({
+        message: err.response.data.Message,
+        position: "top",
+        timeout: 500,
+        progress: true,
+        color: "negative",
+      });
+      visibleLoader.value = false;
+    });
 };
 </script>
-@/helpers/newVersionSet.jts

@@ -80,6 +80,9 @@ export const User = Object.freeze({
   // GetUsersListAdmin: "Users/GetUsersListAdmin",
   UserInfoCompletion: "Users/InfoCompletion",
   Register: "Register",
+  ForgotPasswordStep1: "Users/ForgotPasswordStep1",
+  ForgotPasswordStep2: "Users/ForgotPasswordStep2",
+  ForgotPasswordFinalStep: "Users/ForgotPasswordFinalStep",
 });
 
 export const Ticket = Object.freeze({

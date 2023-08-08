@@ -271,5 +271,20 @@ class projectService {
       ...SendSMSModel,
     });
   }
+  async ForgotPasswordStep1(ForgotPasswordStep1Model: object) {
+    return await httpConfig.post(User.ForgotPasswordStep1, {
+      ...ForgotPasswordStep1Model,
+    });
+  }
+  async ForgotPasswordStep2(ForgotPasswordStep2Model: object) {
+    return await httpConfig.post(User.ForgotPasswordStep2, {
+      ...ForgotPasswordStep2Model,
+    });
+  }
+  async ForgotPasswordFinalStep(ForgotPasswordFinalStepModel: object) {
+    return await httpConfig.post(User.ForgotPasswordFinalStep, {
+      ...ForgotPasswordFinalStepModel,
+    });
+  }
 }
 export default new projectService();

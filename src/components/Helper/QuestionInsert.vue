@@ -55,7 +55,21 @@
               />
             </div>
             <div class="col-12">
-              <q-select
+              <SelectView
+                :valInit="qTypeModel"
+                :selectOption="qTypeOptions"
+                label="نوع آزمون"
+                filled
+                @listenChangeValue="
+                  (evt) => ((qTypeModel = evt), handleClickQType(evt))
+                "
+                :optionLabel="'name'"
+                :optionValue="'id'"
+                :color="'primary'"
+                :myFilterProp="'name'"
+                :myRules="[(val) => val || 'نوع آزمون باید ذکر شود']"
+              />
+              <!-- <q-select
                 name="masters"
                 v-model="qTypeModel"
                 @update:model-value="handleClickQType"
@@ -67,7 +81,7 @@
                 clearable
                 label="نوع آزمون"
                 :rules="[(val) => val || 'نوع آزمون باید ذکر شود']"
-              />
+              /> -->
             </div>
             <div class="col-12 q-gutter-x-md">
               <q-checkbox
@@ -129,6 +143,7 @@ import projectService from "../../services/project.service";
 
 import { ref, computed, defineEmits, defineProps } from "vue";
 import { Notify } from "quasar";
+import SelectView from "@/components/Helper/SelectView.vue";
 
 const emit = defineEmits(["dialogStatus"]);
 const props = defineProps({

@@ -15,7 +15,19 @@
         v-model="requestModle.Description"
         label="توضیحات"
       />
-      <q-select
+      <SelectView
+        :valInit="master"
+        :selectOption="mastersList"
+        :loading="isLoadMaster"
+        :label="'انتخاب استاد'"
+        filled
+        @listenChangeValue="handleClickMaster"
+        :optionLabel="'DisplayName'"
+        :optionValue="'ID'"
+        :color="'primary'"
+        :myFilterProp="'DisplayName'"
+      />
+      <!-- <q-select
         name="masters"
         v-model="master"
         :options="mastersList"
@@ -35,8 +47,20 @@
             </q-item-section>
           </q-item>
         </template>
-      </q-select>
-      <q-select
+      </q-select> -->
+      <SelectView
+        :valInit="meeting"
+        :selectOption="meetingsList"
+        :loading="isLoadMeet"
+        :label="'انتخاب جلسه'"
+        filled
+        @listenChangeValue="handleClickMeeting"
+        :optionLabel="'Title'"
+        :optionValue="'ID'"
+        :color="'primary'"
+        :myFilterProp="'Title'"
+      />
+      <!-- <q-select
         name="meeting"
         v-model="meeting"
         :options="meetingsList"
@@ -50,7 +74,6 @@
         label="انتخاب جلسه"
         placeholder="asdfasdf"
       >
-        <!-- :disable="!isMeetExist" -->
         <template v-slot:no-option>
           <q-item>
             <q-item-section class="text-grey">
@@ -58,7 +81,7 @@
             </q-item-section>
           </q-item>
         </template>
-      </q-select>
+      </q-select> -->
       <q-input
         filled
         type="text"
@@ -150,6 +173,7 @@
 import { Notify } from "quasar";
 import { ref } from "vue";
 // import { Notify } from 'quasar';
+import SelectView from "@/components/Helper/SelectView.vue";
 import projectService from "../services/project.service";
 const requestModle = ref({
   ID: null,
@@ -213,6 +237,7 @@ const handleClickMaster = (evt) => {
 };
 const handleClickMeeting = (evt) => {
   console.log(evt);
+  meeting.value = evt;
   requestModle.value.MeetingID = evt.ID;
 };
 const visibleLoader = ref(false);

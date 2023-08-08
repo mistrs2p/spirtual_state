@@ -55,7 +55,7 @@
             </span>
             <span v-else-if="item.name == 'User'" class="q-gutter-x-sm">
               {{
-                usersList.find((el) => el.ID == props.row.UserID).DisplayName
+                usersList.find((el) => el.ID == props.row.UserID)?.DisplayName
               }}
             </span>
             <span v-else-if="item.name == 'operation'" class="q-gutter-x-sm">
@@ -157,7 +157,21 @@
               />
             </div>
             <div class="col-12">
-              <q-select
+              <SelectView
+                :valInit="master"
+                :selectOption="mastersList"
+                :label="'انتخاب استاد'"
+                filled
+                @listenChangeValue="
+                  (evt) => ((master = evt), handleClickMaster(evt))
+                "
+                :optionLabel="'DisplayName'"
+                :optionValue="'ID'"
+                :color="'primary'"
+                :myFilterProp="'DisplayName'"
+                :myRules="[(val) => val || 'استاد باید ذکر شود']"
+              />
+              <!-- <q-select
                 name="masters"
                 v-model="master"
                 :options="mastersList"
@@ -169,7 +183,7 @@
                 clearable
                 label="انتخاب استاد"
                 :rules="[(val) => val || 'استاد باید ذکر شود']"
-              />
+              /> -->
             </div>
             <div class="col-12">
               <q-checkbox
@@ -179,19 +193,35 @@
               />
             </div>
             <div class="col-12">
-              <q-select
+              <SelectView
+                :valInit="user"
+                :selectOption="usersList"
+                :label="'انتخاب مراجعه کننده'"
+                filled
+                @listenChangeValue="
+                  (evt) => ((user = evt), handleClickUser(evt))
+                "
+                :optionLabel="(item) => item.DisplayName + ' ' + item.UserName"
+                :optionValue="'ID'"
+                :color="'primary'"
+                :myFilterProp="'DisplayName'"
+                :myRules="[(val) => val || 'مراجعه کننده باید ذکر شود']"
+              />
+              <!-- <q-select
                 name="users"
                 v-model="user"
-                :options="usersList"
+                :options="usersListFilter"
                 @update:model-value="handleClickUser"
                 :option-label="(item) => item.DisplayName + ' ' + item.UserName"
-                option-value="ID"
+                :option-value="(item) => item.DisplayName + ' ' + item.UserName"
                 color="primary"
                 filled
+                use-input
+                @filter="filterFn"
                 clearable
                 label="انتخاب مراجعه کننده"
                 :rules="[(val) => val || 'مراجعه کننده باید ذکر شود']"
-              />
+              /> -->
             </div>
             <div class="col-12">
               <q-input
@@ -253,8 +283,9 @@
 
 <script setup lang="ts">
 import projectService from "@/services/project.service";
+import SelectView from "@/components/Helper/SelectView.vue";
 
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { Notify } from "quasar";
 // import { Notify } from 'quasar';
 const addDiscountModel = ref({
@@ -355,6 +386,7 @@ const handleGetMasters = () => {
 };
 handleGetMasters();
 const usersList = ref([]);
+const usersListFilter = ref([]);
 
 const handleGetUsers = () => {
   loading.value = true;
@@ -363,6 +395,7 @@ const handleGetUsers = () => {
     .then((res) => {
       console.log(res);
       usersList.value = res.data;
+      usersListFilter.value = res.data;
       // options.value.pageCount = Math.ceil(res.data.length / itemsPerPage.value);
       loading.value = false;
     })
@@ -505,6 +538,28 @@ const handleEditClick = (evt) => {
   // addDiscountModel.value.MasterID = masterM.ID;
   isDicountAddDialog.value = true;
   isEdit.value = true;
+};
+
+const filterFn = (val, update) => {
+  console.log(val, update);
+  if (val === "") {
+    update(() => {
+      usersListFilter.value = usersList.value;
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    console.log(needle.toLowerCase());
+    console.log(usersListFilter.value);
+    console.log(usersList.value);
+    usersListFilter.value = usersList.value.filter(
+      (vall) =>
+        vall.DisplayName?.toLowerCase().indexOf(needle) > -1 ||
+        vall.UserName?.toLowerCase().indexOf(needle) > -1
+    );
+  });
 };
 </script>
 <style lang="scss"></style>
