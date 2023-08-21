@@ -53,9 +53,10 @@
                 disable
               />
             </span>
-            <span v-else-if="item.name == 'User'" class="q-gutter-x-sm">
+            <span v-else-if="item.name == 'User'">
               {{
-                usersList.find((el) => el.ID == props.row.UserID)?.DisplayName
+                usersList.find((el) => el.ID == props.row.UserID)
+                  ?.DisplayName || "-"
               }}
             </span>
             <span v-else-if="item.name == 'operation'" class="q-gutter-x-sm">
@@ -78,7 +79,7 @@
               >
             </span>
             <span v-else>
-              {{ props.row[item.field] }}
+              {{ props.row[item.field] || "-" }}
             </span>
           </q-td>
         </q-tr>
@@ -201,10 +202,10 @@
                 @listenChangeValue="
                   (evt) => ((user = evt), handleClickUser(evt))
                 "
-                :optionLabel="(item) => item.DisplayName + ' ' + item.UserName"
+                :optionLabel="'label'"
                 :optionValue="'ID'"
                 :color="'primary'"
-                :myFilterProp="'DisplayName'"
+                :myFilterProp="'label'"
                 :myRules="[(val) => val || 'مراجعه کننده باید ذکر شود']"
               />
               <!-- <q-select
@@ -329,9 +330,9 @@ const columns = [
     // align: 'center',
   },
   {
-    name: "Master",
+    name: "MasterDisplayName",
     label: "استاد",
-    field: "Master",
+    field: "MasterDisplayName",
     // align: 'center',
   },
   {
@@ -386,7 +387,6 @@ const handleGetMasters = () => {
 };
 handleGetMasters();
 const usersList = ref([]);
-const usersListFilter = ref([]);
 
 const handleGetUsers = () => {
   loading.value = true;
@@ -395,7 +395,9 @@ const handleGetUsers = () => {
     .then((res) => {
       console.log(res);
       usersList.value = res.data;
-      usersListFilter.value = res.data;
+      usersList.value.map((el) => {
+        el.label = el.DisplayName + " " + el.UserName;
+      });
       // options.value.pageCount = Math.ceil(res.data.length / itemsPerPage.value);
       loading.value = false;
     })
@@ -462,8 +464,8 @@ const handleDeleteDiscount = () => {
 const handleAddDiscount = () => {
   if (!isEdit.value) {
     const model = { ...addDiscountModel.value };
-    delete model.cUserID;
-    delete model.MasterID;
+    // delete model.cUserID;
+    // delete model.MasterID;
     projectService
       .AddDiscount(model)
       .then((res) => {
@@ -538,28 +540,6 @@ const handleEditClick = (evt) => {
   // addDiscountModel.value.MasterID = masterM.ID;
   isDicountAddDialog.value = true;
   isEdit.value = true;
-};
-
-const filterFn = (val, update) => {
-  console.log(val, update);
-  if (val === "") {
-    update(() => {
-      usersListFilter.value = usersList.value;
-    });
-    return;
-  }
-
-  update(() => {
-    const needle = val.toLowerCase();
-    console.log(needle.toLowerCase());
-    console.log(usersListFilter.value);
-    console.log(usersList.value);
-    usersListFilter.value = usersList.value.filter(
-      (vall) =>
-        vall.DisplayName?.toLowerCase().indexOf(needle) > -1 ||
-        vall.UserName?.toLowerCase().indexOf(needle) > -1
-    );
-  });
 };
 </script>
 <style lang="scss"></style>
