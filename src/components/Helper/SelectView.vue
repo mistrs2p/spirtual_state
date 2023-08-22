@@ -86,7 +86,7 @@ const props = defineProps({
     default: "",
   },
   myFilterProp: {
-    type: String,
+    type: String || Array,
     default: "Title",
   },
   myRules: {
@@ -109,10 +109,11 @@ const filterFn = (val, update) => {
       filterOptions.value = props.selectOption;
     } else {
       const needle = val.toLowerCase();
+      // console.log(needle);
+      console.log(filterOptions.value);
       //   console.log(needle);
       //   console.log(props.selectOption);
       filterOptions.value = props.selectOption.filter((v) => {
-        console.log(props.myFilterProp);
         if (v[props.myFilterProp]) {
           return v[props.myFilterProp].toLowerCase().indexOf(needle) > -1;
         }
