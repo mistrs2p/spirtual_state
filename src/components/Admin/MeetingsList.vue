@@ -170,7 +170,7 @@
               </q-input> -->
             </div>
             <div class="col-6">
-              <DatePicker
+              <TimePicker
                 :disabled="false"
                 v-model="dateTime.time"
                 type="time"

@@ -39,6 +39,39 @@
                   <q-input
                     square
                     clearable
+                    v-model="register.Name"
+                    type="text"
+                    lazy-rules
+                    label="نام"
+                    :rules="[
+                      (val) => (val && val.length > 0) || 'نام وارد شود',
+                    ]"
+                    v-if="!isLogin"
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="person" />
+                    </template>
+                  </q-input>
+                  <q-input
+                    square
+                    clearable
+                    v-model="register.Family"
+                    type="text"
+                    lazy-rules
+                    label="نام خانوادگی"
+                    :rules="[
+                      (val) =>
+                        (val && val.length > 0) || 'نام خانوادگی وارد شود',
+                    ]"
+                    v-if="!isLogin"
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="person" />
+                    </template>
+                  </q-input>
+                  <q-input
+                    square
+                    clearable
                     v-model="login.Password"
                     :type="visibility ? 'text' : 'password'"
                     lazy-rules
@@ -306,6 +339,11 @@ const login: Ref<interfaces.UserLogin> = ref({
   Password: "",
 });
 
+const register = ref({
+  Name: "",
+  Family: "",
+});
+
 const newForgetPass = ref(null);
 const reNewForgetPass = ref(null);
 const forgetPhone: Ref<interfaces.ForgotPassword> = ref({
@@ -366,8 +404,13 @@ const onSubmit = () => {
         visibleLoader.value = false;
       });
   } else {
+    const model = {
+      ...loginModel,
+      ...register.value,
+    };
+    console.log(model);
     projectService
-      .UserRegister(loginModel)
+      .UserRegister(model)
       .then(({ data }: { data: interfaces.RegisterResponse }) => {
         userStore.user = data;
         Notify.create({

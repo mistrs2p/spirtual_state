@@ -293,7 +293,7 @@
                 </q-input> -->
               </div>
               <div class="col-6">
-                <DatePicker
+                <TimePicker
                   :disabled="false"
                   v-model="dateTimeCreate.time"
                   type="time"
@@ -359,7 +359,7 @@
                 </q-input> -->
               </div>
               <div class="col-6">
-                <DatePicker
+                <TimePicker
                   :disabled="false"
                   v-model="dateTimePay.time"
                   type="time"
@@ -428,7 +428,7 @@
                 </q-input> -->
               </div>
               <div class="col-6">
-                <DatePicker
+                <TimePicker
                   :disabled="false"
                   v-model="dateTimeExecute.time"
                   type="time"

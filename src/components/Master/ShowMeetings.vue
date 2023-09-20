@@ -87,7 +87,12 @@
                 dense
                 color="primary"
                 flat
-                @click="(isDialog = true), (meetingData = { ...props.row })"
+                @click="
+                  (isDialog = true),
+                    (meetingData = {
+                      ...props.row,
+                    })
+                "
                 >ویرایش</q-btn
               >
             </span>
@@ -150,7 +155,7 @@
               </q-input> -->
             </div>
             <div class="col-6">
-              <DatePicker v-model="dateTime.time" type="time" />
+              <TimePicker v-model="dateTime.time" />
               <!-- <q-input filled v-model="dateTime.time">
                 <template v-slot:append>
                   <q-icon name="access_time" class="cursor-pointer">
@@ -372,68 +377,71 @@ const handleSubmit = async () => {
   model.StartTime = moment
     .from(
       `${dateTime.value.date} ${dateTime.value.time}`,
-      "fa",
+      "en",
       "YYYY/M/D HH:mm:ss"
     )
     .format("YYYY-M-D HH:mm:ss");
 
   console.log(model);
-  if (!isAdd.value) {
-    await projectService
-      .EditMasterMeeting(model)
-      .then((res) => {
-        console.log(res);
-        loadDataTable();
-        Notify.create({
-          message: "با موفقیت ویرایش شد!",
-          position: "top",
-          timeout: 500,
-          progress: true,
-          color: "positive",
-        });
-        isDialog.value = false;
-        visibleLoader.value = false;
-      })
-      .catch((err) => {
-        console.log(err);
-        Notify.create({
-          message: "خطا",
-          position: "top",
-          timeout: 500,
-          progress: true,
-          color: "negative",
-        });
-        visibleLoader.value = false;
-      });
-  } else {
-    await projectService
-      .AddMeeting(model)
-      .then((res) => {
-        console.log(res);
-        Notify.create({
-          message: "با موفقیت اضافه شد!",
-          position: "top",
-          timeout: 500,
-          progress: true,
-          color: "positive",
-        });
-        handleResetForm();
-        loadDataTable();
-        isDialog.value = false;
-        visibleLoader.value = false;
-      })
-      .catch((err) => {
-        console.log(err);
-        Notify.create({
-          message: "خطا",
-          position: "top",
-          timeout: 500,
-          progress: true,
-          color: "negative",
-        });
-        visibleLoader.value = false;
-      });
-  }
+  visibleLoader.value = false;
+
+  // if (!isAdd.value) {
+  //   await projectService
+  //     .EditMasterMeeting(model)
+  //     .then((res) => {
+  //       console.log(res);
+  //       loadDataTable();
+  //       Notify.create({
+  //         message: "با موفقیت ویرایش شد!",
+  //         position: "top",
+  //         timeout: 500,
+  //         progress: true,
+  //         color: "positive",
+  //       });
+  //       isDialog.value = false;
+  //       visibleLoader.value = false;
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       Notify.create({
+  //         message: "خطا",
+  //         position: "top",
+  //         timeout: 500,
+  //         progress: true,
+  //         color: "negative",
+  //       });
+  //       visibleLoader.value = false;
+  //     });
+  // } else {
+  //   console.log(model);
+  //   await projectService
+  //     .AddMeeting(model)
+  //     .then((res) => {
+  //       console.log(res);
+  //       Notify.create({
+  //         message: "با موفقیت اضافه شد!",
+  //         position: "top",
+  //         timeout: 500,
+  //         progress: true,
+  //         color: "positive",
+  //       });
+  //       handleResetForm();
+  //       loadDataTable();
+  //       isDialog.value = false;
+  //       visibleLoader.value = false;
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       Notify.create({
+  //         message: "خطا",
+  //         position: "top",
+  //         timeout: 500,
+  //         progress: true,
+  //         color: "negative",
+  //       });
+  //       visibleLoader.value = false;
+  //     });
+  // }
 };
 
 watch(isDialog, (nVal) => {
@@ -453,12 +461,18 @@ watch(isDialog, (nVal) => {
 watch(
   dateTime,
   (val) => {
-    console.log(val);
-    if (val.date != null && val.time != null) {
-      meetingData.value.Title =
-        setDateStr(`${val.date} ${val.time}`) +
-        ". " +
-        (meetingData.value.Title != null ? meetingData.value.Title : "");
+    console.log(dateTime.value);
+    if (val.date && val.time) {
+      const userStr =
+        meetingData.value.Title != null ? meetingData.value.Title : "";
+
+      const setDate = moment
+        .from(`${val.date} ${val.time}`, "en", "YYYY/MM/DD HH:mm:ss")
+        .format("YYYY-MM-DD HH:mm:ss");
+      console.log(setDate);
+
+      meetingData.value.Title = setDateStr(setDate) + " " + userStr;
+      console.log(meetingData.value.Title);
     }
   },
   { deep: true }

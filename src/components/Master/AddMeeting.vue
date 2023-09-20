@@ -37,7 +37,7 @@
           </q-input> -->
         </div>
         <div class="col-12 col-md-6">
-          <DatePicker :disabled="false" v-model="dateTime.time" type="time" />
+          <TimePicker :disabled="false" v-model="dateTime.time" type="time" />
 
           <!-- <custom-date-picker /> -->
           <!-- <q-input filled v-model="dateTime.time">

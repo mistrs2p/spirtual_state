@@ -47,7 +47,9 @@ class projectService {
       MasterID,
     });
   }
-  async GetMasterMeetingsForMaster(MasterID: string | number) {
+  async GetMasterMeetingsForMaster(
+    MasterID?: string | number | undefined | null
+  ) {
     return await httpConfig.post(Meetings.GetMasterMeetingsForMaster, {
       MasterID,
     });

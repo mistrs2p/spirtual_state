@@ -2,6 +2,7 @@
 
 import { createApp } from "vue";
 import App from "./App.vue";
+import { cloneDeep as clone } from "lodash";
 import "./registerServiceWorker";
 import router from "./router";
 import { Quasar, Notify } from "quasar";
@@ -26,10 +27,35 @@ if (process.env.NODE_ENV === "production") {
   };
 }
 const SpirtualState = createApp(App);
-console.log(appVersion);
+
 SpirtualState.config.globalProperties.$appVersion = appVersion;
-SpirtualState.component("DatePicker", Vue3PersianDatetimePicker);
-console.log(SpirtualState);
+export const datePickerConfig = {
+  name: "DatePicker",
+  props: {
+    clearable: true,
+    autoSubmit: true,
+    color: "#00acc1",
+    format: "YYYY-MM-DD",
+    displayFormat: "jDD jMMMM jYYYY",
+    type: "date",
+  },
+};
+
+export const dateTimePickerConfig = {
+  name: "TimePicker",
+  props: {
+    clearable: true,
+    autoSubmit: true,
+    color: "#00acc1",
+    type: "time",
+    format: "HH:mm",
+    displayFormat: "HH:mm",
+    type: "time",
+  },
+};
+SpirtualState.use(clone(Vue3PersianDatetimePicker), datePickerConfig);
+SpirtualState.use(clone(Vue3PersianDatetimePicker), dateTimePickerConfig);
+
 SpirtualState.use(Quasar, {
   ...quasarUserOptions,
   plugins: {

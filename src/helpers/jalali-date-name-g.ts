@@ -26,11 +26,15 @@ const monthNames: string[] = [
 ];
 
 export function setDateStr(date: string) {
-  const m: Moment = moment(date, "YYYY/MM/DD HH:mm");
+  console.log(date);
+  const m: Moment = moment(date, "YYYY/MM/DD HH:mm:ss");
+  console.log(m);
+  console.log(m.locale("fa").format("DD"));
+  console.log(monthNames[parseInt(m.format("MM")) - 1]);
   const returnData: string =
     dayNames[m.day()] +
     "، " +
-    m.format("DD") +
+    m.locale("fa").format("DD") +
     "" +
     monthNames[parseInt(m.format("MM")) - 1] +
     " ساعت " +
