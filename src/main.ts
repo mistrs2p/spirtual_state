@@ -37,7 +37,6 @@ export const datePickerConfig = {
     color: "#00acc1",
     format: "YYYY-MM-DD",
     displayFormat: "jDD jMMMM jYYYY",
-    type: "date",
   },
 };
 
@@ -50,7 +49,6 @@ export const dateTimePickerConfig = {
     type: "time",
     format: "HH:mm",
     displayFormat: "HH:mm",
-    type: "time",
   },
 };
 SpirtualState.use(clone(Vue3PersianDatetimePicker), datePickerConfig);

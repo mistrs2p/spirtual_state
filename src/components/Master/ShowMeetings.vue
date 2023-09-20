@@ -385,63 +385,63 @@ const handleSubmit = async () => {
   console.log(model);
   visibleLoader.value = false;
 
-  // if (!isAdd.value) {
-  //   await projectService
-  //     .EditMasterMeeting(model)
-  //     .then((res) => {
-  //       console.log(res);
-  //       loadDataTable();
-  //       Notify.create({
-  //         message: "با موفقیت ویرایش شد!",
-  //         position: "top",
-  //         timeout: 500,
-  //         progress: true,
-  //         color: "positive",
-  //       });
-  //       isDialog.value = false;
-  //       visibleLoader.value = false;
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       Notify.create({
-  //         message: "خطا",
-  //         position: "top",
-  //         timeout: 500,
-  //         progress: true,
-  //         color: "negative",
-  //       });
-  //       visibleLoader.value = false;
-  //     });
-  // } else {
-  //   console.log(model);
-  //   await projectService
-  //     .AddMeeting(model)
-  //     .then((res) => {
-  //       console.log(res);
-  //       Notify.create({
-  //         message: "با موفقیت اضافه شد!",
-  //         position: "top",
-  //         timeout: 500,
-  //         progress: true,
-  //         color: "positive",
-  //       });
-  //       handleResetForm();
-  //       loadDataTable();
-  //       isDialog.value = false;
-  //       visibleLoader.value = false;
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       Notify.create({
-  //         message: "خطا",
-  //         position: "top",
-  //         timeout: 500,
-  //         progress: true,
-  //         color: "negative",
-  //       });
-  //       visibleLoader.value = false;
-  //     });
-  // }
+  if (!isAdd.value) {
+    await projectService
+      .EditMasterMeeting(model)
+      .then((res) => {
+        console.log(res);
+        loadDataTable();
+        Notify.create({
+          message: "با موفقیت ویرایش شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+        isDialog.value = false;
+        visibleLoader.value = false;
+      })
+      .catch((err) => {
+        console.log(err);
+        Notify.create({
+          message: "خطا",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
+        visibleLoader.value = false;
+      });
+  } else {
+    console.log(model);
+    await projectService
+      .AddMeeting(model)
+      .then((res) => {
+        console.log(res);
+        Notify.create({
+          message: "با موفقیت اضافه شد!",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "positive",
+        });
+        handleResetForm();
+        loadDataTable();
+        isDialog.value = false;
+        visibleLoader.value = false;
+      })
+      .catch((err) => {
+        console.log(err);
+        Notify.create({
+          message: "خطا",
+          position: "top",
+          timeout: 500,
+          progress: true,
+          color: "negative",
+        });
+        visibleLoader.value = false;
+      });
+  }
 };
 
 watch(isDialog, (nVal) => {

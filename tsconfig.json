@@ -15,29 +15,22 @@
 
     "sourceMap": true,
     "baseUrl": ".",
-    "types": [
-      "webpack-env", "quasar"
-    ],
+    "types": ["webpack-env", "quasar"],
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["src/*"]
     },
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ]
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
-, "src/stores/user.ts", "src/services/project.service.ts", "src/helpers/http.config.ts","shims-quasar.d.ts"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "tests/**/*.tsx",
+    "src/stores/user.ts",
+    "src/services/project.service.ts",
+    "src/helpers/http.config.ts",
+    "shims-quasar.d.ts"
+  ],
+  "exclude": ["node_modules"]
 }
