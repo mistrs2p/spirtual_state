@@ -448,13 +448,24 @@ watch(isDialog, (nVal) => {
   if (!nVal) {
     isAdd.value = false;
     handleResetForm();
-  } else if (!isAdd.value) {
-    const dateTimeEdit = meetingData.value.StartTime.split("T");
-    dateTime.value.date = moment(dateTimeEdit[0], "YYYY-MM-DD")
-      .locale("fa")
-      .format("YYYY/MM/DD");
-    dateTime.value.time = dateTimeEdit[1];
-    console.log(dateTimeEdit);
+  } else if (!isAdd.value && nVal) {
+    // const dateTimeEdit = meetingData.value.StartTime.split("T");
+    const dateTimeEdit = meetingData.value.StartTime;
+    const jDateTime = moment(dateTimeEdit)
+      .format("YYYY/MM/DD HH:mm")
+      .split(" ");
+
+    console.log(jDateTime);
+
+    dateTime.value.date = jDateTime[0];
+    dateTime.value.time = jDateTime[1];
+    // console.log(moment(dateTimeEdit).format());
+    // console.log(moment.from(dateTimeEdit, "en").format("jYYYY-jM-jD HH:mm:ss"));
+    // dateTime.value.date = moment(dateTimeEdit[0], "YYYY-MM-DD")
+    //   .locale("fa")
+    //   .format("jYYYY/jMM/jDD");
+    // dateTime.value.time = dateTimeEdit[1];
+    // console.log(dateTimeEdit);
   }
 });
 
@@ -467,8 +478,8 @@ watch(
         meetingData.value.Title != null ? meetingData.value.Title : "";
 
       const setDate = moment
-        .from(`${val.date} ${val.time}`, "en", "YYYY/MM/DD HH:mm:ss")
-        .format("YYYY-MM-DD HH:mm:ss");
+        .from(`${val.date} ${val.time}`, "en", "YYYY/MM/DD HH:mm")
+        .format("YYYY-MM-DD HH:mm");
       console.log(setDate);
 
       meetingData.value.Title = setDateStr(setDate) + " " + userStr;
