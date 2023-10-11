@@ -213,7 +213,22 @@
                 v-if="key != 'UserDisplayName' && key != 'QuestionType'"
                 v-ripple
               >
-                <q-item-section>{{ key }}: {{ value }}</q-item-section>
+                <q-item-section>
+                  <div>
+                    <span v-if="key.toLowerCase() == 'ji'"
+                      >هوشمند و جستجو گر</span
+                    >
+                    <span v-else-if="key.toLowerCase() == 'va'">واقع گرا</span>
+                    <span v-else-if="key.toLowerCase() == 'al'">اجتماعی</span>
+                    <span v-else-if="key.toLowerCase() == 'gh'"
+                      >سنتی و قراردادی</span
+                    >
+                    <span v-else-if="key.toLowerCase() == 'he'">هنری</span>
+                    <span v-else-if="key.toLowerCase() == 'mi'">خطرجو</span>
+
+                    <span> : {{ value }}</span>
+                  </div></q-item-section
+                >
               </q-item>
             </template>
           </q-list>
